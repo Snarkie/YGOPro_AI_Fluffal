@@ -846,6 +846,14 @@ function FluffalInit(cards) -- FLUFFAL INIT
   local SetMon = cards.monster_setable_cards
   local SetST = cards.st_setable_cards
  
+  --GLOBAL
+  GlobalRabit = 0
+  GlobalFFusion = 0
+  GlobalToyVendor = 0
+  GlobalIFusion = 0
+  GlobalPolymerization = 0
+  GlobalFusionId = 0
+  
   -- SETS
   if HasID(SetST,66127916,SetFReserve) then --FusionReserve
     return COMMAND_SET_ST,CurrentIndex
@@ -923,7 +931,7 @@ function SabresTarget(cards)
 end
 -- Other Target
 -- FluffalS Target
-GlobalFFusion = nil
+GlobalFFusion = 0
 function FFusionTarget(cards,c)
   return Add(cards)
 end
@@ -932,7 +940,7 @@ function FFractoryTarge(cards,c)
   return Add(cards)
 end
 
-GlobalToyVendor = nil
+GlobalToyVendor = 0
 function ToyVendorTarget(cards,c)
   if FilterLocation(c,LOCATION_SZONE) then
     if GlobalToyVendor == nil then
@@ -957,7 +965,7 @@ end
 function IFusionTarget(cards,c)
   return Add(cards)
 end
-GlobalPolymerization = nil
+GlobalPolymerization = 0
 function PolymerizationTarget(cards,c)
   if GlobalPolymerization == nil then
 	GlobalPolymerization = 1

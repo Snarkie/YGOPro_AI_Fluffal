@@ -178,6 +178,7 @@ function CountPrioTarget(cards,loc,p)
   if p == nil then
     p = 1
   end
+  print(loc)
   for i=1, #cards do
     local c = cards[i]
 	if GetPriority(c,loc) > p then
@@ -215,7 +216,7 @@ end
 function CountToyVendorDiscardTarget()
   local result = 0
   result = CountPrioTarget(AIHand(),PRIO_TOGRAVE)
-  --print("CountToyVendorDiscardTarget: "..result)
+  print("CountToyVendorDiscardTarget: "..result)
   return result
 end
 -- Spell Count
@@ -285,6 +286,7 @@ function OwlCond(loc,c)
   end
   return true
 end
+
 function SheepCond(loc,c)
   if loc == PRIO_TOHAND then
     return OPTCheck(c.id) and not HasID(AIHand(),c.id)
@@ -354,6 +356,7 @@ function RabitCond(loc,c)
   end
   return true
 end
+
 function MouseCond(loc,c)
   if loc == PRIO_TOHAND then
     return OPTCheck(c.id) and Get_Card_Count_ID(UseLists({AICards(),AIGrave()}),c.id) == 1
@@ -737,6 +740,7 @@ function FSheepCond(loc,c)
   return true
 end
 
+
 FluffalPriorityList={
 --PRIO_TOHAND = 1
 --PRIO_TOFIELD = 3
@@ -878,10 +882,10 @@ function UseKoS2(c)
 end
 -- FluffalS Use
 function ActiveToyVendor1(c)
-  return FilterPosition(c,POS_FACEDOWN)
+  return FilterPosition(c,POS_FACEDOWN) and CountToyVendorDiscardTarget() > 0
 end
 function ActiveToyVendor2(c)
-  return FilterLocation(c,LOCATION_HAND)
+  return FilterLocation(c,LOCATION_HAND) and CountToyVendorDiscardTarget() > 0
 end
 function UseToyVendor(c)
   if HasID(AIHand(),72413000) then
@@ -1007,18 +1011,15 @@ function FluffalInit(cards) -- FLUFFAL INIT
   local Rep = cards.repositionable_cards
   local SetMon = cards.monster_setable_cards
   local SetST = cards.st_setable_cards
- 
-  --GLOBAL
-  GlobalRabit = nil
-  GlobalFFusion = nil
-  GlobalToyVendor = nil
-  GlobalIFusion = nil
-  GlobalPolymerization = nil
   
-  -- SETS
-  if HasID(SetST,66127916,SetFReserve) then --FusionReserve
-    return COMMAND_SET_ST,CurrentIndex
-  end
+  --GLOBAL
+  GlobalRabit = 0
+  GlobalFFusion = 0
+  GlobalToyVendor = 0
+  GlobalIFusion = 0
+  GlobalPolymerization = 0
+  GlobalFusionId = 0
+
   return nil
 end
 
@@ -1067,7 +1068,7 @@ function SheepTarget(cards)
   end
   return Add(cards)
 end
-GlobalRabit = nil
+GlobalRabit = 0
 function RabitTarget(cards)
   GlobalRabit = 1
   return Add(cards,PRIO_HAND)
@@ -1153,11 +1154,13 @@ function ToyVendorTarget(cards,c)
   return Add(cards)
 end
 -- Spell Target
+GlobalIFusion = 0
 function IFusionTarget(cards,c)
+  GlobalIFusion = 1
   return Add(cards,PRIO_TOFIELD)
 end
-GlobalPolymerization = nil
-GlobalFusionId = nil
+GlobalPolymerization = 0
+GlobalFusionId = 0
 function PolymerizationTarget(cards,c)
   if GlobalPolymerization == nil then
 	GlobalPolymerization = 1
