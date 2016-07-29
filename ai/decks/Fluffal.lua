@@ -1,6 +1,6 @@
 function FluffalStartup(deck)
   print("AI_Fluffal v0.0.0.3 by neftalimich.")
-  AI.Chat("¡Duelo!")
+  AI.Chat("Â¡Duelo!")
   
   deck.Init                 = FluffalInit
   deck.Card                 = FluffalCard
@@ -53,7 +53,7 @@ function FluffalStartup(deck)
   e3:SetType(EFFECT_TYPE_FIELD)
   e3:SetCode(EFFECT_PUBLIC)
   e3:SetTargetRange(LOCATION_HAND,0)
-  --Duel.RegisterEffect(e3,player_ai)
+  Duel.RegisterEffect(e3,player_ai)
 end
 
 FluffalIdentifier = 03841833 -- Bear
