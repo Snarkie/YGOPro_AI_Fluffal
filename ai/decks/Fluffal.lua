@@ -40,20 +40,20 @@ function FluffalStartup(deck)
 	e0:SetCode(EVENT_CHAIN_SOLVED)
 	e0:SetOperation(function(e,tp,eg,ep,ev,re,r,rp)
 		local g=Duel.GetFieldGroup(player_ai,LOCATION_HAND,0)
-		--Duel.ConfirmCards(1-player_ai,g)
+		Duel.ConfirmCards(1-player_ai,g)
 	end)
 	Duel.RegisterEffect(e0,0)
 	local e1=e0:Clone()
 	e1:SetCode(EVENT_TO_HAND)
-	--Duel.RegisterEffect(e1,0)
+	Duel.RegisterEffect(e1,0)
 	local e2=e0:Clone()
 	e2:SetCode(EVENT_PHASE_START+PHASE_MAIN1)
-	--Duel.RegisterEffect(e2,0)
+	Duel.RegisterEffect(e2,0)
   local e3=Effect.GlobalEffect()
   e3:SetType(EFFECT_TYPE_FIELD)
   e3:SetCode(EFFECT_PUBLIC)
   e3:SetTargetRange(LOCATION_HAND,0)
-  --Duel.RegisterEffect(e3,player_ai)
+  Duel.RegisterEffect(e3,player_ai)
 end
 
 FluffalIdentifier = 03841833 -- Bear
@@ -214,7 +214,7 @@ function CountToyVendorCanUse()
 end
 function CountToyVendorDiscardTarget()
   local result = 0
-  result = CountPrioTarget(AIHand(),PRIO_TOGRAVE)
+  result = CountPrioTarget(AIHand(),PRIO_DISCARD)
   print("CountToyVendorDiscardTarget: "..result)
   return result
 end
@@ -225,66 +225,35 @@ end
 ------------------------
 --------- COND ---------
 ------------------------
-function GetPriorityMichelet(card,loc)
-  local id=card.id      
-  if id == 76812113 then
-    id=card.original_id
-  end
-  local checklist = nil
-  local result = 0
-  if loc == nil then
-    loc = PRIO_TOHAND
-  end
-  checklist = Prio[id]
-  if checklist then
-    if checklist[11] and not(checklist[11](loc,card)) then
-      loc = loc + 1
-    end
-    result = checklist[loc]
-    if checklist[11] and checklist[11](loc,card) 
-    and type(checklist[11](loc,card))=="number"  
-    then
-	  --print("PriorityNumber")
-      result = checklist[11](loc,card)
-    end
-  else
-    --print("no priority defined for id: "..id..", defaulting to 0")
-  end
-  return result
-end
--- FluffalM Cond
+-- FluffalM cond
 function DogCond(loc,c)
-  if GlobalSheep == 1 and not HasID(AIHand(),c.id) then
+  if GlobalSheep == 1 then
+    print("DogCond - GlobalSheep")
     return 9
   end
   if loc == PRIO_TOHAND then
-    return OPTCheck(c.id) and not HasID(AIHand(),c.id) and not NormalSummonCheck()
+    return OPTCheck(c.id) and not HasID(AIHand(),c.id,true)
   end
   if loc == PRIO_TOFIELD then
     return OPTCheck(c.id)
   end
   if loc == PRIO_TOGRAVE then
-    return not OPTCheck(c.id) or NormalSummonCheck()
+    return not OPTCheck(c.id)
   end
   if loc == PRIO_DISCARD then
-    return not OPTCheck(c.id) or NormalSummonCheck()
+    return not OPTCheck(c.id)
   end
   if loc == PRIO_BANISH then
-    return true
+    return not OPTCheck(c.id)
   end
   return true
 end
 function BearCond(loc,c)
   if loc == PRIO_TOHAND then
-    if OPTCheck(c.id) and not HasID(AIHand(),c.id)
-	and (not HasID(UseLists({AIField(),AIHand()}),70245411) or CountWingsTarget() == 0) then
-	  return true
-	else
-	  return false
-	end
+    return OPTCheck(c.id) and not HasID(AIHand(),c.id,true)
   end
   if loc == PRIO_TOFIELD then
-    return not OPTCheck(c.id)
+    return OPTCheck(c.id)
   end
   if loc == PRIO_TOGRAVE then
     return not OPTCheck(c.id)
@@ -293,16 +262,16 @@ function BearCond(loc,c)
     return not OPTCheck(c.id)
   end
   if loc == PRIO_BANISH then
-    return true
+    return not OPTCheck(c.id)
   end
   return true
 end
 function OwlCond(loc,c)
-  if GlobalSheep == 1 and not HasID(AIHand(),c.id) then
+  if GlobalSheep == 1 then
     return 10
   end
   if loc == PRIO_TOHAND then
-    return OPTCheck(c.id) and not HasID(AIHand(),c.id) and not NormalSummonCheck()
+    return OPTCheck(c.id) and not HasID(AIHand(),c.id,true)
   end
   if loc == PRIO_TOFIELD then
     return OPTCheck(c.id)
@@ -314,14 +283,13 @@ function OwlCond(loc,c)
     return not OPTCheck(c.id)
   end
   if loc == PRIO_BANISH then
-    return true
+    return not OPTCheck(c.id)
   end
   return true
 end
-
 function SheepCond(loc,c)
   if loc == PRIO_TOHAND then
-    return OPTCheck(c.id) and not HasID(AIHand(),c.id)
+    return OPTCheck(c.id) and not HasID(AIHand(),c.id,true)
   end
   if loc == PRIO_TOFIELD then
     return OPTCheck(c.id)
@@ -333,104 +301,80 @@ function SheepCond(loc,c)
     return not OPTCheck(c.id)
   end
   if loc == PRIO_BANISH then
-    return true
+    return not OPTCheck(c.id)
   end
   return true
 end
 function CatCond(loc,c)
-  --print("CatPrio: "..GetPriority(c,loc))
-  if GlobalRabit == 1 then
-    return 10
-  end
   if loc == PRIO_TOHAND then
-    return OPTCheck(c.id) and not HasID(AIHand(),c.id) and HasID(UseLists({AIField(),AIHand()}),24094653)
-  end
-  if loc == PRIO_TOFIELD then
-    return true
-  end
-  if loc == PRIO_TOGRAVE and OPTCheck(c.id) 
-  and GlobalPolymerization > 1 then -- Polymerization Material PRIO
-    if HasID(AIGrave(),24094653) then 
-	  return 10
-	else
-	  return false
-	end
-  end
-  if loc == PRIO_TOGRAVE then
-    return not OPTCheck(c.id)
-  end
-  if loc == PRIO_DISCARD then
-    return not OPTCheck(c.id)
-  end
-  if loc == PRIO_BANISH then
-    return true
-  end
-  return true
-end
-function RabitCond(loc,c)
-  --print("RabitPrio: "..GetPriority(c,loc))
-  if loc == PRIO_TOHAND then
-    return OPTCheck(c.id) and not HasID(AIHand(),c.id)
-  end
-  if loc == PRIO_TOFIELD then
-    return true
-  end
-  if loc == PRIO_TOGRAVE and OPTCheck(c.id) 
-  and GlobalPolymerization > 1 then -- Polymerization Material PRIO
-    return 9
-  end
-  if loc == PRIO_TOGRAVE then
-    return not OPTCheck(c.id)
-  end
-  if loc == PRIO_DISCARD then
-    return not OPTCheck(c.id)
-  end
-  if loc == PRIO_BANISH then
-    return true
-  end
-  return true
-end
-
-function MouseCond(loc,c)
-  if loc == PRIO_TOHAND then
-    return OPTCheck(c.id) and Get_Card_Count_ID(AIDeck(),c.id) == 2
+    return 
+	  OPTCheck(c.id) and not HasID(AIHand(),c.id,true) -- Cat
+	  and Get_Card_Count_ID(UseLists({AIST(),AIHand()}),24094653) > 0 -- Polymerization
   end
   if loc == PRIO_TOFIELD then
     return OPTCheck(c.id)
   end
-  if loc == PRIO_TOGRAVE 
-  and GlobalPolymerization > 1 then -- Polymerization Material PRIO
-    return 8
-  end
   if loc == PRIO_TOGRAVE then
-    return not OPTCheck(c.id) or Get_Card_Count_ID(UseLists({UseLists({AIField(),AIHand()}),AIGrave()}),c.id) > 1
+    return not OPTCheck(c.id)
   end
   if loc == PRIO_DISCARD then
-    return not OPTCheck(c.id) or Get_Card_Count_ID(UseLists({UseLists({AIField(),AIHand()}),AIGrave()}),c.id) > 1
+    return not OPTCheck(c.id)
   end
   if loc == PRIO_BANISH then
-    return true
+    return not OPTCheck(c.id)
+  end
+  return true
+end
+function RabitCond(loc,c)
+  
+  if loc == PRIO_TOHAND then
+    return 
+	  OPTCheck(c.id) and not HasID(AIHand(),c.id,true) -- Rabit
+	  and Get_Card_Count_ID(UseLists({AIST(),AIHand()}),24094653) > 0 -- Polymerization
+  end
+  if loc == PRIO_TOFIELD then
+    return OPTCheck(c.id)
+  end
+  if loc == PRIO_TOGRAVE then
+    return not OPTCheck(c.id)
+  end
+  if loc == PRIO_DISCARD then
+    return not OPTCheck(c.id)
+  end
+  if loc == PRIO_BANISH then
+    return not OPTCheck(c.id)
+  end
+  return true
+end
+function MouseCond(loc,c)
+  if loc == PRIO_TOHAND then
+    return 
+	  OPTCheck(c.id) and not HasID(AIHand(),c.id,true) -- Mouse
+	  and Get_Card_Count_ID(AIDeck(),c.id) == 2 -- Mouse Deck
+  end
+  if loc == PRIO_TOFIELD then
+    return OPTCheck(c.id)
+  end
+  if loc == PRIO_TOGRAVE then
+    return not OPTCheck(c.id)
+  end
+  if loc == PRIO_DISCARD then
+    return not OPTCheck(c.id) or Get_Card_Count_ID(AIDeck(),c.id) < 2
+  end
+  if loc == PRIO_BANISH then
+    return not OPTCheck(c.id)
   end
   return true
 end
 function WingsCond(loc,c)
   if loc == PRIO_TOHAND then
-	if OPTCheck(c.id) and not HasID(UseLists({AIHand(),AIGrave()}),c.id)
-	and (
-	  HasID(AIHand(),70245411) 
-	  or (HasID(AIST(),70245411) and CountToyVendorCanUse() > 0)
-	) then
-	  return true
-	else
-	  return false
-	end
+    return 
+	  OPTCheck(c.id) and not HasID(UseLists({AIHand(),AIGrave()}),c.id,true) -- Wings
+	  and Get_Card_Count_ID(UseLists({AIHand(),AIST()}),70245411) > 0 -- ToyVendor
+	  and CountToyVendorCanUse() > 0
   end
   if loc == PRIO_TOFIELD then
-    return true
-  end
-  if loc == PRIO_TOGRAVE 
-  and GlobalPolymerization > 1 then -- Polymerization Material PRIO
-    return 7
+    return OPTCheck(c.id)
   end
   if loc == PRIO_TOGRAVE then
     return true
@@ -439,89 +383,73 @@ function WingsCond(loc,c)
     return true
   end
   if loc == PRIO_BANISH then
-    return true
+    return not OPTCheck(c.id)
   end
   return true
 end
 function PatchworkCond(loc,c)
   if loc == PRIO_TOHAND then
-    return not HasID(AIHand(),c.id)
+    return OPTCheck(c.id) and not HasID(AIHand(),c.id,true)
   end
   if loc == PRIO_TOFIELD then
-    return true
-  end
-  if loc == PRIO_TOGRAVE 
-  and GlobalPolymerization > 1 then -- Polymerization Material PRIO
-    return 7
+    return OPTCheck(c.id)
   end
   if loc == PRIO_TOGRAVE then
-    return true
+    return not OPTCheck(c.id)
   end
   if loc == PRIO_DISCARD then
     return true
   end
   if loc == PRIO_BANISH then
-    return true
+    return not OPTCheck(c.id)
   end
   return true
 end
 -- EdgeImp Cond
 function TomahawkCond(loc,c)
   if loc == PRIO_TOHAND then
-    return OPTCheck(c.id) and not HasID(AIHand(),c.id)
+    return OPTCheck(c.id) and not HasID(AIHand(),c.id,true)
   end
   if loc == PRIO_TOFIELD then
     return OPTCheck(c.id)
   end
-  if loc == PRIO_TOGRAVE 
-  and GlobalPolymerization > 1 then -- Polymerization Material PRIO
-    return 8
-  end
   if loc == PRIO_TOGRAVE then
-    return true
+    return not OPTCheck(c.id)
   end
   if loc == PRIO_DISCARD then
     return true
   end
   if loc == PRIO_BANISH then
-    return true
+    return not OPTCheck(c.id)
   end
   return true
 end
 function ChainCond(loc,c)
   if loc == PRIO_TOHAND then
-    return OPTCheck(c.id) and not HasID(AIHand(),c.id) 
-	  and CountEgdeImp(UseLists({AIHand(),AIMon()})) == 0
+    return OPTCheck(c.id) and not HasID(AIHand(),c.id,true)
   end
   if loc == PRIO_TOFIELD then
-    if FilterLocation(c,LOCATION_GRAVE) then
-      return GetPriority(c,loc) + 10
-	else
-	  return OPTCheck(c.id)
-	end
+    return OPTCheck(c.id)
   end
   if loc == PRIO_TOGRAVE then
-    return OPTCheck(c.id)
+    return true
   end
   if loc == PRIO_DISCARD then
     return OPTCheck(c.id)
   end
   if loc == PRIO_BANISH then
-    return true
+    return not OPTCheck(c.id)
   end
   return true
 end
 function SabresCond(loc,c)
   if loc == PRIO_TOHAND then
-    return not HasID(AIHand(),c.id)
-	  and CountEgdeImp(UseLists({AIHand(),AIMon()})) == 0
+    return 
+	  not HasID(AIHand(),c.id,true) -- Sabres
+	  and CountEgdeImp(UseLists({AIHand(),AIMon()})) == 0 -- EdgeImp
   end
   if loc == PRIO_TOFIELD then
-    if FilterLocation(c,LOCATION_GRAVE) then
-      return GetPriority(c,loc) + 10
-	else
-	  return true
-	end
+    return OPTCheck(c.id)
   end
   if loc == PRIO_TOGRAVE then
     return true
@@ -530,25 +458,17 @@ function SabresCond(loc,c)
     return true
   end
   if loc == PRIO_BANISH then
-    return true
+    return not OPTCheck(c.id)
   end
   return true
 end
 -- Other Cond
 function KoSCond(loc,c)
   if loc == PRIO_TOHAND then
-    return OPTCheck(c.id) and not HasID(AIHand(),c.id)
+    return OPTCheck(c.id) and not HasID(AIHand(),c.id,true)
   end
   if loc == PRIO_TOFIELD then
-    if FilterLocation(c,LOCATION_GRAVE) then
-      return GetPriority(c,loc) + 10
-	else
-	  return true
-	end
-  end
-  if loc == PRIO_TOGRAVE 
-  and GlobalPolymerization > 1 then -- Polymerization Material PRIO
-    return 9
+    return OPTCheck(c.id)
   end
   if loc == PRIO_TOGRAVE then
     return not OPTCheck(c.id)
@@ -557,16 +477,16 @@ function KoSCond(loc,c)
     return not OPTCheck(c.id)
   end
   if loc == PRIO_BANISH then
-    return true
+    return not OPTCheck(c.id)
   end
   return true
 end
 function BulbCond(loc,c)
   if loc == PRIO_TOHAND then
-    return not HasID(AIHand(),c.id)
+    return OPTCheck(c.id) and not HasID(AIHand(),c.id,true)
   end
   if loc == PRIO_TOFIELD then
-    return Get_Card_Count_Level(AIMon(),4,"==") > 0
+    return OPTCheck(c.id)
   end
   if loc == PRIO_TOGRAVE then
     return true
@@ -575,29 +495,35 @@ function BulbCond(loc,c)
     return true
   end
   if loc == PRIO_BANISH then
-    return true
+    return not OPTCheck(c.id)
   end
   return true
 end
--- FluffalS Cond
+--FLuffalS Cond
 function FFusionCond(loc,c)
   if loc == PRIO_TOHAND then
-    return OPTCheck(c.id) and not HasID(AIHand(),c.id)
+    return OPTCheck(c.id) and not HasID(AIHand(),c.id,true)
+  end
+  if loc == PRIO_TOFIELD then
+    return OPTCheck(c.id)
   end
   if loc == PRIO_TOGRAVE then
-    return not OPTCheck(c.id) or Get_Card_Count_ID(UseLists({AIField(),AIHand()}),c.id) > 1
+    return not OPTCheck(c.id) or Get_Card_Count_ID(UseLists({AIST(),AIHand()}),c.id) > 1
   end
   if loc == PRIO_DISCARD then
-    return not OPTCheck(c.id) or Get_Card_Count_ID(UseLists({AIField(),AIHand()}),c.id) > 1
+    return not OPTCheck(c.id) or Get_Card_Count_ID(UseLists({AIST(),AIHand()}),c.id) > 1
   end
   if loc == PRIO_BANISH then
-    return true
+    return not OPTCheck(c.id)
   end
   return true
 end
 function FFactoryCond(loc,c)
   if loc == PRIO_TOHAND then
-    return OPTCheck(c.id)and not HasID(AIHand(),c.id)
+    return OPTCheck(c.id) and not HasID(AIHand(),c.id,true)
+  end
+  if loc == PRIO_TOFIELD then
+    return OPTCheck(c.id)
   end
   if loc == PRIO_TOGRAVE then
     return not OPTCheck(c.id)
@@ -606,97 +532,114 @@ function FFactoryCond(loc,c)
     return not OPTCheck(c.id)
   end
   if loc == PRIO_BANISH then
-    return true
+    return not OPTCheck(c.id)
   end
   return true
 end
 function ToyVendorCond(loc,c)
   if loc == PRIO_TOHAND then
-    return not HasID(AIHand(),c.id)
+    return OPTCheck(c.id) and not HasID(AIHand(),c.id,true)
+  end
+  if loc == PRIO_TOFIELD then
+    return OPTCheck(c.id)
   end
   if loc == PRIO_TOGRAVE then
-    return OPTCheck(c.cardid)
+    return not OPTCheck(c.cardid)
   end
   if loc == PRIO_DISCARD then
-    return true
+    return not OPTCheck(c.id)
   end
   if loc == PRIO_BANISH then
-    return true
+    return not OPTCheck(c.id)
   end
   return true
 end
 -- Spell Cond
 function IFusionCond(loc,c)
   if loc == PRIO_TOHAND then
-    return OPTCheck(c.id) and not HasID(AIHand(),c.id)
+    return OPTCheck(c.id) and not HasID(AIHand(),c.id,true)
+  end
+  if loc == PRIO_TOFIELD then
+    return OPTCheck(c.id)
   end
   if loc == PRIO_TOGRAVE then
     return not OPTCheck(c.id)
   end
   if loc == PRIO_DISCARD then
-    return not OPTCheck(c.id)
+    return true
   end
   if loc == PRIO_BANISH then
-    return true
+    return not OPTCheck(c.id)
   end
   return true
 end
 function PolymCond(loc,c)
   if loc == PRIO_TOHAND then
-    return not HasID(AIHand(),c.id) 
+    return OPTCheck(c.id) and not HasID(AIHand(),c.id,true)
+  end
+  if loc == PRIO_TOFIELD then
+    return OPTCheck(c.id)
   end
   if loc == PRIO_TOGRAVE then
-    return true
+    return not OPTCheck(c.id)
   end
   if loc == PRIO_DISCARD then
-    if Get_Card_Count_ID(AIHand(),c.id) > 1 then
-	  return 8
-	else
-	  return true
-	end
+    return Get_Card_Count_ID(UseLists({AIST(),AIHand()}),c.id) > 1
   end
   if loc == PRIO_BANISH then
-    return true
+    return not OPTCheck(c.id)
   end
   return true
 end
 -- Trap Cond
 function FReserveCond(loc,c)
+  if loc == PRIO_TOHAND then
+    return OPTCheck(c.id) and not HasID(AIHand(),c.id,true)
+  end
+  if loc == PRIO_TOFIELD then
+    return OPTCheck(c.id)
+  end
+  if loc == PRIO_TOGRAVE then
+    return not OPTCheck(c.id)
+  end
+  if loc == PRIO_DISCARD then
+    return not OPTCheck(c.id)
+  end
+  if loc == PRIO_BANISH then
+    return not OPTCheck(c.id)
+  end
   return true
 end
 -- Frightfur Cond
 function FSabreCond(loc,c)
   if loc == PRIO_TOHAND then
-    return true
+    return OPTCheck(c.id) and not HasID(AIHand(),c.id,true)
   end
   if loc == PRIO_TOFIELD then
-    return not HasID(AIMon(),c.id) and CountFluffal(IACards()) > 1
-  end
-  if loc == PRIO_TOGRAVE then
-    return true
-  end
-  if loc == PRIO_EXTRA then
-    return true
-  end
-  if loc == PRIO_BANISH then
-    return true
-  end
-  return true
-end
-function FLeoCanFinish()
-  return true
-end
-function FLeoCond(loc,c)
-  if loc == PRIO_TOHAND then
     return OPTCheck(c.id)
-  end
-  if loc == PRIO_TOFIELD then
-    return OPTCheck(c.id) and FLeoCanFinish()
   end
   if loc == PRIO_TOGRAVE then
     return not OPTCheck(c.id)
   end
-  if loc == PRIO_EXTRA then
+  if loc == PRIO_DISCARD then
+    return not OPTCheck(c.id)
+  end
+  if loc == PRIO_BANISH then
+    return not OPTCheck(c.id)
+  end
+  return true
+end
+function FLeoCond(loc,c)
+  if loc == PRIO_TOHAND then
+    return OPTCheck(c.id) and not HasID(AIHand(),c.id,true)
+  end
+  if loc == PRIO_TOFIELD then
+    return OPTCheck(c.id)
+  end
+  if loc == PRIO_TOGRAVE then
+    return not OPTCheck(c.id)
+  end
+  if loc == PRIO_DISCARD then
     return not OPTCheck(c.id)
   end
   if loc == PRIO_BANISH then
@@ -706,7 +649,9 @@ function FLeoCond(loc,c)
 end
 function FBearCond(loc,c)
   if loc == PRIO_TOHAND then
-    return OPTCheck(03841833) or not HasID(AIHand(),03841833) -- Bear
+    return 
+	  OPTCheck(03841833) and not HasID(AIHand(),03841833,true) -- Bear
+	  and not HasID(UseLists({AIHand(),AIST()}),70245411,true)
   end
   if loc == PRIO_TOFIELD then
     return OPTCheck(c.id)
@@ -718,13 +663,13 @@ function FBearCond(loc,c)
     return not OPTCheck(c.id)
   end
   if loc == PRIO_BANISH then
-    return true
+    return not OPTCheck(c.id)
   end
   return true
 end
 function FWolfCond(loc,c)
   if loc == PRIO_TOHAND then
-    return OPTCheck(c.id)
+    return OPTCheck(c.id) and not HasID(AIHand(),c.id,true)
   end
   if loc == PRIO_TOFIELD then
     return OPTCheck(c.id)
@@ -736,13 +681,13 @@ function FWolfCond(loc,c)
     return not OPTCheck(c.id)
   end
   if loc == PRIO_BANISH then
-    return true
+    return not OPTCheck(c.id)
   end
   return true
 end
 function FTigerCond(loc,c)
   if loc == PRIO_TOHAND then
-    return not HasID(AIHand(),30068120) -- Sabres
+    return not HasID(AIHand(),30068120,true) -- Sabres
   end
   if loc == PRIO_TOFIELD then
     return OPTCheck(c.id)
@@ -754,19 +699,16 @@ function FTigerCond(loc,c)
     return not OPTCheck(c.id)
   end
   if loc == PRIO_BANISH then
-    return true
+    return not OPTCheck(c.id)
   end
   return true
 end
 function FSheepCond(loc,c)
   if loc == PRIO_TOHAND then
-    return OPTCheck(c.id)
+    return OPTCheck(c.id) and not HasID(AIHand(),c.id,true)
   end
   if loc == PRIO_TOFIELD then
     return OPTCheck(c.id)
-  end
-  if GlobalIFusion == 1 then
-    return 10 -- Instant Fusion PRIO
   end
   if loc == PRIO_TOGRAVE then
     return not OPTCheck(c.id)
@@ -775,11 +717,10 @@ function FSheepCond(loc,c)
     return not OPTCheck(c.id)
   end
   if loc == PRIO_BANISH then
-    return true
+    return not OPTCheck(c.id)
   end
   return true
 end
-
 
 FluffalPriorityList={
 --PRIO_TOHAND = 1
@@ -797,9 +738,9 @@ FluffalPriorityList={
  [06142488] = {1,1,10,1,5,1,4,1,10,1,MouseCond},	-- Fluffal Mouse
  [72413000] = {8,1,1,1,10,1,10,1,1,1,WingsCond},	-- Fluffal Wings
  [00006131] = {1,1,3,1,1,1,1,1,2,1,PatchworkCond},	-- Fluffal Patchwork (BETA)
- [97567736] = {1,1,6,1,8,1,7,1,6,1,TomahawkCond},	-- Edge Imp Tomahawk
- [61173621] = {8,3,5,1,6,1,6,1,4,1,ChainCond},		-- Edge Imp Chain
- [30068120] = {7,2,4,1,7,1,5,1,5,1,SabresCond},		-- Edge Imp Sabres
+ [97567736] = {1,1,6,3,8,1,7,1,6,1,TomahawkCond},	-- Edge Imp Tomahawk
+ [61173621] = {8,3,5,4,6,1,6,1,4,1,ChainCond},		-- Edge Imp Chain
+ [30068120] = {7,2,4,5,7,1,5,1,5,1,SabresCond},		-- Edge Imp Sabres
  [79109599] = {1,1,2,1,1,1,1,1,10,1,KoSCond},		-- King of the Swamp
  [67441435] = {1,1,7,1,9,1,9,1,1,1,BulbCond},		-- Glow-Up Bulb
 
@@ -838,14 +779,14 @@ function SummonOwl()
   return OPTCheck(65331686)
 end
 function SummonOwl2()
-  return OPTCheck(65331686) and not HasID(AIHand(),39246582)
+  return OPTCheck(65331686) and not HasID(AIHand(),39246582,true)
 end
 function SummonMouse()
   return OPTCheck(06142488) 
     and Get_Card_Count_ID(AIDeck(),06142488) == 2
 end
 function SummonPatchwork()
-  return CountEgdeImp(IACards())
+  return CountEgdeImp(UseLists({AIMon(),AIHand()})) == 0
 end
 -- EdgeImp Summon
 function SummonTomahawk()
@@ -863,7 +804,7 @@ function SpSummonSheep1()
 end
 function SpSummonSheep2()
   return 
-    OPTCheck(98280324) and (CountEgdeImp(AIHand()) + CountEgdeImp(AIGrave())) > 0
+    OPTCheck(98280324) and CountEgdeImp(UseLists({AIGrave(),AIHand()})) > 0
 end
 ------------------------
 --------- USE ----------
@@ -871,9 +812,9 @@ end
 -- FluffalM Use
 function UseBear(c)
   if CountToyVendorDiscardTarget() > 0 
-  or HasID(AIHand(),72413000) -- Wings
-  or HasID(AIHand(),67441435) -- Bulb
-  or (not NormalSummonCheck() and HasID(AIHand(),39246582)) -- Dog
+  or HasID(AIHand(),72413000,true) -- Wings
+  or HasID(AIHand(),67441435,true) -- Bulb
+  or (not NormalSummonCheck() and HasID(AIHand(),39246582,true)) -- Dog
   then
     OPTSet(c.id)
     return true
@@ -886,7 +827,6 @@ function UseSheep(c)
   return true
 end
 function UseMouse(c)
-  OPTSet(c.id)
   return true
 end
 function UseWings(c)
@@ -899,94 +839,67 @@ function UseWings(c)
 end
 -- EdgeImp Use
 function UseTomahawk(c)
-  print("Tomahawk Description: "..c.description)
+  OPTSet(c.id)
   return true
 end
 function UseSabres(c)
-  if false then
-    OPTSet(c.id)
-    return true
-  else
-	return false
-  end
+  OPTSet(c.id)
+  return false
 end
 -- Other Use
 function UseKoS(c)
-  if not HasID(UseLists({AIField(),AIHand()}),24094653) then -- Polymerization
+  if not HasID(UseLists({AIST(),AIHand()}),24094653,true) then -- Polymerization
     OPTSet(c.id)
     return true
   else
     return false
   end
 end
-function UseKoS2(c)
-  if CountToyVendorDiscardTarget() < 1 then
-    OPTSet(c.id)
-    return true
-  else
-    return false
-  end
-end
+
 -- FluffalS Use
-function ActiveToyVendor1(c)
-  return FilterPosition(c,POS_FACEDOWN) and CountToyVendorDiscardTarget() > 0
-end
-function ActiveToyVendor2(c)
-  return FilterLocation(c,LOCATION_HAND) and CountToyVendorDiscardTarget() > 0
+function ActiveToyVendor(c)
+  return CountToyVendorDiscardTarget() > 0
 end
 function UseToyVendor(c)
-  if HasID(AIHand(),72413000) then
-    GlobalToyVendor = 1
-	OPTSet(c.cardid)
-	return true  
-  elseif not NormalSummonCheck() and HasID(AIHand(),39246582) and OPTCheck(72413000) then
+  if HasID(AIHand(),72413000,true) then -- Wings
+    OPTSet(c.cardid)
+	return true
+  elseif not NormalSummonCheck() and HasID(AIHand(),39246582,true) and OPTCheck(39246582) -- Dog
+  and OPTCheck(72413000) then -- Wings
 	return false
   elseif (#AIHand() > 2 and CountToyVendorDiscardTarget() > 0) then
-    GlobalToyVendor = 1
 	OPTSet(c.cardid)
 	return true
   else
     return false
   end
 end
-
 function ActiveFFactory(c)
   if FilterLocation(c,LOCATION_HAND) or FilterPosition(c,POS_FACEDOWN) then
     return 
-	  HasID(AIGrave(),06077601) -- Frightfur Fusion
-      or HasID(AIGrave(),01845204) -- Instant Fusion
+	  HasID(AIGrave(),06077601,true) -- Frightfur Fusion
+      or HasID(AIGrave(),01845204,true) -- Instant Fusion
   else
     return false
   end
 end
 function UseFFactory(c)
   if FilterLocation(c,LOCATION_SZONE) then
+    OPTSet(c.id)
     return true
   end
-end
-
-function UseFFusion(c)
-  OPTSet(c.id)
-  return true
 end
 -- Spell Use
 function UseIFusion(c)
-  if HasID(UseLists({AIField(),AIHand()}),24094653) -- Polymerization
-  and not HasID(AIMon(),80889750) -- Sabre-Tooth
-  and (CountFluffal(UseLists({AIMon(),AIHand()})) + CountEgdeImp(UseLists({AIMon(),AIHand()}))) > 1
-  then 
-    OPTSet(c.id)
-    return true
-  else
-    return false
-  end
+  OPTSet(c.id)
+  return true
 end
-function UsePolym(c)
+function UsePolymerization(c)
   return true
 end
 -- Trap Use
 function UseFReserve(c)
-  return HasID(AIGrave(),24094653)
+  return HasID(AIGrave(),24094653,true)
 end
 -- Frightfur Use
 function UseFSabre(c)
@@ -996,6 +909,8 @@ function UseFLeo(c)
   OPTSet(c.id)
   return true
 end
+
+
 ------------------------
 --------- SET ----------
 ------------------------
@@ -1052,7 +967,6 @@ end
 --82633039, -- Castel
 --83531441, -- Dante
 
-
 function FluffalInit(cards) -- FLUFFAL INIT
   local Act = cards.activatable_cards
   local Sum = cards.summonable_cards
@@ -1070,7 +984,24 @@ function FluffalInit(cards) -- FLUFFAL INIT
   GlobalPolymerization = 0
   GlobalFusionId = 0
   
+  -- Issue: must be other way
+  for i=1,#Act do
+    if Act[i].id == 97567736 and Act[i].description == 1561083776 then 
+	  return COMMAND_ACTIVATE,i
+	end
+	if Act[i].id == 97567736 and Act[i].description == 1561083777 then 
+	  return COMMAND_ACTIVATE,i
+	end
+  end
+  -----
   -- ACTIVE EFFECT 1
+  if HasIDNotNegated(Act,06142488,UseMouse) then
+    return COMMAND_ACTIVATE,CurrentIndex
+  end
+  if HasIDNotNegated(Act,98280324,UseSheep) then
+    GlobalSheep = 1
+    return COMMAND_ACTIVATE,CurrentIndex
+  end
   if HasIDNotNegated(Act,66127916,UseFReserve) then
     return COMMAND_ACTIVATE,CurrentIndex
   end
@@ -1080,141 +1011,102 @@ function FluffalInit(cards) -- FLUFFAL INIT
   if HasIDNotNegated(Act,03841833,UseBear) then
     return COMMAND_ACTIVATE,CurrentIndex
   end
-  if HasIDNotNegated(Act,06142488,UseMouse) then
-    return COMMAND_ACTIVATE,CurrentIndex
-  end
-  if HasIDNotNegated(Act,98280324,UseSheep) then
-    return COMMAND_ACTIVATE,CurrentIndex
-  end
+  
   -- NORMAL SUMMON 1
   if HasIDNotNegated(Sum,65331686,SummonOwl2) then
     return COMMAND_SUMMON,CurrentIndex
   end
-  
   -- ACTIVE EFFECT 2
-
-  if HasIDNotNegated(Act,70245411,ActiveToyVendor1) then -- Active ToyVendor (Set)
+  if HasIDNotNegated(Act,70245411,ActiveToyVendor,nil,LOCATION_SZONE,POS_FACEDOWN) then
     return COMMAND_ACTIVATE,CurrentIndex
   end
   if HasIDNotNegated(Act,70245411,UseToyVendor) then
+    GlobalToyVendor = 1
     return COMMAND_ACTIVATE,CurrentIndex
   end
   if HasIDNotNegated(Act,72413000,UseWings) then
     return COMMAND_ACTIVATE,CurrentIndex
   end
-  if HasIDNotNegated(Act,70245411,ActiveToyVendor2) then -- Active ToyVendor (Hand)
-    return COMMAND_ACTIVATE,CurrentIndex
-  end
-  if HasIDNotNegated(Act,79109599,UseKoS2) then -- No Cards to Discard
-	return COMMAND_ACTIVATE,CurrentIndex
-  end
+  
   -- NORMAL SUMMON 2
   if HasIDNotNegated(Sum,39246582,SummonDog) then
     return COMMAND_SUMMON,CurrentIndex
   end
-  if HasIDNotNegated(Sum,65331686,SummonOwl) then
-    return COMMAND_SUMMON,CurrentIndex
-  end
   if HasIDNotNegated(Sum,97567736,SummonTomahawk) then
-    return COMMAND_SUMMON,CurrentIndex
-  end
-  if HasIDNotNegated(Sum,06142488,SummonMouse) then
     return COMMAND_SUMMON,CurrentIndex
   end
   -- SPECIAL SUMMON
   if HasIDNotNegated(SpSum,98280324,SpSummonSheep1) then
     return COMMAND_SPECIAL_SUMMON,CurrentIndex
   end
-  
   -- SPECIAL SUMMON 2
   if HasIDNotNegated(SpSum,98280324,SpSummonSheep2) then
     return COMMAND_SPECIAL_SUMMON,CurrentIndex
   end
-  
+  -- SETS
+  if HasID(SetST,66127916,SetFusionReserve) then
+    return COMMAND_SET_ST,CurrentIndex
+  end
   return nil
 end
 
 -----------------------
 ------- TARGET --------
 -----------------------
--- Frightfur Materials
-function FluffalMaterial(cards,willBanish) -- Obsoleto?
-  print("FluffalMaterials: "..#cards)
-  local result = {}
-  for i=1, #cards do
-    local c = cards[i]
-	local p = 20
-	c.prio = 1
-	c.indexT = i
-	result[#result + 1] = c
-  end
-  print("FluffalMaterials - Count: "..#result)
-  table.sort(result,function(a,b)return a.prio>b.prio end)
-  return result
-end
-
-function FluffalMaterialAdd(cards,min,max) -- Obsoleto?
-  local result = {}
-  for i=1,max do
-    local c = cards[i]
-	result[#result+1] = c.indexT
-  end
-  --print("FluffalMaterialsAdd - Result: "..#result)
-  return result
-end
 -- FluffalM Target
 function DogTarget(cards)
-  if LocCheck(cards,LOCATION_DECK) then
-	return Add(cards,PRIO_TOHAND)
-  end
-  return Add(cards)
+  return Add(cards,PRIO_TOHAND)
 end
 GlobalSheep = 0
 function SheepTarget(cards)
-  GlobalSheep = 1
-  local result =  {}
-  for i=1, #cards do
-    local c = cards[i]
-	c.prio = GetPriority(c,PRIO_TOHAND)
-	c.index = i
-	print("SheepTarget - cardid: "..c.id.." - Prio: "..c.prio.." - Index: "..c.index)
-  end
-  local compare = function(a,b) return a.prio>b.prio end
-  table.sort(cards,compare)
   if LocCheck(cards,LOCATION_MZONE) then
-    result[1] = cards[1].index
-    return result
-    --return Add(cards,PRIO_TOHAND)
-  else
-    return Add(cards, PRIO_TOFIELD)
+    local result = {}
+    for i=1, #cards do
+	  local c = cards[i]
+	  result[i] = c
+	  result[i].prio = GetPriority(c,PRIO_TOHAND)
+	  result[i].index = i
+	end
+	local compare = function(a,b) return a.prio>b.prio end
+	table.sort(result,compare)
+    print("SheepTarget - MZONE to HAND")
+    --return Add(cards,PRIO_TOHAND,1) -- c.prio -1 must 
+	return {result[1].index}
+  end
+  if LocCheck(cards,LOCATION_GRAVE) or LocCheck(cards,LOCATION_HAND) then
+    print("SheepTarget - GRAVE/HAND to FIELD")
+    return Add(cards,PRIO_TOFIELD,1)
   end
   return Add(cards)
 end
+function CatTarget(cards)
+  return Add(cards,PRIO_TOHAND)
+end
 GlobalRabit = 0
 function RabitTarget(cards)
-  GlobalRabit = 1
-  return Add(cards,PRIO_HAND)
+  return Add(cards,PRIO_TOHAND)
 end
 function MouseTarget(cards,max)
   return Add(cards,PRIO_TOFIELD,max)
 end
 function WingsTarget(cards)
   if LocCheck(cards,LOCATION_GRAVE) then
-    print("WingsTarget - Grave to Banish")
-	return Add(cards,PRIO_BANISH)
+    print("WingsTarget - GRAVE to BANISH")
+    return Add(cards,PRIO_BANISH)
   end
   if LocCheck(cards,LOCATION_SZONE) then
-    print("WingsTarget - SZone to Grave")
-    return Add(cards,PRIO_GRAVE)
+    print("WingsTarget - SZONE to GRAVE")
+    return Add(cards,PRIO_TOGRAVE)
   end
-  return Add(cards,PRIO_BANISH)
 end
 -- EdgeImp Target
 function TomahawkTarget(cards)
   if LocCheck(cards,LOCATION_DECK) then
+    print("TomahawkTarget - DECK to GRAVE")
     return Add(cards,PRIO_TOGRAVE)
   end
   if LocCheck(cards,LOCATION_HAND) then
+    print("TomahawkTarget - HAND to GRAVE")
     return Add(cards,PRIO_DISCARD)
   end
   return Add(cards)
@@ -1226,94 +1118,58 @@ function SabresTarget(cards)
   return Add(cards,PRIO_DISCARD)
 end
 -- Other Target
+function KoSTarget(cards)
+  return Add(cards,PRIO_TOHAND)
+end
 -- FluffalS Target
-GlobalFFusion = nil
+GlobalFFusion = 0
 function FFusionTarget(cards,c)
-  if GlobalFFusion == nil then
-    GlobalFFusion = 1
-  end
-  if GlobalFFusion == 1 then
-    GlobalFFusion = 2
-    return Add(cards,PRIO_TOFIELD)
-  end
-  if GlobalFFusion == 2 then
-    return Add(cards,PRIO_BANISH,min)
-  end
   return Add(cards)
 end
-
 function FFactoryTarget(cards,c)
-  if LocCheck(cards,LOCATION_GRAVE) then
-    return Add(cards,PRIO_BANISH)
-  end
-  if LocCheck(cards,LOCATION_EXTRA) then
-    return Add(cards,PRIO_TOFIELD)
-  else
-    GlobalPolymerization = 3
-    return Add(cards,PRIO_TOGRAVE)
-  end
+  return Add(cards)
 end
-
-GlobalToyVendor = nil
+GlobalToyVendor = 0
 function ToyVendorTarget(cards,c)
-  if FilterLocation(c,LOCATION_SZONE) then
-    if GlobalToyVendor == nil then
-	  GlobalToyVendor = 1
-	end
-    if LocCheck(cards,LOCATION_HAND) and GlobalToyVendor == 1 then
-	  print("ToyVendor - Hand To Grave")
-	  GlobalToyVendor = 2
-      return Add(cards,PRIO_DISCARD)
-    end
-	if LocCheck(cards,LOCATION_HAND) and GlobalToyVendor == 2 then
-	  print("ToyVendor - Hand To Field")
-	  return Add(cards,PRIO_TOFIELD)
-	end
-  end
   if LocCheck(cards,LOCATION_DECK) then
-    print("ToyVendor - Deck To Hand")
+    print("ToyVendorTarget - DECK to HAND")
+	GlobalToyVendor = 0
     return Add(cards,PRIO_TOHAND)
   end
+  if GlobalToyVendor == 1 then
+    print("ToyVendorTarget - HAND to GRAVE")
+	GlobalToyVendor = 2
+    return Add(cards,PRIO_DISCARD)
+  end
+  if GlobalToyVendor == 2 then
+    print("ToyVendorTarget - HAND to FIELD")
+	GlobalToyVendor = 3
+    return Add(cards,PRIO_TOFIELD)
+  end
+  if GlobalToyVendor == 3 then
+    GlobalToyVendor = 0
+  end
+  
   return Add(cards)
 end
 -- Spell Target
 GlobalIFusion = 0
 function IFusionTarget(cards,c)
-  GlobalIFusion = 1
-  return Add(cards,PRIO_TOFIELD)
+  return Add(cards)
 end
 GlobalPolymerization = 0
 GlobalFusionId = 0
 function PolymerizationTarget(cards,c)
-  if GlobalPolymerization == nil then
-	GlobalPolymerization = 1
-  end
-  if GlobalPolymerization == 1 then
-    GlobalFusionId = cards[Add(cards,PRIO_TOFIELD)[1]].id
-	GlobalPolymerization = 2
-    print("Polymerization - Fusion Target: "..GlobalFusionId)
-    return Add(cards,PRIO_TOFIELD)
-  end
-  if GlobalPolymerization == 2 then
-    print("Polymerization - FirstMaterial: "..cards[Add(cards,PRIO_TOGRAVE)[1]].id)
-	GlobalPolymerization = 3
-    return Add(cards,PRIO_TOGRAVE)
-  end
-  if GlobalPolymerization == 3 then
-    print("Polymerization - SecondMaterial: "..cards[Add(cards,PRIO_TOGRAVE)[1]].id)
-    --return FluffalMaterialAdd(FluffalMaterial(cards,false),1,1)
-	if GlobalFusionId == 80889750 then
-	  return Add(cards,PRIO_TOGRAVE,2)
-	end
-	return Add(cards,PRIO_TOGRAVE,1) -- Trick with GlobalPolymerization
-  end
+  return Add(cards,PRIO_TOGRAVE,1)
 end
 -- Trap Target
 function FReserveTarget(cards,c)
   if LocCheck(cards,LOCATION_EXTRA) then
+    print("FReserveTarget - EXTRA")
     return Add(cards,PRIO_TOHAND)
   end
   if LocCheck(cards,LOCATION_DECK) then
+    print("TomahawkTarget - DECK to HAND")
     return Add(cards,PRIO_TOHAND)
   end
   return Add(cards)
@@ -1394,6 +1250,10 @@ function FluffalCard(cards,min,max,id,c) -- FLUFFAL CARDS
     return SabresTarget(cards)
   end
   
+  if id == 79109599 then -- KoS
+    return KoSTarget(cards)
+  end
+  
   if id == 06077601 then -- Frightfur Fusion
 	return FFusionTarget(cards,c,min)
   end
@@ -1463,6 +1323,7 @@ function ChainFReserve(c)
 end
 -- Frightfur Chain
 
+
 function FluffalChain(cards) -- FLUFFAL CHAINS
   --print("FluffalChain")
   if HasIDNotNegated(cards,39246582,ChainDog) then -- Dog
@@ -1485,7 +1346,7 @@ function FluffalChain(cards) -- FLUFFAL CHAINS
 end
 
 function FluffalEffectYesNo(id,card) -- FLUFFAL EFFECT YES/NO
-  print("EffectYesNo: "..card.description)
+  print("EffectYesNo - Cardid: "..card.id.." - desc: "..card.description)
   local result = nil
   if id == 39246582 then -- Dog
 	result = 1
@@ -1500,9 +1361,6 @@ function FluffalEffectYesNo(id,card) -- FLUFFAL EFFECT YES/NO
 	result = 1
   end
   
-  if id == 97567736 and UseTomahawk(card) then -- Tomahawk
-	result = 1
-  end
   if id == 61173621 then -- Chain
 	result = 1
   end
@@ -1514,9 +1372,12 @@ function FluffalEffectYesNo(id,card) -- FLUFFAL EFFECT YES/NO
   if id == 80889750 then -- Sabre-Tooth
 	result = 1
   end
+  if id == 80889750 then -- Frightfur Sabre-Tooth
+	result = 1
+  end
   
-  if id == 66127916 and ChainFReserve(card) then -- FusionReserve
-    return 1
+  if id == 00464362 then -- Frightfur Tiger
+    return 0
   end
   
   OPTSet(id)
