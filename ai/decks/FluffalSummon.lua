@@ -41,10 +41,10 @@ function SpSummonSheep2()
 end
 -- Other
 function SpSummonChanbara()
-  return true -- Opp Mon max attack < 2200
+  return OppGetStrongestAttDef()<=2000
 end
 function SpSummonNaturiaBeast()
-  return true -- Opp Mon max attack < 2400
+  return OppGetStrongestAttDef()<=2200
 end
 
 ------------------------

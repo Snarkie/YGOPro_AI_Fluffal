@@ -76,12 +76,12 @@ function FFusionTarget(cards,c)
   return Add(cards)
 end
 GlobalFFactory = 0
-function FFactoryTarget(cards,c)
+function FFactoryTarget(cards,c,max)
   if LocCheck(cards,LOCATION_GRAVE) then
     print("FFactoryTarget - GRAVE to BANISH")
     return Add(cards,PRIO_BANISH)
   end
-  return FusionSummonTarget(cards,c)
+  return FusionSummonTarget(cards,c,max)
 end
 GlobalToyVendor = 0
 function ToyVendorTarget(cards,c)
@@ -121,20 +121,25 @@ function IFusionTarget(cards,c)
   
   return Add(cards,PRIO_TOFIELD)
 end
-function maxMaterials(fusionId)
-  print("maxMaterials - fusionId "..fusionId)
+function maxMaterials(fusionId,max)
+  print("maxMaterials - fusionId "..fusionId.." max: "..max)
+  local result = 1
   if(fusionId == 80889750) then
-    return 2
+    result = 2
   else
-    return 1
+    result = 1
   end
+  if result > max then
+    result = max
+  end
+  return result
 end
 GlobalFusionSummon = 0
 GlobalFusionId = 0
-function PolymerizationTarget(cards,c)
-  return FusionSummonTarget(cards,c)
+function PolymerizationTarget(cards,c,max)
+  return FusionSummonTarget(cards,c,max)
 end
-function FusionSummonTarget(cards,c)
+function FusionSummonTarget(cards,c,max)
   local result = {}
   local indexT = 1
   if LocCheck(cards,LOCATION_EXTRA) then
@@ -165,7 +170,7 @@ function FusionSummonTarget(cards,c)
 	  local c = cards[i]
 	  print("Poly2: "..c.id.." - PRIO: "..GetPriority(c,PRIO_TOGRAVE))
 	end
-	return Add(cards,PRIO_TOGRAVE,maxMaterials(GlobalFusionId))
+	return Add(cards,PRIO_TOGRAVE,maxMaterials(GlobalFusionId,max))
   end
   return Add(cards,PRIO_TOGRAVE,1)
 end
@@ -279,7 +284,7 @@ function FluffalCard(cards,min,max,id,c) -- FLUFFAL CARDS
 	return FFusionTarget(cards,c,min)
   end
   if id == 43698897 then -- Frightfur Factory
-	return FFactoryTarget(cards,c)
+	return FFactoryTarget(cards,c,max)
   end
   if id == 70245411 then -- Toy Vendor
 	return ToyVendorTarget(cards,c)
@@ -289,7 +294,7 @@ function FluffalCard(cards,min,max,id,c) -- FLUFFAL CARDS
 	return IFusionTarget(cards,c)
   end
   if id == 24094653 then -- Polymerization
-	return PolymerizationTarget(cards,c)
+	return PolymerizationTarget(cards,c,max)
   end
 
   if id == 66127916 then -- FusionReserve

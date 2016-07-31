@@ -91,7 +91,10 @@ function CatCond(loc,c)
   if loc == PRIO_TOHAND then
     return 
 	  OPTCheck(c.id) and not HasID(AIHand(),c.id,true) -- Cat
-	  and Get_Card_Count_ID(UseLists({AIST(),AIHand()}),24094653) > 0 -- Polymerization
+	  and (
+	    Get_Card_Count_ID(UseLists({AIST(),AIHand()}),24094653) > 0 -- Polymerization
+		or Get_Card_Count_ID(AIHand(),79109599) > 0 -- King of the Swamp
+	  )
   end
   if loc == PRIO_TOFIELD then
     return OPTCheck(c.id)
@@ -118,7 +121,10 @@ function RabitCond(loc,c)
   if loc == PRIO_TOHAND then
     return 
 	  OPTCheck(c.id) and not HasID(AIHand(),c.id,true) -- Rabit
-	  and Get_Card_Count_ID(UseLists({AIST(),AIHand()}),24094653) > 0 -- Polymerization
+	  and (
+	    Get_Card_Count_ID(UseLists({AIST(),AIHand()}),24094653) > 0 -- Polymerization
+		or Get_Card_Count_ID(AIHand(),79109599) > 0 -- King of the Swamp
+	  )
   end
   if loc == PRIO_TOFIELD then
     return OPTCheck(c.id)
@@ -176,10 +182,9 @@ function WingsCond(loc,c)
   if loc == PRIO_TOHAND then
     return 
 	  OPTCheck(c.id) and not HasID(UseLists({AIHand(),AIGrave()}),c.id,true) -- Wings
-	  and Get_Card_Count_ID(UseLists({AIHand(),AIST()}),70245411) > 0 -- ToyVendor
-	  and (
-        CountToyVendorCanUse() > 0
-	    or Get_Card_Count_ID(UseLists({AIHand(),AIST()}),24094653) > 0
+	  and ( 
+	    Get_Card_Count_ID(AIHand(),70245411) > 0 -- Toy Vendor
+	    or CountToyVendorCanUse() > 0 -- Toy Vendor can Use
 	  )
   end
   if loc == PRIO_TOFIELD then
@@ -451,7 +456,13 @@ function FSabreCond(loc,c)
 	  )
 	  and (
 	    GlobalCheckPolyTarget == 0 -- Check PolyTarget
-		or CountFrightfur(AIMon()) > 0 -- Frightfur
+		or (
+		  CountFrightfur(AIMon()) > 0 -- Frightfur
+		  and (
+		    CountFluffal(UseLists({AIMon(),AIHand()})) > 1
+			or OppGetStrongestAttack() >= AIGetStrongestAttack()
+		  )
+		)
 	  )
   end
   if loc == PRIO_TOGRAVE then
@@ -570,8 +581,17 @@ function FSheepCond(loc,c)
 	  not HasID(AIMon(),c.id,true)
 	  and (
 	    GlobalCheckPolyTarget == 0 -- Check PolyTarget
-		or Get_Card_Count_ID(UseLists({AIMon(),AIHand()}),61173621) > 0 -- Chain
-		or Get_Card_Count_ID(UseLists({AIMon(),AIHand()}),79109599) > 0 -- Kos
+		or (
+		  Get_Card_Count_ID(UseLists({AIMon(),AIHand()}),61173621) > 0 -- Chain
+		  or Get_Card_Count_ID(UseLists({AIMon(),AIHand()}),79109599) > 0 -- Kos
+		)
+		and (
+		  OppGetStrongestAttack() <= 2700
+		  or (
+		    Get_Card_Count_ID(AIMon(),80889750) > 0 -- Frightfur Sabre-Tooth
+			or Get_Card_Count_ID(AIMon(),00464362) > 0 -- Frightfur Tiger
+		  )
+		)
 	  )
   end
   if loc == PRIO_TOGRAVE and not OPTCheck(c.cardid) then -- Instant Fusion

@@ -10,6 +10,7 @@ function FluffalStartup(deck)
   deck.Position             = FluffalPosition
   deck.BattleCommand        = FluffalBattleCommand
   deck.AttackTarget         = FluffalAttackTarget
+  deck.AttackBoost			= FluffalAttackBoost
   
   deck.ActivateBlacklist    = FluffalActivateBlacklist
   deck.SummonBlacklist      = FluffalSummonBlacklist
@@ -220,6 +221,9 @@ function FluffalInit(cards) -- FLUFFAL INIT
   if HasIDNotNegated(Act,70245411,ActiveToyVendor,nil,LOCATION_SZONE,POS_FACEDOWN) then
     return COMMAND_ACTIVATE,CurrentIndex
   end
+  if HasIDNotNegated(Act,70245411,ActiveToyVendor2,nil,LOCATION_HAND) then -- Active ToyVendor (Hand)
+    return COMMAND_ACTIVATE,CurrentIndex
+  end
   if HasIDNotNegated(Act,70245411,UseToyVendor) then
     GlobalToyVendor = 1
     return COMMAND_ACTIVATE,CurrentIndex
@@ -231,6 +235,7 @@ function FluffalInit(cards) -- FLUFFAL INIT
   if HasIDNotNegated(Sum,39246582,SummonDog) then
     return COMMAND_SUMMON,CurrentIndex
   end
+  
   -- ACTIVE EFFECT 3
   if HasIDNotNegated(Act,70245411,ActiveToyVendor,nil,LOCATION_HAND) then -- Active ToyVendor (Hand)
     return COMMAND_ACTIVATE,CurrentIndex
@@ -274,14 +279,22 @@ function FluffalInit(cards) -- FLUFFAL INIT
     return COMMAND_SPECIAL_SUMMON,CurrentIndex
   end
   
-  -- ACTIVE EFFECT 4
-  if HasIDNotNegated(Act,98280324,UseSheep) then
-    GlobalSheep = 1
-    return COMMAND_ACTIVATE,CurrentIndex
+  -- NORMAL SUMMON 4
+   if HasIDNotNegated(Sum,00006131,SummonPatchwork) then
+    return COMMAND_SUMMON,CurrentIndex
+  end
+  
+  if HasIDNotNegated(UseLists({AIHand(),AIMon()}),98280324,true) -- Sheep
+  and OPTCheck(98280324) and SpSummonSheep2() then
+    for i=1,#Sum do
+      if FilterCheck(Sum[i],FluffalFilter) then 
+	    return COMMAND_SUMMON,i
+	  end
+    end
   end
   
   -- SETS
-  if HasID(SetST,42110604,SpSum) then
+  if HasID(SetST,42110604,SetFReserve) then
     return COMMAND_SET_ST,CurrentIndex
   end
   return nil

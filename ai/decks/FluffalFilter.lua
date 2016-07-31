@@ -63,21 +63,23 @@ end
 -------- COUNT ---------
 ------------------------
 -- General Count 
-function CountPrioTarget(cards,loc,p,Type,debugMode)
+function CountPrioTarget(cards,loc,minPrio,Type,filter,opt,debugMode)
   local result = 0
-  if p == nil then
-    p = 1
+  if minPrio == nil then
+    minPrio = 1
   end
   for i=1, #cards do
     local c = cards[i]
-	if debugMode then
-	  print("CountPrioTarget - id: "..c.id.." - Prio: "..GetPriority(c,loc).." - Type: "..c.type)
+	c.prio = GetPriority(c,loc)
+	if not FilterCheck(c,filter,opt)
+    or not (Type == nil or bit32.band(c.type,Type) > 0)	then
+      c.prio = -1
+    end
+	if debugMode ~= nil then
+	  print(debugMode.." - id: "..c.id.." - Prio: "..c.prio.." - Type: "..c.type)
 	end
-	if (Type == nil or bit32.band(c.type,Type) > 0) then
-	  if GetPriority(c,loc) > p 
-	  then
-	    result = result + 1
-	  end
+	if c.prio > minPrio then
+	  result = result + 1
 	end
   end
   return result
@@ -85,8 +87,7 @@ end
 -- FluffalM Count
 function CountWingsTarget()
   local result = 0
-  result = CountPrioTarget(AIGrave(),PRIO_BANISH,nil,TYPE_MONSTER,true)
-  print("CountWingsTarget: "..result)
+  result = CountPrioTarget(AIGrave(),PRIO_BANISH,1,TYPE_MONSTER,FluffalFilter)
   return result
 end
 function CountFluffal(cards)

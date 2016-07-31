@@ -40,7 +40,8 @@ function UseSabres(c)
 end
 function UseBulb(c)
   if FieldCheck(4) > 0 
-  and OPTCheck(06142488) then -- Mouse
+  and OPTCheck(06142488)
+  and OppGetStrongestAttDef() <= 2100 then -- Mouse
     OPDSet(c.id)
     return true
   else
@@ -75,11 +76,18 @@ end
 function ActiveToyVendor(c)
   return CountToyVendorDiscardTarget() > 0 and (#AIHand() > 2 or HasID(AIHand(),72413000,true))
 end
+function ActiveToyVendor2(c)
+  return 
+    CountToyVendorDiscardTarget() > 0 
+    and (#AIHand() > 2 or HasID(AIHand(),72413000,true))
+	and Get_Card_Count_ID(AIST(),c.id) == 0
+end
 function UseToyVendor(c)
   if HasID(AIHand(),72413000,true) then -- Wings
 	return true
-  elseif not NormalSummonCheck() and HasID(AIHand(),39246582,true) and OPTCheck(39246582) -- Dog
-  and OPTCheck(72413000) then -- Wings
+  elseif 
+  not NormalSummonCheck() and HasID(AIHand(),39246582,true) and OPTCheck(39246582) -- Dog
+  and OPTCheck(72413000) and not HasID(AIGrave(),72413000,true) then -- Wings
 	return false
   elseif (#AIHand() > 2 and CountToyVendorDiscardTarget() > 0) then
 	return true

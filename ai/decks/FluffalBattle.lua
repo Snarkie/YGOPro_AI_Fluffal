@@ -63,6 +63,15 @@ function FluffalAttackTarget(cards,attacker) -- FLUFFAL ATTACK TARGET
  return nil
 end
 
+function FluffalAttackBoost(cards)
+  for i=1,#cards do
+    local c=cards[i]
+    if c.id == 57477163 and OPTCheck(57477163) then -- Bad Implement
+      c.attack = c.attack + 800
+    end
+  end
+end
+
 function FluffalBattleCommand(cards,activatable) --FLUFFAL BATTLE COMMAND
   ApplyATKBoosts(cards)
   for i=1,#cards do
