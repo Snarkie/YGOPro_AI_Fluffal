@@ -1,5 +1,5 @@
 function FluffalStartup(deck)
-  print("AI_Fluffal v0.0.0.4.1 by neftalimich.")
+  print("AI_Fluffal v0.0.0.4.4 by neftalimich.")
   AI.Chat("¡Duelo!")
   
   deck.Init                 = FluffalInit
@@ -181,6 +181,10 @@ function FluffalInit(cards) -- FLUFFAL INIT
   GlobalFusionId = 0
   GlobalCheckPolyTarget = 0
   
+  -- ACTIVE EFFECT 1
+  if HasIDNotNegated(Act,10383554,UseFLeo) then
+    return COMMAND_ACTIVATE,CurrentIndex
+  end
   -- Issue: must be other way
   for i=1,#Act do
     if Act[i].id == 97567736 and Act[i].description == 1561083776 then 
@@ -191,7 +195,6 @@ function FluffalInit(cards) -- FLUFFAL INIT
 	end
   end
   -----
-  -- ACTIVE EFFECT 1
   if HasIDNotNegated(Act,06142488,UseMouse) then
     return COMMAND_ACTIVATE,CurrentIndex
   end
@@ -235,6 +238,15 @@ function FluffalInit(cards) -- FLUFFAL INIT
   if HasIDNotNegated(Sum,39246582,SummonDog) then
     return COMMAND_SUMMON,CurrentIndex
   end
+  -- Sheep Effect 1
+  if HasIDNotNegated(UseLists({AIHand(),AIMon()}),98280324,true) -- Sheep
+  and OPTCheck(98280324) and SpSummonSheep1() then
+    for i=1,#Sum do
+      if FilterCheck(Sum[i],FluffalFilter) then 
+	    return COMMAND_SUMMON,i
+	  end
+    end
+  end
   
   -- ACTIVE EFFECT 3
   if HasIDNotNegated(Act,70245411,ActiveToyVendor,nil,LOCATION_HAND) then -- Active ToyVendor (Hand)
@@ -267,11 +279,11 @@ function FluffalInit(cards) -- FLUFFAL INIT
     GlobalFusionSummon = 1
     return COMMAND_ACTIVATE,CurrentIndex
   end
-  if HasIDNotNegated(Act,43698897,ActiveFFactory) then 
-    return COMMAND_ACTIVATE,CurrentIndex
-  end
   if HasIDNotNegated(Act,24094653,UsePolymerization) then -- Polymerization
     GlobalFusionSummon = 1
+    return COMMAND_ACTIVATE,CurrentIndex
+  end
+  if HasIDNotNegated(Act,43698897,ActiveFFactory) then 
     return COMMAND_ACTIVATE,CurrentIndex
   end
   -- SPECIAL SUMMON 2
@@ -280,22 +292,39 @@ function FluffalInit(cards) -- FLUFFAL INIT
   end
   
   -- NORMAL SUMMON 4
-   if HasIDNotNegated(Sum,00006131,SummonPatchwork) then
+  if HasIDNotNegated(Sum,00006131,SummonPatchwork) then
     return COMMAND_SUMMON,CurrentIndex
   end
   
+  -- Frightfur Fusion
+  if HasIDNotNegated(Act,06077601,UseFFusion) then 
+    GlobalFFusion = 1
+    return COMMAND_ACTIVATE,CurrentIndex
+  end
+  
+  -- Sheep Effect 2
   if HasIDNotNegated(UseLists({AIHand(),AIMon()}),98280324,true) -- Sheep
-  and OPTCheck(98280324) and SpSummonSheep2() then
+  and OPTCheck(98280324) and SpSummonSheep2()
+  and CountFluffal(AIHand()) > 1 then
     for i=1,#Sum do
-      if FilterCheck(Sum[i],FluffalFilter) then 
+      if FilterCheck(Sum[i],FluffalFilter) 
+	  and Sum[i].id ~= 98280324 then 
 	    return COMMAND_SUMMON,i
 	  end
     end
   end
   
-  -- SETS
-  if HasID(SetST,42110604,SetFReserve) then
-    return COMMAND_SET_ST,CurrentIndex
+  -- TurnEnd
+  if TurnEndCheck() then
+    -- ACTIVE EFFECT 
+	if HasIDNotNegated(Act,98280324) then
+      GlobalSheep = 1
+      return COMMAND_ACTIVATE,CurrentIndex
+    end
+    -- SET
+    if HasID(SetST,42110604,SetFReserve) then
+      return COMMAND_SET_ST,CurrentIndex
+    end
   end
   return nil
 end

@@ -7,7 +7,8 @@ function DogCond(loc,c)
     return 9
   end
   if loc == PRIO_TOHAND then
-    return OPTCheck(c.id) and not HasID(AIHand(),c.id,true) and not NormalSummonCheck()
+    return OPTCheck(c.id) and not HasID(AIHand(),c.id,true) 
+	  and not NormalSummonCheck()
   end
   if loc == PRIO_TOFIELD then
     return OPTCheck(c.id)
@@ -19,7 +20,7 @@ function DogCond(loc,c)
     return not OPTCheck(c.id)
   end
   if loc == PRIO_BANISH then
-    return not OPTCheck(c.id)
+    return FilterLocation(c,LOCATION_GRAVE) or FilterLocation(c,LOCATION_MZONE)
   end
   return true
 end
@@ -51,6 +52,7 @@ function OwlCond(loc,c)
   end
   if loc == PRIO_TOHAND then
     return OPTCheck(c.id) and not HasID(AIHand(),c.id,true)
+	  and not NormalSummonCheck()
   end
   if loc == PRIO_TOFIELD then
     return OPTCheck(c.id)
@@ -80,7 +82,7 @@ function SheepCond(loc,c)
     return not OPTCheck(c.id)
   end
   if loc == PRIO_BANISH then
-    return not OPTCheck(c.id)
+    return FilterLocation(c,LOCATION_GRAVE)
   end
   return true
 end
@@ -113,7 +115,7 @@ function CatCond(loc,c)
     return not OPTCheck(c.id)
   end
   if loc == PRIO_BANISH then
-    return not OPTCheck(c.id)
+    return Get_Card_Count_ID(AIGrave(),38124994) > 0
   end
   return true
 end
@@ -143,7 +145,7 @@ function RabitCond(loc,c)
     return not OPTCheck(c.id)
   end
   if loc == PRIO_BANISH then
-    return not OPTCheck(c.id)
+    return FilterLocation(c,LOCATION_GRAVE)
   end
   return true
 end
@@ -174,7 +176,7 @@ function MouseCond(loc,c)
     return not OPTCheck(c.id) or Get_Card_Count_ID(AIDeck(),c.id) < 2
   end
   if loc == PRIO_BANISH then
-    return not OPTCheck(c.id)
+    return true
   end
   return true
 end
@@ -184,7 +186,7 @@ function WingsCond(loc,c)
 	  OPTCheck(c.id) and not HasID(UseLists({AIHand(),AIGrave()}),c.id,true) -- Wings
 	  and ( 
 	    Get_Card_Count_ID(AIHand(),70245411) > 0 -- Toy Vendor
-	    or CountToyVendorCanUse() > 0 -- Toy Vendor can Use
+	    or CardsMatchingFilter(AIST(),ToyVendorCheckFilter,true) > 0 -- Toy Vendor
 	  )
   end
   if loc == PRIO_TOFIELD then
@@ -197,7 +199,7 @@ function WingsCond(loc,c)
     return true
   end
   if loc == PRIO_BANISH then
-    return not OPTCheck(c.id)
+    return true
   end
   return true
 end
@@ -218,7 +220,7 @@ function PatchworkCond(loc,c)
     return true
   end
   if loc == PRIO_BANISH then
-    return not OPTCheck(c.id)
+    return FilterLocation(c,LOCATION_GRAVE)
   end
   return true
 end
@@ -441,29 +443,19 @@ function FReserveCond(loc,c)
   end
   return true
 end
+
 -- Frightfur Cond
 function FSabreCond(loc,c)
   if loc == PRIO_TOHAND then
     return OPTCheck(c.id) and not HasID(AIHand(),c.id,true)
   end
   if loc == PRIO_TOFIELD then
-    return 
-	  not HasID(AIMon(),c.id,true)
-	  and (
-	    Get_Card_Count_ID(AIMon(),85545073) > 0 -- Frightfur Bear
-	    or Get_Card_Count_ID(AIMon(),00464362) > 0 -- Frightfur Tiger
-	    or Get_Card_Count_ID(AIMon(),57477163) > 0 -- Frightfur Sheep
-	  )
-	  and (
-	    GlobalCheckPolyTarget == 0 -- Check PolyTarget
-		or (
-		  CountFrightfur(AIMon()) > 0 -- Frightfur
-		  and (
-		    CountFluffal(UseLists({AIMon(),AIHand()})) > 1
-			or OppGetStrongestAttack() >= AIGetStrongestAttack()
-		  )
-		)
-	  )
+    if GlobalFusionSummon > 0 then -- Polymerization or Frightfur Factory
+	  return SpSummonFSabre()
+	end
+	if GlobalFFusion > 0 then -- Frightfur Fusion
+	  return SpSummonFSabreBanish()
+	end
   end
   if loc == PRIO_TOGRAVE then
     return not OPTCheck(c.id)
@@ -476,20 +468,17 @@ function FSabreCond(loc,c)
   end
   return true
 end
-function FLeoFinish()
-  return false
-end
 function FLeoCond(loc,c)
   if loc == PRIO_TOHAND then
     return OPTCheck(c.id) and not HasID(AIHand(),c.id,true)
   end
   if loc == PRIO_TOFIELD then
-    return 
-	  OPTCheck(c.id) and FLeoFinish()
-	  and (
-	    GlobalCheckPolyTarget == 0 -- Check PolyTarget
-		or Get_Card_Count_ID(UseLists({AIMon(),AIHand()}),79109599) > 0 -- KoS
-	  )
+    if GlobalFusionSummon > 0 then -- Polymerization or Frightfur Factory
+	  return SpSummonFLeo()
+	end
+	if GlobalFFusion > 0 then -- Frightfur Fusion
+	  return SpSummonFLeoBanish()
+	end
   end
   if loc == PRIO_TOGRAVE then
     return not OPTCheck(c.id)
@@ -509,8 +498,12 @@ function FBearCond(loc,c)
 	  and not HasID(UseLists({AIHand(),AIST()}),70245411,true)
   end
   if loc == PRIO_TOFIELD then
-    return 
-	  not HasID(AIMon(),c.id,true) -- Allways prio = 1
+    if GlobalFusionSummon > 0 then -- Polymerization or Frightfur Factory
+	  return SpSummonFBear()
+	end
+	if GlobalFFusion > 0 then -- Frightfur Fusion
+	  return SpSummonFBearBanish()
+	end
   end
   if loc == PRIO_TOGRAVE then
     return not OPTCheck(c.id) and not HasID(AIMon(),c.id,true)
@@ -528,12 +521,12 @@ function FWolfCond(loc,c)
     return OPTCheck(c.id) and not HasID(AIHand(),c.id,true)
   end
   if loc == PRIO_TOFIELD then
-    return 
-	  not HasID(AIMon(),c.id,true)
-	  and (
-	    GlobalCheckPolyTarget == 0 -- Check PolyTarget
-		or Get_Card_Count_ID(UseLists({AIMon(),AIHand()}),30068120) > 0 -- Sabres
-	  )
+    if GlobalFusionSummon > 0 then -- Polymerization or Frightfur Factory
+	  return SpSummonFWolf()
+	end
+	if GlobalFFusion > 0 then -- Frightfur Fusion
+	  return SpSummonFWolfBanish()
+	end
   end
   if loc == PRIO_TOGRAVE then
     return not OPTCheck(c.id)
@@ -551,15 +544,12 @@ function FTigerCond(loc,c)
     return not HasID(AIHand(),30068120,true) -- Sabres
   end
   if loc == PRIO_TOFIELD then
-    --print("FTigerCond")
-    return 
-	  not HasID(AIMon(),c.id,true)
-	  and #OppField() > 0
-	  and (
-	    GlobalCheckPolyTarget == 0 -- Check PolyTarget
-		or Get_Card_Count_ID(UseLists({AIMon(),AIHand()}),30068120) > 0 -- Sabres
-		or Get_Card_Count_ID(UseLists({AIMon(),AIHand()}),79109599) > 0 -- Kos
-	  )
+    if GlobalFusionSummon > 0 then -- Polymerization or Frightfur Factory
+	  return SpSummonFTiger()
+	end
+	if GlobalFFusion > 0 then -- Frightfur Fusion
+	  return SpSummonFTigerBanish()
+	end
   end
   if loc == PRIO_TOGRAVE then
     return not OPTCheck(c.id)
@@ -577,22 +567,12 @@ function FSheepCond(loc,c)
     return OPTCheck(c.id) and not HasID(AIHand(),c.id,true)
   end
   if loc == PRIO_TOFIELD then
-    return 
-	  not HasID(AIMon(),c.id,true)
-	  and (
-	    GlobalCheckPolyTarget == 0 -- Check PolyTarget
-		or (
-		  Get_Card_Count_ID(UseLists({AIMon(),AIHand()}),61173621) > 0 -- Chain
-		  or Get_Card_Count_ID(UseLists({AIMon(),AIHand()}),79109599) > 0 -- Kos
-		)
-		and (
-		  OppGetStrongestAttack() <= 2700
-		  or (
-		    Get_Card_Count_ID(AIMon(),80889750) > 0 -- Frightfur Sabre-Tooth
-			or Get_Card_Count_ID(AIMon(),00464362) > 0 -- Frightfur Tiger
-		  )
-		)
-	  )
+    if GlobalFusionSummon > 0 then -- Polymerization or Frightfur Factory
+	  return SpSummonFSheep()
+	end
+	if GlobalFFusion > 0 then -- Frightfur Fusion
+	  return SpSummonFSheepBanish()
+	end
   end
   if loc == PRIO_TOGRAVE and not OPTCheck(c.cardid) then -- Instant Fusion
     OPTReset(c.cardid)
@@ -612,15 +592,9 @@ end
 
 function SVFDCond(loc,c)
   if loc == PRIO_TOFIELD then
-    return 
-	  not HasID(AIMon(),c.id,true)
-	  and (
-	    GlobalCheckPolyTarget == 0 -- Check PolyTarget
-		or (
-		  CardsMatchingFilter(AIMon(),FilterAttribute,ATTRIBUTE_DARK) > 1 -- Dark
-		  and CountEgdeImp(AIMon()) > 0
-		)
-	  )
+    if GlobalFusionSummon > 0 then -- Polymerization or Frightfur Factory
+	  return SpSummonSVFD()
+	end
   end
   return true
 end

@@ -72,8 +72,8 @@ function KoSTarget(cards)
 end
 -- FluffalS Target
 GlobalFFusion = 0
-function FFusionTarget(cards,c)
-  return Add(cards)
+function FFusionTarget(cards,c,max)
+  return FusionSummonBanishTarget(cards,c,max)
 end
 GlobalFFactory = 0
 function FFactoryTarget(cards,c,max)
@@ -139,6 +139,7 @@ GlobalFusionId = 0
 function PolymerizationTarget(cards,c,max)
   return FusionSummonTarget(cards,c,max)
 end
+
 function FusionSummonTarget(cards,c,max)
   local result = {}
   local indexT = 1
@@ -150,12 +151,12 @@ function FusionSummonTarget(cards,c,max)
 	end
 	indexT = Add(cards,PRIO_TOFIELD)[1]
     GlobalFusionId = result[indexT].id
-    print("PolymerizationTarget - FusionTarget: "..GlobalFusionId)
+    print("FusionTarget: "..GlobalFusionId)
     return Add(cards,PRIO_TOFIELD)
   end
   if GlobalFusionSummon == 1 then
     GlobalFusionSummon = 2
-    print("Polymerization - FirstMaterial: ")
+    print("FusionTarget - FirstMaterial: ")
 	for i=1, #cards do
 	  local c = cards[i]
 	  result[i] = c
@@ -165,7 +166,7 @@ function FusionSummonTarget(cards,c,max)
   end
   if GlobalFusionSummon == 2 then
     GlobalFusionSummon = 3
-    print("Polymerization - SecondMaterial: ")
+    print("FusionTarget - SecondMaterial: ")
 	for i=1, #cards do
 	  local c = cards[i]
 	  print("Poly2: "..c.id.." - PRIO: "..GetPriority(c,PRIO_TOGRAVE))
@@ -174,6 +175,43 @@ function FusionSummonTarget(cards,c,max)
   end
   return Add(cards,PRIO_TOGRAVE,1)
 end
+
+function FusionSummonBanishTarget(cards,c,max)
+  local result = {}
+  local indexT = 1
+  if LocCheck(cards,LOCATION_EXTRA) then
+    for i=1, #cards do
+	  local c = cards[i]
+	  result[i] = c
+	  --print("Poly0: "..c.id.." - PRIO: "..GetPriority(c,PRIO_TOFIELD))
+	end
+	indexT = Add(cards,PRIO_TOFIELD)[1]
+    GlobalFusionId = result[indexT].id
+    print("FusionTarget: "..GlobalFusionId)
+    return Add(cards,PRIO_TOFIELD)
+  end
+  if GlobalFusionSummon == 1 then
+    GlobalFusionSummon = 2
+    print("BanishFusionTarget - FirstMaterial: ")
+	for i=1, #cards do
+	  local c = cards[i]
+	  result[i] = c
+	  --print("Poly1: "..c.id.." - PRIO: "..GetPriority(c,PRIO_BANISH))
+	end
+	return Add(cards,PRIO_BANISH)
+  end
+  if GlobalFusionSummon == 2 then
+    GlobalFusionSummon = 3
+    print("BanishFusionTarget - SecondMaterial: ")
+	for i=1, #cards do
+	  local c = cards[i]
+	  --print("Poly2: "..c.id.." - PRIO: "..GetPriority(c,PRIO_BANISH))
+	end
+	return Add(cards,PRIO_BANISH,maxMaterials(GlobalFusionId,max))
+  end
+  return Add(cards,PRIO_BANISH,1)
+end
+
 -- Trap Target
 function FReserveTarget(cards,c)
   if LocCheck(cards,LOCATION_EXTRA) then
@@ -192,24 +230,14 @@ function FSabreTarget(cards,c)
   return Add(cards,PRIO_TOFIELD)
 end
 function FLeoTarget(cards,c)
-  return Add(cards)
+  return BestTargets(cards,1,TARGET_DESTROY,FLeoDestroyFilter,c)
 end
 function FTigerTarget(cards,c,max)
   local maxTargets = #OppField()
   if maxTargets > max then
     maxTargets = max
   end
-  --local cardsTemp = {}
-  --for i=1, #cards do
-	--local c = cards[i]
-	--cardsTemp[i] = c
-  --end
-  --local result = BestTargets(cards,#OppField(),TARGET_DESTROY,FFTigerDestroyFilter)
-  --for i=1, #result do
-    --local c = cardsTemp[result[i]]
-    --print("FTigerTarget - id: "..c.id.." - prio: "..c.prio.." - index: "..result[i])
-  --end
-  return BestTargets(cards,maxTargets,TARGET_DESTROY,FFTigerDestroyFilter)
+  return BestTargets(cards,maxTargets,TARGET_DESTROY,FTigerDestroyFilter)
 end
 
 --39246582, -- Fluffal Dog
@@ -281,7 +309,7 @@ function FluffalCard(cards,min,max,id,c) -- FLUFFAL CARDS
   end
   
   if id == 06077601 then -- Frightfur Fusion
-	return FFusionTarget(cards,c,min)
+	return FFusionTarget(cards,c,max)
   end
   if id == 43698897 then -- Frightfur Factory
 	return FFactoryTarget(cards,c,max)

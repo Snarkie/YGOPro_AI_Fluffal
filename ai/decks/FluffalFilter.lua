@@ -11,19 +11,34 @@ function EdgeImpFilter(c)
 end
 -- Other Filter
 -- FluffalS Filter
+function ToyVendorCheckFilter(c,canUse)
+  if canUse then
+    return c.id == 70245411 and OPTCheck(c.cardid)
+  else
+    return c.id == 70245411 and not OPTCheck(c.cardid)
+  end
+end
 -- Spell Filter
 -- Trap Filter
 -- Frightfur Filter
 function FrighfurFilter(c)
   return IsSetCode(c.setcode,0xad)
 end
-function FFTigerDestroyFilter(c)
+function FLeoFinishFilter(c,source)
+  return 
+    AI.GetPlayerLP(2)<= c.base_attack -- Origian Attack
+	and Targetable(c,TYPE_MONSTER)
+	and FluffalDestroyFilter(c)
+    and Affected(c,TYPE_MONSTER)
+end
+function FTigerDestroyFilter(c)
   return (
     Targetable(c,TYPE_MONSTER)
     and FluffalDestroyFilter(c)
     and Affected(c,TYPE_MONSTER)
   )
 end
+
 -- Other
 function FluffalDestroyFilter(c,nontarget)
   return not FilterAffected(c,EFFECT_INDESTRUCTABLE_EFFECT)
@@ -82,6 +97,9 @@ function CountPrioTarget(cards,loc,minPrio,Type,filter,opt,debugMode)
 	  result = result + 1
 	end
   end
+  if debugMode ~= nil then
+	print(debugMode.." - Count: "..result)
+  end
   return result
 end
 -- FluffalM Count
@@ -93,22 +111,17 @@ end
 function CountFluffal(cards)
   return CardsMatchingFilter(cards,FluffalFilter)
 end
+function CountFluffalBanishTarget(cards)
+  local result = 0
+  result = CountPrioTarget(cards,PRIO_BANISH,1,TYPE_MONSTER,FluffalFilter)
+  return result
+end
 -- EdgeImp Count
 function CountEgdeImp(cards)
   return CardsMatchingFilter(cards,EdgeImpFilter)
 end
 -- Other
 -- FluffalS Count
-function CountToyVendorCanUse()
-  local result = 0
-  local cards = AIST()
-  for i=1,#cards do
-    if OPTCheck(cards[i].cardid) then
-	  result = result + 1
-	end
-  end
-  return result
-end
 function CountToyVendorDiscardTarget()
   local result = 0
   result = CountPrioTarget(AIHand(),PRIO_DISCARD)
@@ -123,7 +136,7 @@ function CountFrightfur(cards)
 end
 function CountFusionTarget()
   local result = 0
-  result = CountPrioTarget(AIExtra(),PRIO_TOFIELD)
+  result = CountPrioTarget(AIExtra(),PRIO_TOFIELD,1,nil,nil,nil,"CountFusionTarget")
   --print("CountFusionTarget: "..result)
   return result
 end

@@ -15,14 +15,27 @@ function UseBear(c)
   end
 end
 function UseSheep(c)
-  OPTSet(c.id)
-  return true
+  GlobalCheckFusionTarget = 1
+  GlobalFusionSummon = 1
+  local countF = CountFusionTarget()
+  GlobalCheckFusionTarget = 0
+  GlobalFusionSummon = 0
+  
+  if HasID(UseLists({AIHand(),AIST()},24094653,true)) -- Polymerization
+  and countF > 0 then
+    OPTSet(c.id)
+    return true
+  else
+    return false
+  end
 end
 function UseMouse(c)
   return true
 end
 function UseWings(c)
-  if CountWingsTarget() > 0 then
+  if CountWingsTarget() > 0
+  and CardsMatchingFilter(AIST(),ToyVendorCheckFilter,false) > 0
+  then
     OPTSet(c.id)
 	return true
   else
@@ -40,8 +53,8 @@ function UseSabres(c)
 end
 function UseBulb(c)
   if FieldCheck(4) > 0 
-  and OPTCheck(06142488)
-  and OppGetStrongestAttDef() <= 2100 then -- Mouse
+  and OPTCheck(06142488) -- Mouse
+  and OppGetStrongestAttDef() <= 2100 then 
     OPDSet(c.id)
     return true
   else
@@ -50,22 +63,21 @@ function UseBulb(c)
 end
 -- Other Use
 function UseKoS(c)
-  if not HasID(UseLists({AIST(),AIHand()}),24094653,true) then -- Polymerization
-    if not(not HasID(AIHand(),65331686,true)) and not NormalSummonCheck()
-    and not HasID(AIHand(),39246582,true) then
-	  return false
-	else
-	  OPTSet(c.id)
-	  return true
-	end
+  if not HasID(UseLists({AIST(),AIHand()}),24094653,true) -- Polymerization
+  and (
+    CountEgdeImp(AIHand(),AIMon()) > 0
+	or Get_Card_Count_ID(AIHand(),c.id) > 1
+  )
+  then
+    return true
   else
     return false
   end
 end
-function UseKoS2(c)
-  if CountToyVendorDiscardTarget() < 1 
-  and CountToyVendorCanUse() > 0 then
-    OPTSet(c.id)
+function UseKoS2(c) -- When dont have cards to discard
+  if CountToyVendorDiscardTarget() == 0
+  and CardsMatchingFilter(AIST(),ToyVendorCheckFilter,true) > 0 
+  and #AIHand() > 2 then
     return true
   else
     return false
@@ -74,13 +86,21 @@ end
 
 -- FluffalS Use
 function ActiveToyVendor(c)
-  return CountToyVendorDiscardTarget() > 0 and (#AIHand() > 2 or HasID(AIHand(),72413000,true))
+  return 
+    CountToyVendorDiscardTarget() > 0 
+	and (
+	  #AIHand() > 2
+	  or HasID(AIHand(),72413000,true) -- Wings
+	)
 end
 function ActiveToyVendor2(c)
   return 
     CountToyVendorDiscardTarget() > 0 
-    and (#AIHand() > 2 or HasID(AIHand(),72413000,true))
-	and Get_Card_Count_ID(AIST(),c.id) == 0
+    and (
+	  #AIHand() > 2 
+	  or HasID(AIHand(),72413000,true) -- Wings
+	)
+	and not HasID(AIST(),c.id) -- Toy Vendor
 end
 function UseToyVendor(c)
   if HasID(AIHand(),72413000,true) then -- Wings
@@ -95,15 +115,18 @@ function UseToyVendor(c)
     return false
   end
 end
+
 function ActiveFFactory(c)
   if FilterLocation(c,LOCATION_HAND) or FilterPosition(c,POS_FACEDOWN) then
     if HasID(AIGrave(),06077601,true) -- Frightfur Fusion
     or HasID(AIGrave(),01845204,true) -- Instant Fusion
-	or Get_Card_Count_ID(AIGrave(),24094653) > 1
+	or Get_Card_Count_ID(AIGrave(),24094653) > 1 -- Polymerization
 	then
-	  GlobalCheckPolyTarget = 1
+	  GlobalCheckFusionTarget = 1
+	  GlobalFusionSummon = 1
       local countF = CountFusionTarget()
-      GlobalCheckPolyTarget = 0
+      GlobalCheckFusionTarget = 0
+	  GlobalFusionSummon = 0
       if countF > 0 then
         return true
       else
@@ -120,10 +143,12 @@ function UseFFactory(c)
   if FilterLocation(c,LOCATION_SZONE) then
     if HasID(AIGrave(),06077601,true) -- Frightfur Fusion
     or HasID(AIGrave(),01845204,true) -- Instant Fusion
-	or Get_Card_Count_ID(AIGrave(),24094653) > 1 then
-      GlobalCheckPolyTarget = 1
+	or Get_Card_Count_ID(AIGrave(),24094653) > 1 then -- Polymerization
+      GlobalCheckFusionTarget = 1
+	  GlobalFusionSummon = 1
       local countF = CountFusionTarget()
-      GlobalCheckPolyTarget = 0
+      GlobalCheckFusionTarget = 0
+	  GlobalFusionSummon = 1
       if countF > 0 then
         return true
       else
@@ -132,6 +157,19 @@ function UseFFactory(c)
 	else
 	  return false
 	end
+  end
+end
+
+function UseFFusion(c)
+  GlobalCheckFusionTarget = 1
+  GlobalFFusion = 1
+  local countF = CountFusionTarget()
+  GlobalCheckFusionTarget = 0
+  GlobalFFusion = 0
+  if countF > 0 then
+    return true
+  else
+    return false
   end
 end
 -- Spell Use
@@ -148,9 +186,11 @@ function UseIFusion(c)
 end
 
 function UsePolymerization(c)
-  GlobalCheckPolyTarget = 1
+  GlobalCheckFusionTarget = 1
+  GlobalFusionSummon = 1
   local countF = CountFusionTarget()
-  GlobalCheckPolyTarget = 0
+  GlobalCheckFusionTarget = 0
+  GlobalFusionSummon = 0
   if countF > 0 then
     return true
   else
@@ -230,10 +270,10 @@ function FluffalEffectYesNo(id,card) -- FLUFFAL EFFECT YES/NO
   if id == 61173621 then -- Chain
 	result = 1
   end
+  
   if id == 43698897 then -- Frightfur Factory
 	result = 1
   end
-  
   if id == 70245411 then -- ToyVendor
 	result = 1
   end
