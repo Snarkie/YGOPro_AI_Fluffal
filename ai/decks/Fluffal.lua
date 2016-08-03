@@ -1,3 +1,11 @@
+require("ai.decks.Fluffal.FluffalFilter")
+require("ai.decks.Fluffal.FluffalCond")
+require("ai.decks.Fluffal.FluffalSummon")
+require("ai.decks.Fluffal.FluffalUse")
+require("ai.decks.Fluffal.FluffalTarget")
+require("ai.decks.Fluffal.FluffalChain")
+require("ai.decks.Fluffal.FluffalBattle")
+
 function FluffalStartup(deck)
   print("AI_Fluffal v0.0.0.4.4 by neftalimich.")
   AI.Chat("¡Duelo!")
