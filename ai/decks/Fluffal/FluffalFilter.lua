@@ -111,6 +111,11 @@ end
 function CountFluffal(cards)
   return CardsMatchingFilter(cards,FluffalFilter)
 end
+function CountFluffalGraveTarget(cards)
+  local result = 0
+  result = CountPrioTarget(cards,PRIO_TOGRAVE,1,TYPE_MONSTER,FluffalFilter)
+  return result
+end
 function CountFluffalBanishTarget(cards)
   local result = 0
   result = CountPrioTarget(cards,PRIO_BANISH,1,TYPE_MONSTER,FluffalFilter)
@@ -136,7 +141,8 @@ function CountFrightfur(cards)
 end
 function CountFusionTarget()
   local result = 0
-  result = CountPrioTarget(AIExtra(),PRIO_TOFIELD,1,nil,nil,nil,"CountFusionTarget")
+  --result = CountPrioTarget(AIExtra(),PRIO_TOFIELD,1,nil,nil,nil,"CountFusionTarget")
+  result = CountPrioTarget(AIExtra(),PRIO_TOFIELD,1)
   --print("CountFusionTarget: "..result)
   return result
 end

@@ -5,6 +5,9 @@
 function DogTarget(cards)
   return Add(cards,PRIO_TOHAND)
 end
+function OwlTarget(cards,c,max)
+  return FusionSummonTarget(cards,c,max)
+end
 GlobalSheep = 0
 function SheepTarget(cards)
   if LocCheck(cards,LOCATION_MZONE) then
@@ -233,7 +236,7 @@ function FLeoTarget(cards,c)
   return BestTargets(cards,1,TARGET_DESTROY,FLeoDestroyFilter,c)
 end
 function FTigerTarget(cards,c,max)
-  local maxTargets = #OppField()
+  local maxTargets = CardsMatchingFilter(OppField(),FTigerDestroyFilter)
   if maxTargets > max then
     maxTargets = max
   end
@@ -280,6 +283,9 @@ function FluffalCard(cards,min,max,id,c) -- FLUFFAL CARDS
   --print("FluffalCard: "..c.id.." - min: "..min.." - max: "..max)
   if id == 39246582 then -- Dog
     return DogTarget(cards)
+  end
+  if id == 65331686 then -- Owl
+    return OwlTarget(cards,c,max)
   end
   if id == 98280324 then -- Sheep
     return SheepTarget(cards)

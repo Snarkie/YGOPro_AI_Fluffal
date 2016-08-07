@@ -29,7 +29,10 @@ function BearCond(loc,c)
     return 
 	  OPTCheck(c.id) 
 	  and not HasID(AIHand(),c.id,true)
-	  and not HasID(UseLists({AIHand(),AIST()}),70245411,true)
+	  and (
+	    not HasID(UseLists({AIHand(),AIST()}),70245411,true) -- ToyVendor
+		or HasID(AIGrave(),72413000,true) -- Wings
+	  )
 	  and OPTCheck(72413000)
   end
   if loc == PRIO_TOFIELD then
@@ -70,7 +73,9 @@ function OwlCond(loc,c)
 end
 function SheepCond(loc,c)
   if loc == PRIO_TOHAND then
-    return OPTCheck(c.id) and not HasID(AIHand(),c.id,true)
+    return 
+	  OPTCheck(c.id) and not HasID(AIHand(),c.id,true) -- Sheep
+	  and CountEgdeImp(AIGrave()) > 0 -- Edge Imp
   end
   if loc == PRIO_TOFIELD then
     return OPTCheck(c.id)
@@ -270,6 +275,7 @@ function SabresCond(loc,c)
 	  not HasID(AIHand(),c.id,true) -- Sabres
 	  and not HasID(UseLists({AIHand(),AIMon()}),79109599,true) -- KoS
 	  and CountEgdeImp(UseLists({AIHand(),AIMon()})) == 0 -- EdgeImp
+	  and Get_Card_Count_ID(UseLists({AIHand(),AIST()}),24094653) > 0 -- Polymerization
   end
   if loc == PRIO_TOFIELD then
     return OPTCheck(c.id)
@@ -610,8 +616,8 @@ FluffalPriorityList={
  [03841833] = {9,1,1,1,1,1,1,1,8,1,BearCond},		-- Fluffal Bear
  [65331686] = {4,1,9,1,1,1,1,1,5,1,OwlCond},		-- Fluffal Owl
  [98280324] = {5,1,1,1,3,1,1,1,6,1,SheepCond},		-- Fluffal Sheep
- [02729285] = {7,1,2,1,1,1,1,1,2,1,CatCond},		-- Fluffal Cat
- [38124994] = {6,1,2,1,1,1,1,1,7,1,RabitCond},		-- Fluffal Rabit
+ [02729285] = {7,5,2,1,1,1,1,1,2,1,CatCond},		-- Fluffal Cat
+ [38124994] = {6,4,2,1,1,1,1,1,7,1,RabitCond},		-- Fluffal Rabit
  [06142488] = {1,1,10,1,5,1,4,1,10,1,MouseCond},	-- Fluffal Mouse
  [72413000] = {8,1,1,1,8,1,10,1,1,1,WingsCond},		-- Fluffal Wings
  [00006131] = {1,1,3,1,1,1,1,1,2,1,PatchworkCond},	-- Fluffal Patchwork (BETA)

@@ -7,6 +7,10 @@ function UseBear(c)
   or HasID(AIHand(),72413000,true) -- Wings
   or HasID(AIHand(),67441435,true) -- Bulb
   or (not NormalSummonCheck() and HasID(AIHand(),39246582,true)) -- Dog
+  or (
+    CardsMatchingFilter(AIST(),ToyVendorCheckFilter,false) > 0 -- Toy Vendor
+	and HasID(AIGrave(),72413000,true) -- Wings 
+  )
   then
     OPTSet(c.id)
     return true
@@ -14,22 +18,52 @@ function UseBear(c)
     return false
   end
 end
-function UseSheep(c)
-  GlobalCheckFusionTarget = 1
-  GlobalFusionSummon = 1
-  local countF = CountFusionTarget()
-  GlobalCheckFusionTarget = 0
-  GlobalFusionSummon = 0
-  
-  if HasID(UseLists({AIHand(),AIST()},24094653,true)) -- Polymerization
-  and countF > 0 then
+function UseBear2(c)
+  if FilterLocation(c,LOCATION_MZONE) then
     OPTSet(c.id)
     return true
   else
     return false
   end
 end
+function UseOwl(c)
+  return true
+end
+function UseOwl2(c)
+  GlobalCheckFusionTarget = 1
+  GlobalFusionSummon = 1
+  local countF = CountFusionTarget()
+  GlobalCheckFusionTarget = 0
+  GlobalFusionSummon = 0
+  if countF > 0 then
+    return true
+  else
+    return false
+  end
+end
+function UseSheep(c)
+  if OPTCheck(c.id) and CountEgdeImp(AIGrave()) > 0 then
+    return true
+  else
+    return false
+  end
+end
+function UseSheep2(c)
+  if OPTCheck(c.id) and CountEgdeImp(UseLists({AIGrave(),AIHand()})) > 0 then
+    return true
+  else
+    return false
+  end
+end
+function UseSheep3(c)
+  if OPTCheck(c.id) and HasID(AIHand(),97567736,true) then -- Tomahawk
+    return true
+  else
+    return false
+  end
+end
 function UseMouse(c)
+  OPTSet(c.id)
   return true
 end
 function UseWings(c)
@@ -43,13 +77,20 @@ function UseWings(c)
   end
 end
 -- EdgeImp Use
-function UseTomahawk(c)
-  OPTSet(c.id)
+function UseTomahawk1(c)
+  return true
+end
+function UseTomahawk2(c)
   return true
 end
 function UseSabres(c)
-  OPTSet(c.id)
-  return false
+  if Get_Card_Count_ID(AIHand(),30068120) > 0 -- Mouse Hand
+  and HasIDNotNegated(AIMon(),30068120,true) -- Mouse Field
+  then
+    return true
+  else
+    return false
+  end
 end
 function UseBulb(c)
   if FieldCheck(4) > 0 
@@ -67,6 +108,7 @@ function UseKoS(c)
   and (
     CountEgdeImp(AIHand(),AIMon()) > 0
 	or Get_Card_Count_ID(AIHand(),c.id) > 1
+	or HasID(UseLists({AIST(),AIHand()}),01845204,true) -- Instant Fusion
   )
   then
     return true
@@ -74,10 +116,13 @@ function UseKoS(c)
     return false
   end
 end
-function UseKoS2(c) -- When dont have cards to discard
+function UseKoS2(c) -- When I dont have cards to discard
   if CountToyVendorDiscardTarget() == 0
-  and CardsMatchingFilter(AIST(),ToyVendorCheckFilter,true) > 0 
-  and #AIHand() > 2 then
+  and (
+    CardsMatchingFilter(AIST(),ToyVendorCheckFilter,true) > 0 
+	or HasID(AIHand(),70245411,true)
+  )
+  and #AIHand() > 3 then
     return true
   else
     return false
@@ -210,7 +255,7 @@ function UseFLeo(c)
   return true
 end
 function UseFTiger(c)
-  if #OppField() > 0 then
+  if CardsMatchingFilter(OppField(),FTigerDestroyFilter) > 0 then
 	return true
   end
 end

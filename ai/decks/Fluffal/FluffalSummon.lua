@@ -26,18 +26,10 @@ function SummonTomahawk()
   return OPTCheck(97567736)
 end
 function SummonChain()
-  return true
+  return OppGetStrongestAttack() < 1200
 end
 function SummonSabres()
-  return true
-end
--- FluffalM Special Summon
-function SpSummonSheep1()
-  return OPTCheck(98280324) and CountEgdeImp(AIGrave()) > 0
-end
-function SpSummonSheep2()
-  return 
-    OPTCheck(98280324) and CountEgdeImp(UseLists({AIGrave(),AIHand()})) > 0
+  return OppGetStrongestAttack() < 1200
 end
 
 -- Frightfur Special Summon
@@ -83,7 +75,10 @@ function FLeoFinish()
 end
 function SpSummonFLeo()
   if GlobalCheckFusionTarget == 0 -- PreCheck FusionTarget
-  or Get_Card_Count_ID(UseLists({AIMon(),AIHand()}),79109599) > 0 -- KoS
+  or (
+    Get_Card_Count_ID(UseLists({AIMon(),AIHand()}),79109599) > 0 -- KoS
+	or Get_Card_Count_ID(AIMon(),00006131) > 0 -- Patchwork
+  )
   then
     return 
 	  not HasID(AIMon(),10383554,true) 
@@ -94,7 +89,10 @@ function SpSummonFLeo()
 end
 function SpSummonFLeoBanish()
   if GlobalCheckFusionTarget == 0 -- PreCheck FusionTarget
-  or Get_Card_Count_ID(UseLists({AIMon(),AIGrave()}),79109599) > 0 -- KoS
+  or (
+    Get_Card_Count_ID(UseLists({AIMon(),AIGrave()}),79109599) > 0 -- KoS
+	or Get_Card_Count_ID(AIMon(),00006131) > 0 -- Patchwork
+  )
   and CountFluffalBanishTarget(UseLists({AIMon(),AIGrave()})) > 0
   then
     return 
@@ -142,6 +140,7 @@ function SpSummonFTiger()
   or (
     Get_Card_Count_ID(UseLists({AIMon(),AIHand()}),30068120) > 0 -- Sabres
     or Get_Card_Count_ID(UseLists({AIMon(),AIHand()}),79109599) > 0 -- Kos
+	or Get_Card_Count_ID(AIMon(),00006131) > 0 -- Patchwork
   )
   then 
     return not HasID(AIMon(),00464362,true) and #OppField() > 0
@@ -153,6 +152,7 @@ function SpSummonFTigerBanish()
   or (
     Get_Card_Count_ID(UseLists({AIMon(),AIGrave()}),30068120) > 0 -- Sabres
     or Get_Card_Count_ID(UseLists({AIMon(),AIGrave()}),79109599) > 0 -- Kos
+	or Get_Card_Count_ID(AIMon(),00006131) > 0 -- Patchwork
   )
   and CountFluffalBanishTarget(UseLists({AIMon(),AIGrave()})) > 0
   then 
@@ -166,6 +166,7 @@ function SpSummonFSheep()
   or (
     Get_Card_Count_ID(UseLists({AIMon(),AIHand()}),61173621) > 0 -- Chain
     or Get_Card_Count_ID(UseLists({AIMon(),AIHand()}),79109599) > 0 -- Kos
+	or Get_Card_Count_ID(AIMon(),00006131) > 0 -- Patchwork
   )
   then 
     return not HasID(AIMon(),57477163,true)
@@ -177,6 +178,7 @@ function SpSummonFSheepBanish()
   or (
     Get_Card_Count_ID(UseLists({AIMon(),AIGrave()}),61173621) > 0 -- Chain
     or Get_Card_Count_ID(UseLists({AIMon(),AIGrave()}),79109599) > 0 -- Kos
+	or Get_Card_Count_ID(AIMon(),00006131) > 0 -- Patchwork
   )
   and CountFluffalBanishTarget(UseLists({AIMon(),AIGrave()})) > 0
   then 

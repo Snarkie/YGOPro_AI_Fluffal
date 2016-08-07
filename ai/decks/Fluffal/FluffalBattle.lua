@@ -16,7 +16,7 @@ FluffalAtt={
 }
 
 FluffalDef={
-65331686, -- Fluffal Owl
+--65331686, -- Fluffal Owl
 98280324, -- Fluffal Sheep
 02729285, -- Fluffal Cat
 38124994, -- Fluffal Rabit
@@ -24,8 +24,8 @@ FluffalDef={
 72413000, -- Fluffal Wings
 00006131, -- Fluffal Patchwork (BETA)
 
-61173621, -- Edge Imp Chain
-30068120, -- Edge Imp Sabres
+--61173621, -- Edge Imp Chain
+--30068120, -- Edge Imp Sabres
 79109599, -- King of the Swamp
 67441435, -- Glow-Up Bulb
 
@@ -66,8 +66,8 @@ end
 function FluffalAttackBoost(cards)
   for i=1,#cards do
     local c=cards[i]
-    if c.id == 57477163 and OPTCheck(57477163) then -- Bad Implement
-      c.attack = c.attack
+    if c.id == 42110604 then -- Chanbara
+      c.attack = c.attack + 200
     end
   end
 end
