@@ -84,8 +84,8 @@ function UseTomahawk2(c)
   return true
 end
 function UseSabres(c)
-  if Get_Card_Count_ID(AIHand(),30068120) > 0 -- Mouse Hand
-  and HasIDNotNegated(AIMon(),30068120,true) -- Mouse Field
+  if HasID(AIHand(),06142488,true) -- Mouse Hand
+  and HasID(AIMon(),06142488,true) -- Mouse Field
   then
     return true
   else
@@ -122,7 +122,9 @@ function UseKoS2(c) -- When I dont have cards to discard
     CardsMatchingFilter(AIST(),ToyVendorCheckFilter,true) > 0 
 	or HasID(AIHand(),70245411,true)
   )
-  and #AIHand() > 3 then
+  and #AIHand() > 3
+  and OPTCheck(72413000) -- Wings
+  then
     return true
   else
     return false

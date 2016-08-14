@@ -7,7 +7,7 @@ require("ai.decks.Fluffal.FluffalChain")
 require("ai.decks.Fluffal.FluffalBattle")
 
 function FluffalStartup(deck)
-  print("AI_Fluffal v0.0.0.4.5 by neftalimich.")
+  print("AI_Fluffal v0.0.0.4.7 by neftalimich.")
   AI.Chat("¡Duelo!")
   
   deck.Init                 = FluffalInit
@@ -49,20 +49,20 @@ function FluffalStartup(deck)
 	e0:SetCode(EVENT_CHAIN_SOLVED)
 	e0:SetOperation(function(e,tp,eg,ep,ev,re,r,rp)
 		local g=Duel.GetFieldGroup(player_ai,LOCATION_HAND,0)
-		Duel.ConfirmCards(1-player_ai,g)
+		--Duel.ConfirmCards(1-player_ai,g)
 	end)
 	Duel.RegisterEffect(e0,0)
 	local e1=e0:Clone()
 	e1:SetCode(EVENT_TO_HAND)
-	Duel.RegisterEffect(e1,0)
+	--Duel.RegisterEffect(e1,0)
 	local e2=e0:Clone()
 	e2:SetCode(EVENT_PHASE_START+PHASE_MAIN1)
-	Duel.RegisterEffect(e2,0)
+	--Duel.RegisterEffect(e2,0)
   local e3=Effect.GlobalEffect()
   e3:SetType(EFFECT_TYPE_FIELD)
   e3:SetCode(EFFECT_PUBLIC)
   e3:SetTargetRange(LOCATION_HAND,0)
-  Duel.RegisterEffect(e3,player_ai)
+  --Duel.RegisterEffect(e3,player_ai)
 end
 
 FluffalIdentifier = 03841833 -- Bear
@@ -233,6 +233,9 @@ function FluffalInit(cards) -- FLUFFAL INIT
   end
   
   -- NORMAL SUMMON OWL
+  if HasIDNotNegated(Sum,65331686,SummonOwl3) then -- No Poly no wings
+    return COMMAND_SUMMON,CurrentIndex
+  end
   if HasIDNotNegated(Sum,65331686,SummonOwl2) then
     return COMMAND_SUMMON,CurrentIndex
   end

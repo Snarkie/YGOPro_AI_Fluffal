@@ -34,8 +34,8 @@ end
 function FTigerDestroyFilter(c)
   return (
     Targetable(c,TYPE_MONSTER)
-    and FluffalDestroyFilter(c)
     and Affected(c,TYPE_MONSTER)
+	and FluffalDestroyFilter(c)
   )
 end
 
@@ -44,15 +44,10 @@ function FluffalDestroyFilter(c,nontarget)
   return not FilterAffected(c,EFFECT_INDESTRUCTABLE_EFFECT)
   and not FilterStatus(c,STATUS_LEAVE_CONFIRMED)
   and (nontarget==true or not FilterAffected(c,EFFECT_CANNOT_BE_EFFECT_TARGET))
-  and not (DestroyBlacklist(c)
-  and FilterPublic(c))
+  and not (DestroyBlacklist(c) and FilterPublic(c))
   and not BypassDestroyFilter(c)
 end
 function BypassDestroyFilter(c) --Indexes cards that the AI fails to check with DestroyFilter normally. Sins, C-Lancer, ArchSeraph, eartH, Kagutsuchi, Sentry, Beetle, Yoke, SHARK, Full Lancer, Maestroke, Zenmaines, Gantetsu, U-Future, Angineer, Winda, Wickedwitch
- if SpecterStardustSparkCheck() then
-    return c.id==83994433
-	and NotNegated(c)
-  end
   return (((c.id==62541668
   or c.id==99469936
   or c.id==67173574

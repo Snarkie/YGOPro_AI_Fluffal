@@ -1,14 +1,58 @@
 # YGOPro_AI_Fluffal
 YGOPro - AI - Fluffal by neftalimich
 
-EspaÃ±ol: 
-El desarrollo de la AI tendrÃ¡ etapas:
+Español: 
+El desarrollo de la AI tendrá etapas:
 
 1.- Crear el script para que pueda realizar sus jugadas en condiciones normales.
-2.- Mejorar los scripts para que juegue contra las cartas Floodgate mas comunes.
-3.- Crear script para que al azar realice jugadas arriesgadas en caso de que tenga desventaja.
-4.- Crear distintas maneras de jugar contra decks que le generen debilidades. Ejemplo: Monarcas.
+	a.- Init: Secuencia de jugadas.
+	b.- Filter: Filtros y contadores para realizar las condiciones.
+	c.- Cond: Condiciones y prioridades a la mano, al campo, al cementerio, descartar y desterrar.
+	d.- Use: Condiciones para usar los efectos.
+	e.- Target: Objetivos para la selección de cartas.
+	f.- Chain: Cadenas (encadenar).
+	g.- Summon: Condiciones para realizar la invocación.
+	h.- Battle: Fase de batalla
+2.- Mejorar la fase de batalla heredada y mejorar la lógica de las jugadas en cada fase.
+3.- Mejorar los scripts para que juegue contra las cartas Floodgate mas comunes.
+4.- Crear script para que al azar realice jugadas arriesgadas en caso de que tenga desventaja.
+5.- Crear distintas maneras de jugar contra decks que le generen debilidades. Ejemplo: Monarcas.
 
-Cada etapa irÃ¡ mejorando conforme se encuentren errores, deficiencias en su algoritmo o mejoras en general.
+Cada etapa irá mejorando conforme se encuentren errores, deficiencias en su algoritmo o mejoras en general.
 
-Atte: NeftalÃ­ Michelet.
+
+Problemas conocidos:
+- Problema en la invocación de fusión cuando tiene 5 monstruos en el campo.
+- Tiger suele destruir sólo dos cartas en el 95% de los casos, falta colocar más condiciones.
+- La IA realiza todas las jugadas posibles hasta tener 3 Frightfurs, falta esperar el mejor momento.
+- La IA suele descartar Frightfur Fusion demasiado seguido. falta colocar más condiciones.
+- La receta del deck no es la mejor (No la cambiaré pronto, no insistan).
+- Muchos otros, pero me da flojera escribirlos.
+
+
+Preguntas Frecuentes:
+- ¿Eres el único en el proyecto?
+R: Sí, aunque en algunas ocaciones Snarky me ayuda un poco.
+- ¿Por qué la IA es tan mala?
+R: Cuando sepas programar IA haces la tuya.
+- ¿Por qué la AI Fluffal es mala?
+R: No soy experto, poco a poco iré mejorándola, paciencia.
+- ¿En qué etapa vas?
+R: En el primer punto, pero aún falta pulir detalles.
+- ¿Cuánto tiempo tardarás en sacar la versión 1.0?
+R: Trabajo, tengo capacitación constante, tengo familia, amigos, pasatiempos, me es difícil saber cuando, pero cuando algo me gusta lo hago.
+- ¿Puedo ayudarte?
+R: Sí, pero con algunas condiciones: Saber programación estructurada y tener ganas.
+- ¿Qué necesito saber para programar IA de YGOPro?
+R: Saber programación estructurada, aprender un poco de LUA, leer el tutorial de Snarky.
+- ¿Quien te conoce? 
+R: Mi familia, mis amigos, mis compañeros y toda la gente de mi alrededor.
+- ¿Qué estudiate, en qué trabajas? 
+R: Ingeniería en sistemas, soy programador Senior (4.5 años de experiencia)
+- ¿Programas algún otro juego?
+R: No, soy consultor de TI, programador Full Stack de diversos tipos de sistemas, pero no programo juegos.
+- ¿Me enseñas a programar?
+R: No tengo tiempo, pero puedo decirte la lista de lo que debes a aprender.
+
+
+Atte: Neftalí Michelet.
