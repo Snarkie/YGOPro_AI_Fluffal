@@ -4,19 +4,19 @@ YGOPro - AI - Fluffal by neftalimich
 Español: 
 El desarrollo de la AI tendrá etapas:
 
-1.- Crear el script para que pueda realizar sus jugadas en condiciones normales.
-	a.- Init: Secuencia de jugadas.
-	b.- Filter: Filtros y contadores para realizar las condiciones.
-	c.- Cond: Condiciones y prioridades a la mano, al campo, al cementerio, descartar y desterrar.
-	d.- Use: Condiciones para usar los efectos.
-	e.- Target: Objetivos para la selección de cartas.
-	f.- Chain: Cadenas (encadenar).
-	g.- Summon: Condiciones para realizar la invocación.
-	h.- Battle: Fase de batalla
-2.- Mejorar la fase de batalla heredada y mejorar la lógica de las jugadas en cada fase.
-3.- Mejorar los scripts para que juegue contra las cartas Floodgate mas comunes.
-4.- Crear script para que al azar realice jugadas arriesgadas en caso de que tenga desventaja.
-5.- Crear distintas maneras de jugar contra decks que le generen debilidades. Ejemplo: Monarcas.
+1. Crear el script para que pueda realizar sus jugadas en condiciones normales.
+	1. Init: Secuencia de jugadas.
+	2. Filter: Filtros y contadores para realizar las condiciones.
+	3. Cond: Condiciones y prioridades a la mano, al campo, al cementerio, descartar y desterrar.
+	4. Use: Condiciones para usar los efectos.
+	5. Target: Objetivos para la selección de cartas.
+	6. Chain: Cadenas (encadenar).
+	7. Summon: Condiciones para realizar la invocación.
+	8. Battle: Fase de batalla
+2. Mejorar la fase de batalla heredada y mejorar la lógica de las jugadas en cada fase.
+3. Mejorar los scripts para que juegue contra las cartas Floodgate mas comunes.
+4. Crear script para que al azar realice jugadas arriesgadas en caso de que tenga desventaja.
+5. Crear distintas maneras de jugar contra decks que le generen debilidades. Ejemplo: Monarcas.
 
 Cada etapa irá mejorando conforme se encuentren errores, deficiencias en su algoritmo o mejoras en general.
 
