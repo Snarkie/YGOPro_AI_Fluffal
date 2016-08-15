@@ -33,6 +33,7 @@ function BearCond(loc,c)
 	    not HasID(UseLists({AIHand(),AIST()}),70245411,true) -- ToyVendor
 		or HasID(AIGrave(),72413000,true) -- Wings
 	  )
+	  and Get_Card_Count_ID(AIDeck(),70245411) > 0 -- Toy Vendor
 	  and OPTCheck(72413000)
   end
   if loc == PRIO_TOFIELD then
@@ -173,7 +174,7 @@ function MouseCond(loc,c)
     if Get_Card_Count_ID(AIDeck(),c.id) == 0 then
 	  if FilterPosition(c,POS_FACEUP_ATTACK) then
 	    return 9
-	  else 
+	  else
 	    return 8
 	  end
 	else
@@ -364,10 +365,14 @@ function FFusionCond(loc,c)
     return OPTCheck(c.id)
   end
   if loc == PRIO_TOGRAVE then
-    return not OPTCheck(c.id) or Get_Card_Count_ID(UseLists({AIST(),AIHand()}),c.id) > 1
+    return 
+	  not OPTCheck(c.id) 
+	  or Get_Card_Count_ID(UseLists({AIST(),AIHand()}),c.id) > 1
   end
   if loc == PRIO_DISCARD then
-    return not OPTCheck(c.id) or Get_Card_Count_ID(UseLists({AIST(),AIHand()}),c.id) > 0
+    return 
+	  not OPTCheck(c.id) 
+	  or Get_Card_Count_ID(UseLists({AIST(),AIHand()}),c.id) > 1
   end
   if loc == PRIO_BANISH then
     return true
@@ -651,7 +656,7 @@ FluffalPriorityList={
  [79109599] = {1,1,2,1,9,1,1,1,10,1,KoSCond},		-- King of the Swamp
  [67441435] = {1,1,7,1,9,1,9,1,1,1,BulbCond},		-- Glow-Up Bulb
 
- [06077601] = {1,1,1,1,1,1,3,1,10,1,FFusionCond},	-- Frightfur Fusion
+ [06077601] = {1,1,1,1,1,1,2,2,10,1,FFusionCond},	-- Frightfur Fusion
  [43698897] = {3,1,1,1,1,1,1,1,1,1,FFactoryCond},	-- Frightfur Factory
  [70245411] = {1,1,1,1,2,1,1,1,1,1,ToyVendorCond},	-- Toy Vendor
  [01845204] = {1,1,1,1,3,2,4,2,4,1,IFusionCond},	-- Instant Fusion

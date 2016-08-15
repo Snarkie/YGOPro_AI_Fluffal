@@ -30,10 +30,8 @@ function UseOwl(c)
   return true
 end
 function UseOwl2(c)
-  GlobalCheckFusionTarget = 1
   GlobalFusionSummon = 1
   local countF = CountFusionTarget()
-  GlobalCheckFusionTarget = 0
   GlobalFusionSummon = 0
   if countF > 0 then
     return true
@@ -95,7 +93,9 @@ end
 function UseBulb(c)
   if FieldCheck(4) > 0 
   and OPTCheck(06142488) -- Mouse
-  and OppGetStrongestAttDef() <= 2100 then 
+  and OppGetStrongestAttDef() <= 2100 
+  and AI.GetCurrentPhase() == PHASE_MAIN1
+  then 
     OPDSet(c.id)
     return true
   else
@@ -151,12 +151,19 @@ function ActiveToyVendor2(c)
 end
 function UseToyVendor(c)
   if HasID(AIHand(),72413000,true) then -- Wings
+    OPTSet(c.cardid)
 	return true
   elseif 
   not NormalSummonCheck() and HasID(AIHand(),39246582,true) and OPTCheck(39246582) -- Dog
   and OPTCheck(72413000) and not HasID(AIGrave(),72413000,true) then -- Wings
 	return false
-  elseif (#AIHand() > 2 and CountToyVendorDiscardTarget() > 0) then
+  elseif (
+    #AIHand() > 2
+	or OppGetStrongestAttack() >= AIGetStrongestAttack()
+  )
+  and CountToyVendorDiscardTarget() > 0
+  then
+    OPTSet(c.cardid)
 	return true
   else
     return false
@@ -169,10 +176,8 @@ function ActiveFFactory(c)
     or HasID(AIGrave(),01845204,true) -- Instant Fusion
 	or Get_Card_Count_ID(AIGrave(),24094653) > 1 -- Polymerization
 	then
-	  GlobalCheckFusionTarget = 1
 	  GlobalFusionSummon = 1
       local countF = CountFusionTarget()
-      GlobalCheckFusionTarget = 0
 	  GlobalFusionSummon = 0
       if countF > 0 then
         return true
@@ -191,10 +196,8 @@ function UseFFactory(c)
     if HasID(AIGrave(),06077601,true) -- Frightfur Fusion
     or HasID(AIGrave(),01845204,true) -- Instant Fusion
 	or Get_Card_Count_ID(AIGrave(),24094653) > 1 then -- Polymerization
-      GlobalCheckFusionTarget = 1
 	  GlobalFusionSummon = 1
       local countF = CountFusionTarget()
-      GlobalCheckFusionTarget = 0
 	  GlobalFusionSummon = 1
       if countF > 0 then
         return true
@@ -208,10 +211,8 @@ function UseFFactory(c)
 end
 
 function UseFFusion(c)
-  GlobalCheckFusionTarget = 1
   GlobalFFusion = 1
   local countF = CountFusionTarget()
-  GlobalCheckFusionTarget = 0
   GlobalFFusion = 0
   if countF > 0 then
     return true
@@ -233,10 +234,8 @@ function UseIFusion(c)
 end
 
 function UsePolymerization(c)
-  GlobalCheckFusionTarget = 1
   GlobalFusionSummon = 1
   local countF = CountFusionTarget()
-  GlobalCheckFusionTarget = 0
   GlobalFusionSummon = 0
   if countF > 0 then
     return true

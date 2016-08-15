@@ -44,6 +44,7 @@ function FluffalStartup(deck)
   deck.MonsterType
   ]]
   
+  -- NOTA: Para hacer pruebas descomenta los las 4 lineas que compiezan con Duel.
   local e0=Effect.GlobalEffect()
 	e0:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
 	e0:SetCode(EVENT_CHAIN_SOLVED)
@@ -188,7 +189,6 @@ function FluffalInit(cards) -- FLUFFAL INIT
   GlobalIFusion = 0
   GlobalFusionSummon = 0
   GlobalFusionId = 0
-  GlobalCheckPolyTarget = 0
   
   -- ACTIVE EFFECT 1
   if HasIDNotNegated(Act,10383554,UseFLeo) then
@@ -257,6 +257,10 @@ function FluffalInit(cards) -- FLUFFAL INIT
   
   -- NORMAL SUMMON DOG
   if HasIDNotNegated(Sum,39246582,SummonDog) then
+    return COMMAND_SUMMON,CurrentIndex
+  end
+  
+  if HasIDNotNegated(Sum,65331686,SummonOwl) then
     return COMMAND_SUMMON,CurrentIndex
   end
   

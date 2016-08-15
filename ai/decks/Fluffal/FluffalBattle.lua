@@ -63,12 +63,26 @@ function FluffalAttackTarget(cards,attacker) -- FLUFFAL ATTACK TARGET
  return nil
 end
 
-function FluffalAttackBoost(cards)
+function FluffalAttackBoost(cards)  
   for i=1,#cards do
     local c=cards[i]
     if c.id == 42110604 then -- Chanbara
       c.attack = c.attack + 200
     end
+	if c.id == 57477163 then -- Frightfur Sheep
+	  local FSheepOwnBoost = c.attack - c.base_attack
+	  FSheepOwnBoost = FSheepOwnBoost - (Get_Card_Count_ID(AIDeck(),80889750) * 400) -- Sabre-Tooth
+	  if HasID(AIMon(),00464362,true) then -- Frightfur Tiger
+	    FSheepOwnBoost = FSheepOwnBoost - (CountFrightfur(AIMon()) * 300)
+	  end
+	  --print("FSheepOwnBoost: "..FSheepOwnBoost)
+	  if 
+	  FSheepOwnBoost < 800
+	  and OPTCheck(c.cardid)
+	  then
+	    c.attack = c.attack + 800
+	  end
+	end
   end
 end
 

@@ -13,7 +13,7 @@ El desarrollo de la AI tendrá etapas:
 	6. Chain: Cadenas (encadenar).
 	7. Summon: Condiciones para realizar la invocación.
 	8. Battle: Fase de batalla
-2. Mejorar la fase de batalla heredada y mejorar la lógica de las jugadas en cada fase.
+2. Mejorar la fase de batalla heredada y mejorar la lógica de las jugadas en cada fase. Es posible que restructure la fase de batalla y haga la propuesta a Snarky.
 3. Mejorar los scripts para que juegue contra las cartas Floodgate mas comunes.
 4. Crear script para que al azar realice jugadas arriesgadas en caso de que tenga desventaja.
 5. Crear distintas maneras de jugar contra decks que le generen debilidades. Ejemplo: Monarcas.
@@ -25,9 +25,14 @@ Problemas conocidos:
 - Problema en la invocación de fusión cuando tiene 5 monstruos en el campo.
 - Tiger suele destruir sólo dos cartas en el 95% de los casos, falta colocar más condiciones.
 - La IA realiza todas las jugadas posibles hasta tener 3 Frightfurs, falta esperar el mejor momento.
-- La IA suele descartar Frightfur Fusion demasiado seguido. falta colocar más condiciones.
+- La IA suele descartar Frightfur Fusion demasiado seguido. Falta colocar más condiciones.
+- Siempre invoica monstruo con toy vendor. Faltan colocar las condiciones.
 - La receta del deck no es la mejor (No la cambiaré pronto, no insistan).
+- No se ha creado el script para la fase de batalla, es decir, no atacará de la mejor manera para el deck, incluyendo a Frightuf Sheep.
+- A veces, primero ataca y luego convoca a los Edge Imp.
+- A veces, convoca a Patchwork sin necesidad.
 - Muchos otros, pero me da flojera escribirlos.
+
 
 
 Preguntas Frecuentes:

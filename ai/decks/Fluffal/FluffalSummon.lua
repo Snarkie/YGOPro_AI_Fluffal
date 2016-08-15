@@ -153,6 +153,7 @@ function SpSummonFTiger()
     return 
 	  not HasID(AIMon(),00464362,true) 
 	  and #OppField() > 0
+	  and AI.GetCurrentPhase() == PHASE_MAIN1
   end
   return false
 end
@@ -167,6 +168,7 @@ function SpSummonFTigerBanish()
     return 
 	  not HasID(AIMon(),00464362,true) 
 	  and #OppField() > 0
+	  and AI.GetCurrentPhase() == PHASE_MAIN1
   end
   return false
 end
