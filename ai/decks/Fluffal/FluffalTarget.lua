@@ -3,6 +3,7 @@
 -----------------------
 -- FluffalM Target
 function DogTarget(cards)
+  --CountPrioTarget(cards,PRIO_TOHAND,1,nil,nil,nil,"TEST")
   return Add(cards,PRIO_TOHAND)
 end
 function OwlTarget(cards,c,max)
@@ -128,6 +129,14 @@ function maxMaterials(fusionId,max)
   print("maxMaterials - fusionId "..fusionId.." max: "..max)
   local result = 1
   if(fusionId == 80889750) then
+    result = 2
+  elseif fusionId == 00464362 and #AIMon() > 4 then -- Tiger
+    result = 2
+  elseif fusionId == 00464362 and GlobalFFusion == 1 -- Tiger source FFusion
+  and CountFluffalBanishTarget(UseLists({AIMon(),AIGrave()})) > 1
+  then
+    result = 2
+  elseif fusionId == 11039171 and #AIMon() > 4 then -- Wolf
     result = 2
   else
     result = 1

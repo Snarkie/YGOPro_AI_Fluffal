@@ -21,10 +21,48 @@ function SummonOwl3()
 	and not HasID(UseLists({AIHand(),AIST()}),24094653,true) -- Polymerization
 	and not OPTCheck(72413000) -- Wings
 end
+function SpecialSummonSheep(c)
+  if OPTCheck(c.id) 
+  and CountEgdeImp(AIGrave()) > 0 
+  then
+    return true
+  else
+    return false
+  end
+end
+function SpecialSummonSheep2()
+  if OPTCheck(98280324) 
+  and CountEgdeImp(UseLists({AIGrave(),AIHand()})) > 0 
+  then
+    return true
+  else
+    return false
+  end
+end
+function SpecialSummonSheep3()
+  if OPTCheck(98280324) and HasID(AIHand(),97567736,true) then -- Tomahawk
+    return true
+  else
+    return false
+  end
+end
+function SpecialSummonSheep4()
+  if OPTCheck(98280324) 
+  and CountEgdeImp(UseLists({AIGrave(),AIHand()})) > 0 
+  and (
+    CountFluffal(AIHand()) - Get_Card_Count_ID(AIHand(),98280324)
+  ) > 0
+  then
+    return true
+  else
+    return false
+  end
+end
 function SummonMouse()
   return OPTCheck(06142488) 
     and Get_Card_Count_ID(AIDeck(),06142488) == 2
 	and #AIMon() < 3
+	and HasID(UseLists({AIHand(),AIST()}),24094653,true) -- Polymerization
 end
 function SummonPatchwork()
   return 
@@ -36,10 +74,14 @@ function SummonTomahawk()
   return OPTCheck(97567736)
 end
 function SummonChain()
-  return OppGetStrongestAttack() < 1200
+  return 
+    OppGetStrongestAttack() < AIGetStrongestAttack()
+	or OppGetStrongestAttack() < 1200
 end
 function SummonSabres()
-  return OppGetStrongestAttack() < 1200
+  return 
+    OppGetStrongestAttack() < AIGetStrongestAttack()
+	or OppGetStrongestAttack() < 1200
 end
 
 -- Frightfur Fusion Summon
@@ -50,11 +92,13 @@ function SpSummonFSabre()
 	or HasID(AIMon(),57477163,true) -- Frightfur Sheep
   )
   and (
-    CountFluffal(UseLists({AIMon(),AIHand()})) > 1 -- Fluffal
+	GlobalMaterialF > 1 -- Fluffal
 	or OppGetStrongestAttack() >= AIGetStrongestAttack() -- Strong Opp
   ) 
   then
-    return not HasID(AIMon(),80889750,true) -- Frightfur Sabre-Tooth
+    return 
+	  not HasID(AIMon(),80889750,true) -- Frightfur Sabre-Tooth
+	  and AI.GetCurrentPhase() == PHASE_MAIN1
   end
   return false
 end
@@ -65,7 +109,9 @@ function SpSummonFSabreBanish()
 	or OppGetStrongestAttack() >= AIGetStrongestAttack() -- Strong Opp
   )
   then
-    return not HasID(AIMon(),80889750,true)
+    return 
+	  not HasID(AIMon(),80889750,true)
+	  and AI.GetCurrentPhase() == PHASE_MAIN1
   end
   return false
 end
@@ -78,7 +124,7 @@ function SpSummonFLeo()
     HasID(UseLists({AIMon(),AIHand()}),79109599,true) -- KoS
     or HasID(AIMon(),00006131,true) -- Patchwork
   )
-  and CountFluffal(UseLists({AIMon(),AIHand()})) > 0
+  and GlobalMaterialF > 0 -- Fluffal
   then
     return 
 	  not HasID(AIMon(),10383554,true) 
@@ -113,11 +159,15 @@ function FWolfFinish()
   return 
     HasID(AIMon(),00464362,true) 
     and #OppMon() == 0
+	or
+	HasID(AIMon(),80889750,true) 
+	and HasID(AIMon(),00464362,true) 
 end
 function SpSummonFWolf()
   if (
     HasID(UseLists({AIMon(),AIHand()}),30068120,true) -- Sabres
   )
+  and GlobalMaterialF > 0 -- Fluffal
   then
     return 
 	  not HasID(AIMon(),11039171,true) 
@@ -148,7 +198,7 @@ function SpSummonFTiger()
     or HasID(UseLists({AIMon(),AIHand()}),79109599,true) -- Kos
 	or HasID(AIMon(),00006131,true) -- Patchwork
   )
-  and CountFluffal(UseLists({AIMon(),AIHand()})) > 0
+  and GlobalMaterialF > 0 -- Fluffal
   then
     return 
 	  not HasID(AIMon(),00464362,true) 
@@ -179,7 +229,7 @@ function SpSummonFSheep()
     or HasID(UseLists({AIMon(),AIHand()}),79109599,true) -- Kos
 	or HasID(AIMon(),00006131,true) -- Patchwork
   )
-  and CountFluffal(UseLists({AIMon(),AIHand()})) > 0
+  and GlobalMaterialF > 0 -- Fluffal
   then
     return not HasID(AIMon(),57477163,true)
   end
@@ -213,7 +263,8 @@ end
 -- Other Synchro
 function SpSummonChanbara()
   return 
-    OppGetStrongestAttDef()<=2000
+    (OppGetStrongestAttack() < AIGetStrongestAttack()
+	or OppGetStrongestAttack() < 2200)
     and AI.GetCurrentPhase() == PHASE_MAIN1
 	and GlobalBPAllowed
 end

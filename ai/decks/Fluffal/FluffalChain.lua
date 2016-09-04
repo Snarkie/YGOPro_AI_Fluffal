@@ -28,7 +28,11 @@ end
 function ChainFReserve(c)
   if FilterLocation(c,LOCATION_SZONE) then
     if RemovalCheckCard(c) then
-	  if (RemovalCheckCard(c,CATEGORY_TOGRAVE) or RemovalCheckCard(c,CATEGORY_DESTROY)) then
+	  if
+	  RemovalCheckCard(c,CATEGORY_TOGRAVE) 
+	  or RemovalCheckCard(c,CATEGORY_DESTROY)
+	  or RemovalCheckCard(c,CATEGORY_REMOVE)
+      then
 	    return true
 	  end
 	end

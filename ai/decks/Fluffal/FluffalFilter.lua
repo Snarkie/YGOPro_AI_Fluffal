@@ -141,6 +141,32 @@ function CountFusionTarget()
   --print("CountFusionTarget: "..result)
   return result
 end
+function CountMaterialFTarget(cards)
+  local result = 0
+  local minPrio = 4
+  if(
+    AI.GetPlayerLP(1) <= 5500
+    or AI.GetPlayerLP(2) <= 5500
+  ) then
+    minPrio = 2
+  end
+  if(
+    AI.GetPlayerLP(1) <= 2500
+  ) then
+    minPrio = 0
+  end
+  --result = CountPrioTarget(cards,PRIO_TOGRAVE,minPrio,TYPE_MONSTER,FluffalFilter,nil,"CountMaterialFTarget")
+  result = CountPrioTarget(cards,PRIO_TOGRAVE,minPrio,TYPE_MONSTER,FluffalFilter)
+  --print("CountMaterialFTarget: "..result)
+  return result
+end
+function CountMaterialETarget(cards)
+  local result = 0
+  --result = CountPrioTarget(cards,PRIO_TOGRAVE,1,TYPE_MONSTER,EdgeImpFilter,nil,"CountMaterialETarget")
+  result = CountPrioTarget(cards,PRIO_TOGRAVE,1,TYPE_MONSTER,EdgeImpFilter)
+  --print("CountMaterialETarget: "..result)
+  return result
+end
 
 --39246582, -- Fluffal Dog
 --03841833, -- Fluffal Bear

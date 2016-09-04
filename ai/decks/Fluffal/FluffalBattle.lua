@@ -47,7 +47,7 @@ function FluffalPosition(id,available) -- FLUFFAL POSITION
   for i=1,#FluffalDef do
     if FluffalDef[i]==id
     then
-      result=POS_FACEUP_DEFENCE
+      result=POS_FACEUP_DEFENSE
     end
   end
  return result
