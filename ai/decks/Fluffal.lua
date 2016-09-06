@@ -7,7 +7,7 @@ require("ai.decks.Fluffal.FluffalChain")
 require("ai.decks.Fluffal.FluffalBattle")
 
 function FluffalStartup(deck)
-  print("AI_Fluffal v0.0.0.4.8 by neftalimich.")
+  print("AI_Fluffal v0.0.0.4.9 by neftalimich.")
   AI.Chat("¡Duelo!")
   
   deck.Init                 = FluffalInit
@@ -351,24 +351,27 @@ function FluffalInit(cards) -- FLUFFAL INIT
   if HasIDNotNegated(UseLists({AIMon(),AIHand()}),98280324,SpecialSummonSheep4)
   then
     for i=1,#Sum do
-	  if not(Sum[i].id == 98280324) then
+	  if not(Sum[i].id == 98280324) and FluffalFilter(Sum[i]) then
 	    return COMMAND_SUMMON,i
 	  end
     end
   end
   
-  if HasID(SetST,42110604,SetFReserve) then
-    return COMMAND_SET_ST,CurrentIndex
-  end
-  -- TurnEnd
+  -- TURN END CHECK
   if TurnEndCheck() then
-    -- ACTIVE EFFECT 
+    -- ACTIVE EFFECT
+	if HasIDNotNegated(SpSum,98280324,SpecialSummonSheep2) then
+      return COMMAND_SPECIAL_SUMMON,CurrentIndex
+    end
 	if HasIDNotNegated(Act,98280324,UseSheep2) then -- Sheep
       GlobalSheep = 1
       return COMMAND_ACTIVATE,CurrentIndex
     end
 	if HasIDNotNegated(Act,03841833,UseBear2) then -- Bear
       return COMMAND_ACTIVATE,CurrentIndex
+    end
+	if HasID(SetST,42110604,SetFReserve) then
+      return COMMAND_SET_ST,CurrentIndex
     end
 	if HasIDNotNegated(SetMon,61173621,SetChain) then
       return COMMAND_SET_MONSTER,CurrentIndex

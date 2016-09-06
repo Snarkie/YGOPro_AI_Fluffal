@@ -124,7 +124,13 @@ end
 -- FluffalS Count
 function CountToyVendorDiscardTarget()
   local result = 0
-  result = CountPrioTarget(AIHand(),PRIO_DISCARD)
+  local minPrio = 1
+  if AI.GetPlayerLP(1) <= 2000
+  or OppGetStrongestAttack() >= AI.GetPlayerLP(1)
+  then
+    minPrio = 0
+  end
+  result = CountPrioTarget(AIHand(),PRIO_DISCARD,minPrio)
   --print("CountToyVendorDiscardTarget: "..result)
   return result
 end
@@ -143,15 +149,16 @@ function CountFusionTarget()
 end
 function CountMaterialFTarget(cards)
   local result = 0
-  local minPrio = 4
+  local minPrio = 3
   if(
-    AI.GetPlayerLP(1) <= 5500
+    AI.GetPlayerLP(1) <= 6000
     or AI.GetPlayerLP(2) <= 5500
   ) then
     minPrio = 2
   end
   if(
     AI.GetPlayerLP(1) <= 2500
+	or OppGetStrongestAttack() >= AI.GetPlayerLP(1)
   ) then
     minPrio = 0
   end

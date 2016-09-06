@@ -24,10 +24,9 @@ Cada etapa irá mejorando conforme se encuentren errores, deficiencias en su algo
 Problemas conocidos:
 - Siempre invoica monstruo con toy vendor. Faltan colocar las condiciones.
 - La receta del deck no es la mejor (No la cambiaré pronto, no insistan).
-- No se ha creado el script para la fase de batalla, es decir, no atacará de la mejor manera para el deck, incluyendo a Frightuf Sheep.
-- A veces, convoca a Patchwork sin necesidad.
-- Otros.
-
+- No he creado los scripts para algunas cartas del extra deck.
+- A veces, invoca a Patchwork sin necesidad.
+- Varios otros.
 
 
 
@@ -43,7 +42,7 @@ R: En el primer punto, pero aún falta pulir detalles.
 - ¿Cuánto tiempo tardarás en sacar la versión 1.0?
 R: Trabajo, tengo capacitación constante, tengo familia, amigos, pasatiempos, me es difícil saber cuando, pero cuando algo me gusta lo hago.
 - ¿Puedo ayudarte?
-R: Sí, pero con algunas condiciones: Saber programación estructurada y tener ganas.
+R: Sí, pero con algunas condiciones: Saber programación estructurada, tener ganas y estudiar el tutorial de Snarky.
 - ¿Qué necesito saber para programar IA de YGOPro?
 R: Saber programación estructurada, aprender un poco de LUA, leer el tutorial de Snarky.
 - ¿Quien te conoce? 
@@ -53,7 +52,7 @@ R: Ingeniería en sistemas, soy programador Senior (4.5 años de experiencia)
 - ¿Programas algún otro juego?
 R: No, soy consultor de TI, programador Full Stack de diversos tipos de sistemas, pero no programo juegos.
 - ¿Me enseñas a programar?
-R: No tengo tiempo, pero puedo decirte la lista de lo que debes a aprender.
+R: No tengo tiempo, pero puedo decirte la lista de lo que debes a aprender, primero dime que te gusta más: Front End, Back End o ambos (Fullstack)
 
 
 Atte: Neftalí Michelet.

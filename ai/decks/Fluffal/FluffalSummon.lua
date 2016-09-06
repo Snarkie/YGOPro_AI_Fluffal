@@ -19,6 +19,7 @@ function SummonOwl3()
   return 
     OPTCheck(65331686)
 	and not HasID(UseLists({AIHand(),AIST()}),24094653,true) -- Polymerization
+	and not HasID(UseLists({AIHand(),AIST()}),43698897,true) -- FFactory
 	and not OPTCheck(72413000) -- Wings
 end
 function SpecialSummonSheep(c)
@@ -63,6 +64,8 @@ function SummonMouse()
     and Get_Card_Count_ID(AIDeck(),06142488) == 2
 	and #AIMon() < 3
 	and HasID(UseLists({AIHand(),AIST()}),24094653,true) -- Polymerization
+	and AI.GetPlayerLP(1) > OppGetStrongestAttack()
+	and AI.GetPlayerLP(1) >= 2000
 end
 function SummonPatchwork()
   return 
@@ -75,13 +78,19 @@ function SummonTomahawk()
 end
 function SummonChain()
   return 
-    OppGetStrongestAttack() < AIGetStrongestAttack()
-	or OppGetStrongestAttack() < 1200
+    Duel.GetTurnCount() ~= 1
+	and (
+	  OppGetStrongestAttack() < AIGetStrongestAttack()
+	  or OppGetStrongestAttack() < 1200
+	)
 end
 function SummonSabres()
   return 
-    OppGetStrongestAttack() < AIGetStrongestAttack()
-	or OppGetStrongestAttack() < 1200
+    Duel.GetTurnCount() ~= 1
+	and (
+	  OppGetStrongestAttack() < AIGetStrongestAttack()
+	  or OppGetStrongestAttack() < 1200
+	)
 end
 
 -- Frightfur Fusion Summon
@@ -94,7 +103,8 @@ function SpSummonFSabre()
   and (
 	GlobalMaterialF > 1 -- Fluffal
 	or OppGetStrongestAttack() >= AIGetStrongestAttack() -- Strong Opp
-  ) 
+  )
+  and Duel.GetTurnCount() ~= 1
   then
     return 
 	  not HasID(AIMon(),80889750,true) -- Frightfur Sabre-Tooth
@@ -108,6 +118,7 @@ function SpSummonFSabreBanish()
     CountFluffalBanishTarget(UseLists({AIMon(),AIGrave()})) > 0 -- Fluffal
 	or OppGetStrongestAttack() >= AIGetStrongestAttack() -- Strong Opp
   )
+  and Duel.GetTurnCount() ~= 1
   then
     return 
 	  not HasID(AIMon(),80889750,true)
@@ -161,7 +172,11 @@ function FWolfFinish()
     and #OppMon() == 0
 	or
 	HasID(AIMon(),80889750,true) 
-	and HasID(AIMon(),00464362,true) 
+	and HasID(AIMon(),00464362,true)
+	or 
+	#OppMon() == 1
+	and CardsMatchingFilter(OppST(),FilterPosition,POS_FACEDOWN) == 0
+	and HasID(AIMon(),00464362,true)
 end
 function SpSummonFWolf()
   if (

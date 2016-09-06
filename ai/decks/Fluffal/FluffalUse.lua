@@ -118,7 +118,7 @@ end
 function UseKoS(c)
   if not HasID(UseLists({AIST(),AIHand()}),24094653,true) -- Polymerization
   and (
-    CountEgdeImp(AIHand(),AIMon()) > 0
+    CountEgdeImp(UseLists({AIHand(),AIMon()})) > 0
 	or Get_Card_Count_ID(AIHand(),c.id) > 1
 	or HasID(UseLists({AIST(),AIHand()}),01845204,true) -- Instant Fusion
   )
@@ -234,6 +234,8 @@ end
 
 function UseFFusion(c)
   GlobalFFusion = 1
+  GlobalMaterialF = CountMaterialFTarget(UseLists({AIHand(),AIMon()}))
+  GlobalMaterialE = CountMaterialETarget(UseLists({AIHand(),AIMon()}))
   local countF = CountFusionTarget()
   GlobalFFusion = 0
   if countF > 0 then
@@ -249,7 +251,8 @@ function UseIFusion(c)
     HasID(UseLists({AIHand(),AIST()}),24094653,true) -- Polymerization
 	or HasID(UseLists({AIHand(),AIST()}),43698897,true) -- Frightfur Factory
   )
-  and CountFluffal(UseLists({AIMon(),AIHand()})) > 1
+  and CountMaterialFTarget(UseLists({AIHand(),AIMon()})) > 1
+  and Duel.GetTurnCount() ~= 1
   then
     OPTSet(c.id)
     return true
@@ -269,7 +272,7 @@ function UsePolymerization(c)
   
   GlobalFusionSummon = 0
   GlobalPolymerization = 0
-  if countF > 0 and GlobalMaterialF > 0
+  if countF > 0
   then
     return true
   else

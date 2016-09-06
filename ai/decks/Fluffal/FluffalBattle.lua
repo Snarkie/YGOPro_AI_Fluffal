@@ -1,6 +1,4 @@
 FluffalAtt={
-39246582, -- Fluffal Dog
-03841833, -- Fluffal Bear
 97567736, -- Edge Imp Tomahawk
 
 80889750, -- Frightfur Sabre-Tooth
@@ -95,7 +93,8 @@ function FluffalBattleCommand(cards,activatable) --FLUFFAL BATTLE COMMAND
   local targets = OppMon()
   local attackable = {}
   local mustattack = {}
-  local lightning = {}
+  local FrightfurSheep = {}
+  
   for i=1,#targets do
     if targets[i]:is_affected_by(EFFECT_CANNOT_BE_BATTLE_TARGET)==0 then
       attackable[#attackable+1]=targets[i]
@@ -103,18 +102,28 @@ function FluffalBattleCommand(cards,activatable) --FLUFFAL BATTLE COMMAND
     if targets[i]:is_affected_by(EFFECT_MUST_BE_ATTACKED)>0 then
       mustattack[#mustattack+1]=targets[i]
     end
-	if targets[i].attack == LightningMonitorAttack
-    and bit32.band(targets[i].position,POS_ATTACK)>0 then
-	  lightning[#lightning+1]=targets[i]
-	end
   end
+  
   if #mustattack>0 then
     targets = mustattack
-  elseif DoubleUtopiaActivated then
-    targets = lightning
   else
     targets = attackable
   end
   ApplyATKBoosts(targets)
+  
+  if HasIDNotNegated(cards,57477163) -- Frightfur Sheep
+  and CanWinBattle(cards[CurrentIndex],targets,true,false) then 
+    print("FSheep - Attack")
+    return Attack(IndexByID(cards,57477163))
+  end
+  if HasIDNotNegated(cards,10383554) -- Frightfur Leo
+  and CanWinBattle(cards[CurrentIndex],targets,true,false) then 
+    return Attack(IndexByID(cards,10383554))
+  end
+  --if HasIDNotNegated(cards,80889750) -- Frightfur Sabre-Tooth
+  --and CanWinBattle(cards[CurrentIndex],targets,true,false) then 
+    --return Attack(IndexByID(cards,80889750))
+  --end
+  
  return nil
 end

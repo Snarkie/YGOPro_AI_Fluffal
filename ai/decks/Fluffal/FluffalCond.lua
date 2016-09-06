@@ -136,8 +136,16 @@ function SheepCond(loc,c)
 	end
   end
   if loc == PRIO_TOHAND then
+    if OPTCheck(c.id) and not HasID(AIHand(),c.id,true)
+	and CountEgdeImp(AIGrave()) > 0 and CountFluffal(AIMon()) > 0
+	and CountEgdeImp(UseLists({AIHand(),AIMon()})) == 0 -- EdgeImp
+	and not HasID(UseLists({AIHand(),AIMon()}),79109599,true) -- KoS
+	and HasID(UseLists({AIHand(),AIST()}),24094653,true) -- Polymerization
+	then
+	  return 9
+	end
     return 
-	  OPTCheck(c.id) and not HasID(AIHand(),c.id,true) -- Sheep
+	  OPTCheck(c.id) and not HasID(AIHand(),c.id,true)
 	  and CountEgdeImp(AIGrave()) > 0 -- Edge Imp
   end
   if loc == PRIO_TOFIELD then
@@ -254,6 +262,9 @@ function MouseCond(loc,c)
   end
   if GlobalFusionSummon > 0 then
     if Get_Card_Count_ID(AIDeck(),c.id) == 0 then
+	  if #AIMon() >= 4 then
+	    return 10
+	  end
 	  if FilterPosition(c,POS_FACEUP_ATTACK) then
 	    return 9
 	  else
@@ -300,7 +311,13 @@ function WingsCond(loc,c)
 	end
   end
   if GlobalFusionSummon > 0 then
-    return 7
+    if OPTCheck(c.id)
+	and HasID(AIST(),70245411,true) -- Toy Vendor
+	then
+	  return 8
+	else
+      return 7
+	end
   end
   if loc == PRIO_TOHAND then
     return 
@@ -356,7 +373,7 @@ end
 -- EdgeImp Cond
 function TomahawkCond(loc,c)
   if GlobalFusionSummon == 2 then -- FirstMaterial
-    return 8
+    return 9
   end
   if GlobalFusionSummon > 2 then -- SecondMaterial
     return 6
@@ -516,7 +533,8 @@ function FFusionCond(loc,c)
   end
   if loc == PRIO_DISCARD then
     return 
-	  not OPTCheck(c.id) 
+	  not OPTCheck(c.id)
+	  or CountFluffalBanishTarget(AIGrave()) < 2
 	  or Get_Card_Count_ID(UseLists({AIST(),AIHand()}),c.id) > 1
   end
   if loc == PRIO_BANISH then
@@ -794,7 +812,7 @@ FluffalPriorityList={
  [79109599] = {1,1,2,1,9,1,1,1,10,1,KoSCond},		-- King of the Swamp
  [67441435] = {1,1,8,1,9,1,9,1,1,1,BulbCond},		-- Glow-Up Bulb
 
- [06077601] = {1,1,1,1,1,1,2,2,10,1,FFusionCond},	-- Frightfur Fusion
+ [06077601] = {1,1,1,1,1,1,2,1,10,1,FFusionCond},	-- Frightfur Fusion
  [43698897] = {3,1,1,1,1,1,1,1,1,1,FFactoryCond},	-- Frightfur Factory
  [70245411] = {3,1,1,1,2,1,1,1,1,1,ToyVendorCond},	-- Toy Vendor
  [01845204] = {1,1,1,1,3,2,3,1,4,1,IFusionCond},	-- Instant Fusion
