@@ -373,10 +373,6 @@ function FluffalEffectYesNo(id,card) -- FLUFFAL EFFECT YES/NO
     return 1
   end
   
-  if id == 33198837 then -- Frightfur Sheep
-    print("YesNoNaturiaBeast")
-  end
-  
   OPTSet(id)
   return result
 end

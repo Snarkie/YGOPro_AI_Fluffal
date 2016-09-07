@@ -35,7 +35,6 @@ function FluffalPosition(id,available) -- FLUFFAL POSITION
   
   local result
   if id == 57477163 and GlobalIFusion == 1 then -- FSheep by IFUsion
-    --print("GlobalIFusion: "..GlobalIFusion)
     return POS_FACEUP_DEFENCE
   end
   for i=1,#FluffalAtt do

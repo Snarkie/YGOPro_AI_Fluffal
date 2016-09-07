@@ -158,7 +158,6 @@ FluffalRepoBlacklist={
 }
 FluffalUnchainable={
 -- Blacklist for cards to not chain multiple copies in the same chain
---33198837, -- Naturia Beast
 }
 
 ------------------------
