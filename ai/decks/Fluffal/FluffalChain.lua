@@ -22,6 +22,18 @@ function ChainFTiger(c)
   return true
 end
 -- Other Chain
+function ChainNaturiaBeast(c)
+  local link = Duel.GetCurrentChain()
+  local p = Duel.GetChainInfo(link, CHAININFO_TRIGGERING_PLAYER)
+  if p then
+    if p == 1-player_ai then
+	  return true
+	else
+	  return false
+	end
+  end
+  return false	
+end
 -- FluffalS Chain
 -- Spell Chain
 -- Trap Chain
@@ -98,6 +110,10 @@ function FluffalChain(cards) -- FLUFFAL CHAINS
   
   if HasIDNotNegated(cards,00464362,ChainFTiger) then -- Frightfur Tiger
     return 1,CurrentIndex
+  end
+  
+  if HasIDNotNegated(cards,33198837,ChainNaturiaBeast,0) then -- Naturia Beast
+    return {1,CurrentIndex}
   end
   
   if HasIDNotNegated(cards,66127916,ChainFReserve) then -- FusionReserve

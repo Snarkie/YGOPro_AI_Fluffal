@@ -1,33 +1,33 @@
 # YGOPro_AI_Fluffal
-YGOPro - AI - Fluffal by neftalimich
+YGOPro - AI - Fluffal v0.0.0.5 by neftalimich
 
 Español: 
-El desarrollo de la AI tendrá etapas:
+El desarrollo de la IA tendrá diferentes etapas etapas:
 
 1. Crear el script para que pueda realizar sus jugadas en condiciones normales.
-	1. Init: Secuencia de jugadas.
-	2. Filter: Filtros y contadores para realizar las condiciones.
-	3. Cond: Condiciones y prioridades a la mano, al campo, al cementerio, descartar y desterrar.
-	4. Use: Condiciones para usar los efectos.
-	5. Target: Objetivos para la selección de cartas.
-	6. Chain: Cadenas (encadenar).
-	7. Summon: Condiciones para realizar la invocación.
-	8. Battle: Fase de batalla
-2. Mejorar la fase de batalla heredada y mejorar la lógica de las jugadas en cada fase. Es posible que restructure la fase de batalla y haga la propuesta a Snarky.
-3. Mejorar los scripts para que juegue contra las cartas Floodgate mas comunes.
-4. Crear script para que al azar realice jugadas arriesgadas en caso de que tenga desventaja.
-5. Crear distintas maneras de jugar contra decks que le generen debilidades. Ejemplo: Monarcas.
+	1. Init: Secuencia de jugadas. 80%
+	2. Filter: Filtros y contadores para realizar las condiciones. 75%
+	3. Cond: Condiciones y prioridades a la mano, al campo, al cementerio, descartar y desterrar. 70%
+	4. Use: Condiciones para usar los efectos. 80%
+	5. Target: Objetivos para la selección de cartas. 75%
+	6. Chain: Cadenas (encadenar). 85%
+	7. Summon: Condiciones para realizar la invocación. 80%
+	8. Battle: Fase de batalla. 30%
+2. Mejorar la fase de batalla heredada. 0%
+3. Mejorar los scripts para que juegue contra las cartas Floodgate mas comunes. 0%
+4. Crear script para que al azar realice jugadas arriesgadas en caso de que tenga desventaja. 5%
+5. Crear distintas maneras de jugar contra decks que le generen debilidades. Ejemplo: Monarcas. 0%
 
 Cada etapa irá mejorando conforme se encuentren errores, deficiencias en su algoritmo o mejoras en general.
 
 
 Problemas conocidos:
 - Siempre invoica monstruo con toy vendor. Faltan colocar las condiciones.
-- La receta del deck no es la mejor (No la cambiaré pronto, no insistan).
+- La receta del deck probablemente no es la mejor, la haré como a mí me guste.
+- Falta colocar y programar la carta Galaxy Cyclone.
 - No he creado los scripts para algunas cartas del extra deck.
 - A veces, invoca a Patchwork sin necesidad.
 - Varios otros.
-
 
 
 Preguntas Frecuentes:
@@ -52,7 +52,8 @@ R: Ingeniería en sistemas, soy programador Senior (4.5 años de experiencia)
 - ¿Programas algún otro juego?
 R: No, soy consultor de TI, programador Full Stack de diversos tipos de sistemas, pero no programo juegos.
 - ¿Me enseñas a programar?
-R: No tengo tiempo, pero puedo decirte la lista de lo que debes a aprender, primero dime que te gusta más: Front End, Back End o ambos (Fullstack)
+R: No tengo tiempo, pero puedo decirte la lista de lo que debes a aprender,
+pero primero dime que te gusta más: Front End, Back End o ambos (Fullstack).
 
 
 Atte: Neftalí Michelet.

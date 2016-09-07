@@ -32,8 +32,10 @@ FluffalDef={
 
 function FluffalPosition(id,available) -- FLUFFAL POSITION
   print("FluffalPosition: "..id)
+  
   local result
   if id == 57477163 and GlobalIFusion == 1 then -- FSheep by IFUsion
+    --print("GlobalIFusion: "..GlobalIFusion)
     return POS_FACEUP_DEFENCE
   end
   for i=1,#FluffalAtt do
@@ -58,8 +60,71 @@ function FluffalAttackTarget(cards,attacker) -- FLUFFAL ATTACK TARGET
   ApplyATKBoosts(cards)
   result = {}
   local atk = attacker.attack
+  if NotNegated(attacker) then
+    -- Frightfur Sheep
+    if id == 57477163 and CanWinBattle(attacker,cards,true,false) then
+      return FrightfurSheepAttackTarget(cards,attacker,false)
+    end
+  end
  return nil
 end
+
+function FrightfurSheepAttackTarget(cards,source,ignorebonus,filter,opt)
+  local atk = source.attack
+  if ignorebonus and source.bonus and source.bonus > 0 then
+    atk = math.max(0,atk - source.bonus)
+  end
+  local result = nil
+  for i=1,#cards do
+    local c = cards[i]
+    c.index = i
+    if FilterPosition(c,POS_FACEUP_ATTACK) then
+      if c.attack<atk or CrashCheck(source) and c.attack==atk then 
+        c.prio = c.attack
+      else
+        c.prio = c.attack * -1
+      end
+    end
+    if FilterPosition(c,POS_DEFENSE) then
+	  if c.defense < atk then 
+        c.prio = c.defense
+	  else
+	    c.prio = c.defense * -1
+	  end
+    end
+    if filter and (opt and not filter(c,opt) or opt==nil and  not filter(c)) 
+    then
+      c.prio = (c.prio or 0)-99999
+    end
+    if c.prio and c.prio>0 and not BattleTargetCheck(c,source) then
+      c.prio = -4
+    end
+    if not AttackBlacklistCheck(c,source) then
+      c.prio = (c.prio or 0)-99999
+    end
+    if CanFinishGame(source,c) then
+      c.prio=99999
+    end
+    if c.prio and c.prio>0 and FilterPublic(c) then
+      if FilterType(c,TYPE_SYNCHRO+TYPE_RITUAL+TYPE_XYZ+TYPE_FUSION) then
+        c.prio = c.prio + 1
+      end
+      if FilterType(c,TYPE_EFFECT) then
+        c.prio = c.prio + 1
+      end
+      if c.level>4 then
+        c.prio = c.prio + 1
+      end
+    end
+    if CurrentOwner(c)==1 then
+      c.prio = -1*c.prio
+    end
+  end
+  table.sort(cards,function(a,b) return a.prio > b.prio end)
+  result={cards[1].index}
+  return result
+end
+
 
 function FluffalAttackBoost(cards)  
   for i=1,#cards do

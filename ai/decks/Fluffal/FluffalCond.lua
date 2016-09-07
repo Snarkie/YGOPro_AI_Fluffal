@@ -181,7 +181,7 @@ function CatCond(loc,c)
 		or HasID(AIGrave(),24094653,true) --Polymerization
 	)
 	then
-	  return 10
+	  return 11
 	else
 	  return 1
 	end
@@ -261,18 +261,17 @@ function MouseCond(loc,c)
 	end
   end
   if GlobalFusionSummon > 0 then
+    local result = 1
     if Get_Card_Count_ID(AIDeck(),c.id) == 0 then
-	  if #AIMon() >= 4 then
-	    return 10
+	  result = 8
+	  if #AIMon() >= 4 and GlobalFusionId == 80889750 then
+	    result = result + 2
 	  end
 	  if FilterPosition(c,POS_FACEUP_ATTACK) then
-	    return 9
-	  else
-	    return 8
+	    result = result + 1
 	  end
-	else
-	  return 1
 	end
+	return result
   end
   if loc == PRIO_TOHAND then
     return 
@@ -290,7 +289,7 @@ function MouseCond(loc,c)
 	  return 10
 	end
     return 
-	  not OPTCheck(c.id) 
+	  not OPDCheck(c.cardid) 
 	  or Get_Card_Count_ID(AIDeck(),c.id) == 0
   end
   if loc == PRIO_BANISH then

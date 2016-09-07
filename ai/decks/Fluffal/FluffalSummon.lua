@@ -95,6 +95,9 @@ end
 
 -- Frightfur Fusion Summon
 function SpSummonFSabre()
+  if GlobalIFusion == 1 then
+    return true
+  end
   if (
     HasID(AIMon(),85545073,true) -- Frightfur Bear
 	or HasID(AIMon(),00464362,true) -- Frightfur Tiger
@@ -284,7 +287,8 @@ function SpSummonChanbara()
 	and GlobalBPAllowed
 end
 function SpSummonNaturiaBeast()
-  return OppGetStrongestAttDef()<=2200
+  return 
+    OppGetStrongestAttDef() <= 2200
 end
 
 ------------------------

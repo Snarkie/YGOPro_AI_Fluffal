@@ -7,14 +7,14 @@ require("ai.decks.Fluffal.FluffalChain")
 require("ai.decks.Fluffal.FluffalBattle")
 
 function FluffalStartup(deck)
-  print("AI_Fluffal v0.0.0.4.9 by neftalimich.")
+  print("AI_Fluffal v0.0.0.5 by neftalimich.")
   AI.Chat("¡Duelo!")
   
   deck.Init                 = FluffalInit
   deck.Card                 = FluffalCard
   deck.Chain                = FluffalChain
   deck.EffectYesNo          = FluffalEffectYesNo
-  --deck.YesNo				= FluffalYesNo
+  deck.YesNo				= FluffalYesNo
   deck.Position             = FluffalPosition
   deck.BattleCommand        = FluffalBattleCommand
   deck.AttackTarget         = FluffalAttackTarget
@@ -44,7 +44,7 @@ function FluffalStartup(deck)
   deck.MonsterType
   ]]
   
-  -- NOTA: Para hacer pruebas descomenta los las 4 lineas que compiezan con Duel.
+  -- NOTA: Para hacer pruebas descomenta las 5 lineas que compiezan con Duel.
   local e0=Effect.GlobalEffect()
 	e0:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
 	e0:SetCode(EVENT_CHAIN_SOLVED)
@@ -158,6 +158,7 @@ FluffalRepoBlacklist={
 }
 FluffalUnchainable={
 -- Blacklist for cards to not chain multiple copies in the same chain
+--33198837, -- Naturia Beast
 }
 
 ------------------------
@@ -198,7 +199,6 @@ function FluffalInit(cards) -- FLUFFAL INIT
   GlobalSabres = 0
   GlobalFFusion = 0
   GlobalToyVendor = 0
-  GlobalIFusion = 0
   GlobalFusionSummon = 0
   GlobalPolymerization = 0
   GlobalFusionId = 0
@@ -299,9 +299,13 @@ function FluffalInit(cards) -- FLUFFAL INIT
   if HasIDNotNegated(SpSum,98280324,SpecialSummonSheep) then
     return COMMAND_SPECIAL_SUMMON,CurrentIndex
   end
+  if HasIDNotNegated(SpSum,33198837,SpSummonNaturiaBeast) then
+    return COMMAND_SPECIAL_SUMMON,CurrentIndex
+  end
   if HasIDNotNegated(SpSum,42110604,SpSummonChanbara) then
     return COMMAND_SPECIAL_SUMMON,CurrentIndex
   end
+  
   
   -- ACTIVE EFFECT FUSION
   if HasIDNotNegated(Act,72413000,UseOwl2) then
@@ -380,6 +384,8 @@ function FluffalInit(cards) -- FLUFFAL INIT
       return COMMAND_SET_MONSTER,CurrentIndex
     end
   end
+  
+  GlobalIFusion = 0
   
   return nil
 end

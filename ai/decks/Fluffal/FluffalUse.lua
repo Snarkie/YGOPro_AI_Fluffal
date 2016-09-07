@@ -69,7 +69,7 @@ function UseSheep3(c)
 end
 
 function UseMouse(c)
-  OPTSet(c.id)
+  OPDSet(c.cardid)
   return true
 end
 function UseWings(c)
@@ -373,6 +373,10 @@ function FluffalEffectYesNo(id,card) -- FLUFFAL EFFECT YES/NO
     return 1
   end
   
+  if id == 33198837 then -- Frightfur Sheep
+    print("YesNoNaturiaBeast")
+  end
+  
   OPTSet(id)
   return result
 end
@@ -384,6 +388,9 @@ function FluffalYesNo(desc) -- FLUFFAL YES/NO
   end
   if desc == 1561083777 then -- Tomahawk Desc 2
     return 1
+  end
+  if desc == 93 then -- Choose material?
+    return 0
   end
   return nil
 end

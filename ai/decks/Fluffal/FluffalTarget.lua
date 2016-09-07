@@ -181,7 +181,10 @@ function FusionSummonTarget(cards,c,max)
     print("FusionTarget - SecondMaterial: ")
 	for i=1, #cards do
 	  local c = cards[i]
-	  print("Poly2: "..c.id.." - PRIO: "..GetPriority(c,PRIO_TOGRAVE))
+	  --print("Poly2: "..c.id.." - PRIO: "..GetPriority(c,PRIO_TOGRAVE))
+	end
+	if GlobalFusionId == 80889750 then -- Global Instant Fusion
+	  GlobalIFusion = 0
 	end
 	return Add(cards,PRIO_TOGRAVE,maxMaterials(GlobalFusionId,max))
   end
