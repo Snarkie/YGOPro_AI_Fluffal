@@ -63,9 +63,13 @@ function SummonMouse()
   return OPTCheck(06142488) 
     and Get_Card_Count_ID(AIDeck(),06142488) == 2
 	and #AIMon() < 3
-	and HasID(UseLists({AIHand(),AIST()}),24094653,true) -- Polymerization
+	and (
+	  HasID(UseLists({AIHand(),AIST()}),24094653,true) -- Polymerization
+	  or HasID(UseLists({AIHand(),AIST()}),43698897,true) -- FFactory
+	)
 	and AI.GetPlayerLP(1) > OppGetStrongestAttack()
 	and AI.GetPlayerLP(1) >= 2000
+	and Duel.GetTurnCount() ~= 1
 end
 function SummonPatchwork()
   return 
@@ -93,6 +97,31 @@ function SummonSabres()
 	)
 end
 
+-- Other Summon
+function SummonTourGuide()
+  if HasID(AIDeck(),30068120,true) -- Sabres
+  and OPTCheck(06142488) -- Mouse
+  and #AIMon() <= 3
+  then
+    if HasID(AIExtra(),83531441,true) -- Dante
+	and (
+	  CardsMatchingFilter(OppMon(),FilterAttackMax,2400) > 0
+	  or #OppMon() == 0
+	)
+    then
+      return true
+	elseif HasID(AIExtra(),41209827,true) -- Starve
+	and CardsMatchingFilter(OppMon(),FilterSummon,SUMMON_TYPE_SPECIAL) > 0
+    then
+	  return true
+	else
+	  return false
+	end
+  else 
+    return false
+  end
+end
+
 -- Frightfur Fusion Summon
 function SpSummonFSabre()
   if GlobalIFusion == 1 then
@@ -107,7 +136,6 @@ function SpSummonFSabre()
 	GlobalMaterialF > 1 -- Fluffal
 	or OppGetStrongestAttack() >= AIGetStrongestAttack() -- Strong Opp
   )
-  and Duel.GetTurnCount() ~= 1
   then
     return 
 	  not HasID(AIMon(),80889750,true) -- Frightfur Sabre-Tooth
@@ -260,6 +288,7 @@ function SpSummonFSheepBanish()
 	or HasID(AIMon(),00006131,true) -- Patchwork
   )
   and CountFluffalBanishTarget(UseLists({AIMon(),AIGrave()})) > 0
+  and (#OppMon() > 0 or HasID(AIGrave(),61173621,true)) -- Chain
   then
     return not HasID(AIMon(),57477163,true)
   end
@@ -268,10 +297,21 @@ end
 
 -- Other Fusion
 function SpSummonSVFD()
-  if (
-    CardsMatchingFilter(AIMon(),FilterAttribute,ATTRIBUTE_DARK) > 1 -- Dark
-	and CountEgdeImp(AIMon()) > 0
-  )
+  local countMaterial = 0
+  countMaterial = countMaterial + CountEgdeImp(AIMon())
+  if HasID(AIMon(),10802915,true) then -- TourGuide
+    countMaterial = countMaterial + 1
+  end
+  if HasID(AIMon(),00464362,true) then -- FTiger
+    countMaterial = countMaterial + 1
+  end
+  if HasID(AIMon(),57477163,true) then -- FSheep
+    countMaterial = countMaterial + 1
+  end
+  if CardsMatchingFilter(OppMon(),FilterSummon,SUMMON_TYPE_SPECIAL) > 0
+    and CardsMatchingFilter(OppMon(),FilterLevelMin,5) > 0
+	and HasID(UseLists({AIHand(),AIST()}),24094653,true) -- Polymerization
+	and countMaterial >= 2
   then
     return not HasID(AIMon(),41209827,true)
   end
@@ -279,6 +319,15 @@ function SpSummonSVFD()
 end
 
 -- Other Synchro
+function SpSummonNaturiaBeast()
+  return 
+    OppGetStrongestAttack() <= 2200
+end
+function SpSummonDante()
+  return 
+    CardsMatchingFilter(OppMon(),FilterAttackMax,2400) > 0
+	or #OppMon() == 0
+end
 function SpSummonChanbara()
   return 
     (OppGetStrongestAttack() < AIGetStrongestAttack()
@@ -286,11 +335,6 @@ function SpSummonChanbara()
     and AI.GetCurrentPhase() == PHASE_MAIN1
 	and GlobalBPAllowed
 end
-function SpSummonNaturiaBeast()
-  return 
-    OppGetStrongestAttDef() <= 2200
-end
-
 ------------------------
 --------- SET ----------
 ------------------------

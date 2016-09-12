@@ -227,6 +227,10 @@ function FusionSummonBanishTarget(cards,c,max)
   return Add(cards,PRIO_BANISH,1)
 end
 
+function GCycloneTarget(cards,c)
+  return BestTargets(cards,1,TARGET_DESTROY)
+end
+
 -- Trap Target
 function FReserveTarget(cards,c)
   if LocCheck(cards,LOCATION_EXTRA) then
@@ -356,5 +360,29 @@ function FluffalCard(cards,min,max,id,c) -- FLUFFAL CARDS
   if id == 00464362 then -- Frightfur Tiger
     return FTigerTarget(cards,c,max)
   end
+  
+  if id == 05133471 then -- Galaxy Cyclone
+    return GCycloneTarget(cards,c)
+  end
   return nil
+end
+function FluffalNumber(choices) -- FLUFFAL NUMBER
+  return nil
+end
+
+NoDestroy = {
+  57103969, -- Tenki
+  05851097, -- Vanity's Emptinesss
+}
+
+function NoDestroyCheck(c,filter,opt)
+  if c then
+    local id=c.id
+    for i=1,#NoDestroy do
+      if NoDestroy[i]==id then
+        return true
+      end
+    end
+  end
+  return false
 end

@@ -1,4 +1,5 @@
 FluffalAtt={
+39246582, -- Fluffal Dog
 97567736, -- Edge Imp Tomahawk
 
 80889750, -- Frightfur Sabre-Tooth
@@ -11,6 +12,7 @@ FluffalAtt={
 33198837, -- Naturia Beast
 42110604, -- Hi-Speedroid Chanbara
 82633039, -- Castel
+83531441, -- Dante
 }
 
 FluffalDef={
@@ -26,8 +28,6 @@ FluffalDef={
 --30068120, -- Edge Imp Sabres
 79109599, -- King of the Swamp
 67441435, -- Glow-Up Bulb
-
-83531441, -- Dante
 }
 
 function FluffalPosition(id,available) -- FLUFFAL POSITION
@@ -37,6 +37,16 @@ function FluffalPosition(id,available) -- FLUFFAL POSITION
   if id == 57477163 and GlobalIFusion == 1 then -- FSheep by IFUsion
     return POS_FACEUP_DEFENCE
   end
+  if id == 61173621 and Duel.GetTurnCount() == 1 then
+    return POS_FACEUP_DEFENCE
+  end
+  if id == 30068120 and Duel.GetTurnCount() == 1 then
+    return POS_FACEUP_DEFENCE
+  end
+  if id == 83531441 and Duel.GetTurnCount() == 1 then
+    return POS_FACEUP_DEFENCE
+  end
+  
   for i=1,#FluffalAtt do
     if FluffalAtt[i]==id
     then
@@ -176,7 +186,11 @@ function FluffalBattleCommand(cards,activatable) --FLUFFAL BATTLE COMMAND
   ApplyATKBoosts(targets)
   
   if HasIDNotNegated(cards,57477163) -- Frightfur Sheep
-  and CanWinBattle(cards[CurrentIndex],targets,true,false) then 
+  and (
+    CanWinBattle(cards[CurrentIndex],targets,true,false)
+	or #targets == 0
+  )
+  then 
     print("FSheep - Attack")
     return Attack(IndexByID(cards,57477163))
   end

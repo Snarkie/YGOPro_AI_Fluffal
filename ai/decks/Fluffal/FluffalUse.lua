@@ -32,6 +32,8 @@ function UseOwl(c)
 end
 function UseOwl2(c)
   GlobalFusionSummon = 1
+  GlobalMaterialF = CountMaterialFTarget(UseLists({AIHand(),AIMon()}))
+  GlobalMaterialE = CountMaterialETarget(UseLists({AIHand(),AIMon()}))  
   local countF = CountFusionTarget()
   GlobalFusionSummon = 0
   if countF > 0 then
@@ -69,8 +71,11 @@ function UseSheep3(c)
 end
 
 function UseMouse(c)
+  OPTSet(c.id)
   OPDSet(c.cardid)
-  return true
+  return 
+    OPTCheck(10802915) -- TourGuide
+	and OPTCheck(67441435) -- Bulb
 end
 function UseWings(c)
   if CountWingsTarget() > 0
@@ -92,35 +97,51 @@ end
 function UseSabres(c)
   if HasID(AIHand(),06142488,true) -- Mouse Hand
   and HasID(AIMon(),06142488,true) -- Mouse Field
-  and (
-    #AIMon() < 4 
-    or HasID(AICards(),24094653,true) -- Polymerization
-  )
+  and #AIMon() < 4 
   then
     return true
   else
     return false
   end
 end
-function UseBulb(c)
-  if FieldCheck(4) > 0 
+function UseSabres2(c)
+  if HasID(AIHand(),06142488,true) -- Mouse Hand
+  and HasID(AIMon(),06142488,true) -- Mouse Field
+  and #AIMon() < 4 
+  then
+    return true
+  elseif HasID(AIExtra(),83531441,true) -- Dante
   and OPTCheck(06142488) -- Mouse
-  and OppGetStrongestAttDef() <= 2100 
-  and AI.GetCurrentPhase() == PHASE_MAIN1
+  and CountPrioTarget(AIHand(),PRIO_DISCARD,1) > 0
+  and FieldCheck(3) > 0 
+  and OppGetStrongestAttDef() < 2500
   then 
-    OPDSet(c.id)
+    return true
+  elseif HasID(AIExtra(),41209827,true) -- Starve
+  and OPTCheck(06142488) -- Mouse
+  and CountPrioTarget(AIHand(),PRIO_DISCARD,1) > 0
+  and #AIHand() > 4
+  and CardsMatchingFilter(OppMon(),FilterSummon,SUMMON_TYPE_SPECIAL) > 0
+  and CardsMatchingFilter(OppMon(),FilterLevelMin,5) > 0
+  and CardsMatchingFilter(AIMon(),FilterAttribute,ATTRIBUTE_DARK) > 0
+  and HasID(UseLists({AIHand(),AIST()}),24094653,true) -- Polymerization
+  then 
     return true
   else
     return false
   end
 end
 -- Other Use
+function UseTourGuide()
+  OPTSet(10802915)
+  return true
+end
 function UseKoS(c)
-  if not HasID(UseLists({AIST(),AIHand()}),24094653,true) -- Polymerization
+  if not HasID(UseLists({AIHand(),AIST()}),24094653,true) -- Polymerization
   and (
-    CountEgdeImp(UseLists({AIHand(),AIMon()})) > 0
-	or Get_Card_Count_ID(AIHand(),c.id) > 1
-	or HasID(UseLists({AIST(),AIHand()}),01845204,true) -- Instant Fusion
+    CardsMatchingFilter(UseLists({AIHand(),AIMon()}),FilterID,c.id) > 1
+	or HasID(UseLists({AIHand(),AIST()}),01845204,true) -- Instant Fusion
+	or HasID(UseLists({AIHand(),AIMon()}),30068120,true) -- Sabres
   )
   then
     return true
@@ -142,7 +163,18 @@ function UseKoS2(c) -- When I dont have cards to discard
     return false
   end
 end
-
+function UseBulb(c)
+  if FieldCheck(4) > 0 
+  and OPTCheck(06142488) -- Mouse
+  and OppGetStrongestAttDef() <= 2100 
+  and AI.GetCurrentPhase() == PHASE_MAIN1
+  then 
+    OPDSet(c.id)
+    return true
+  else
+    return false
+  end
+end
 -- FluffalS Use
 function ActiveToyVendor(c)
   return 
@@ -193,6 +225,7 @@ function ActiveFFactory(c)
     if HasID(AIGrave(),06077601,true) -- Frightfur Fusion
     or HasID(AIGrave(),01845204,true) -- Instant Fusion
 	or Get_Card_Count_ID(AIGrave(),24094653) > 1 -- Polymerization
+	or AI.GetPlayerLP(1) <= 2000
 	then
 	  GlobalFusionSummon = 1
 	  GlobalMaterialF = CountMaterialFTarget(UseLists({AIHand(),AIMon()}))
@@ -215,7 +248,9 @@ function UseFFactory(c)
   if FilterLocation(c,LOCATION_SZONE) then
     if HasID(AIGrave(),06077601,true) -- Frightfur Fusion
     or HasID(AIGrave(),01845204,true) -- Instant Fusion
-	or Get_Card_Count_ID(AIGrave(),24094653) > 1 then -- Polymerization
+	or Get_Card_Count_ID(AIGrave(),24094653) > 1 -- Polymerization
+	or AI.GetPlayerLP(1) <= 2000
+	then
 	  GlobalFusionSummon = 1
 	  GlobalMaterialF = CountMaterialFTarget(UseLists({AIHand(),AIMon()}))
       GlobalMaterialE = CountMaterialETarget(UseLists({AIHand(),AIMon()}))
@@ -234,8 +269,6 @@ end
 
 function UseFFusion(c)
   GlobalFFusion = 1
-  GlobalMaterialF = CountMaterialFTarget(UseLists({AIHand(),AIMon()}))
-  GlobalMaterialE = CountMaterialETarget(UseLists({AIHand(),AIMon()}))
   local countF = CountFusionTarget()
   GlobalFFusion = 0
   if countF > 0 then
@@ -279,9 +312,36 @@ function UsePolymerization(c)
     return false
   end
 end
+
+function UseGCyclone(c)
+  if FilterLocation(c,LOCATION_HAND)
+  or FilterLocation(c,LOCATION_SZONE)
+  then
+    if CardsMatchingFilter(OppST(),FilterPosition,POS_FACEDOWN) > 0 then
+	  return true
+	else
+	  return false
+	end
+  end
+  local oppSTFaceUp = CardsMatchingFilter(OppST(),FilterPosition,POS_FACEUP)
+  local oppSTNoDestroy = CardsMatchingFilter(OppST(),NoDestroyCheck)
+  if FilterLocation(c,LOCATION_GRAVE) then
+    if oppSTFaceUp > 0
+	and oppSTFaceUp > oppSTNoDestroy
+	then
+	  return true
+	else
+	  return false
+	end
+  end
+  return false
+end
 -- Trap Use
 function UseFReserve(c)
-  return HasID(AIGrave(),24094653,true) or AI.GetPlayerLP(1) <= 2000
+  return HasID(AIGrave(),24094653,true)
+end
+function UseFReserve2(c)
+  return AI.GetPlayerLP(1) <= 2000
 end
 -- Frightfur Use
 function UseFSabre(c)
@@ -295,6 +355,18 @@ function UseFTiger(c)
   if CardsMatchingFilter(OppField(),FTigerDestroyFilter) > 0 then
 	return true
   end
+end
+
+-- Other Use
+function UseDante(c)
+  GlobalActivatedCardID = c.id
+  OPDSet(c.id)
+  return true
+end
+function UseStarve(c)
+  GlobalActivatedCardID = c.id
+  OPDSet(c.id)
+  return true
 end
 
 --39246582, -- Fluffal Dog
@@ -353,6 +425,10 @@ function FluffalEffectYesNo(id,card) -- FLUFFAL EFFECT YES/NO
 	result = 1
   end
   
+  if id == 10802915 then -- TourGuide
+	result = UseTourGuide()
+  end
+  
   if id == 43698897 then -- Frightfur Factory
 	result = 1
   end
@@ -370,6 +446,10 @@ function FluffalEffectYesNo(id,card) -- FLUFFAL EFFECT YES/NO
     return UseFTiger(card)
   end
   if id == 57477163 then -- Frightfur Sheep
+    return 1
+  end
+  
+  if id == 41209827 then -- Starve
     return 1
   end
   

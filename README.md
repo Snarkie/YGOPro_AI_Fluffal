@@ -1,5 +1,5 @@
 # YGOPro_AI_Fluffal
-YGOPro - AI - Fluffal v0.0.0.5 by neftalimich
+YGOPro - AI - Fluffal v0.0.0.5.1 by neftalimich
 
 Español: 
 El desarrollo de la IA tendrá diferentes etapas etapas:
@@ -24,10 +24,10 @@ Cada etapa irá mejorando conforme se encuentren errores, deficiencias en su algo
 Problemas conocidos:
 - Siempre invoica monstruo con toy vendor. Faltan colocar las condiciones.
 - La receta del deck probablemente no es la mejor, la haré como a mí me guste.
-- Falta colocar y programar la carta Galaxy Cyclone.
 - No he creado los scripts para algunas cartas del extra deck.
 - A veces, invoca a Patchwork sin necesidad.
 - Varios otros.
+- La versión 5.1 agregó muchas nuevas cartas y con ello, muchos nuevos bugs T-T
 
 
 Preguntas Frecuentes:

@@ -113,6 +113,7 @@ function CountFluffalGraveTarget(cards)
 end
 function CountFluffalBanishTarget(cards)
   local result = 0
+  --result = CountPrioTarget(cards,PRIO_BANISH,1,TYPE_MONSTER,FluffalFilter,nil,"CountFluffalBanishTarget")
   result = CountPrioTarget(cards,PRIO_BANISH,1,TYPE_MONSTER,FluffalFilter)
   return result
 end
@@ -130,6 +131,7 @@ function CountToyVendorDiscardTarget()
   then
     minPrio = 0
   end
+  --result = CountPrioTarget(AIHand(),PRIO_DISCARD,minPrio,nil,nil,nil,"CountToyVendorDiscardTarget")
   result = CountPrioTarget(AIHand(),PRIO_DISCARD,minPrio)
   --print("CountToyVendorDiscardTarget: "..result)
   return result
@@ -144,7 +146,6 @@ function CountFusionTarget()
   local result = 0
   --result = CountPrioTarget(AIExtra(),PRIO_TOFIELD,1,nil,nil,nil,"CountFusionTarget")
   result = CountPrioTarget(AIExtra(),PRIO_TOFIELD,1)
-  --print("CountFusionTarget: "..result)
   return result
 end
 function CountMaterialFTarget(cards)
@@ -153,6 +154,7 @@ function CountMaterialFTarget(cards)
   if(
     AI.GetPlayerLP(1) <= 6000
     or AI.GetPlayerLP(2) <= 5500
+	or #OppMon() == 0
   ) then
     minPrio = 2
   end
@@ -187,6 +189,7 @@ end
 --97567736, -- Edge Imp Tomahawk
 --61173621, -- Edge Imp Chain
 --30068120, -- Edge Imp Sabres
+--10802915, -- Tour Guide from the Underworld
 --79109599, -- King of the Swamp
 --67441435, -- Glow-Up Bulb
 
