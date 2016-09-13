@@ -7,7 +7,7 @@ require("ai.decks.Fluffal.FluffalChain")
 require("ai.decks.Fluffal.FluffalBattle")
 
 function FluffalStartup(deck)
-  print("AI_Fluffal v0.0.0.5.1 by neftalimich.")
+  print("AI_Fluffal v0.0.0.5 by neftalimich.")
   AI.Chat("¡Duelo!")
   
   deck.Init                 = FluffalInit
@@ -51,20 +51,20 @@ function FluffalStartup(deck)
 	e0:SetCode(EVENT_CHAIN_SOLVED)
 	e0:SetOperation(function(e,tp,eg,ep,ev,re,r,rp)
 		local g=Duel.GetFieldGroup(player_ai,LOCATION_HAND,0)
-		--Duel.ConfirmCards(1-player_ai,g)
+		Duel.ConfirmCards(1-player_ai,g)
 	end)
-	--Duel.RegisterEffect(e0,0)
+	Duel.RegisterEffect(e0,0)
 	local e1=e0:Clone()
 	e1:SetCode(EVENT_TO_HAND)
-	--Duel.RegisterEffect(e1,0)
+	Duel.RegisterEffect(e1,0)
 	local e2=e0:Clone()
 	e2:SetCode(EVENT_PHASE_START+PHASE_MAIN1)
-	--Duel.RegisterEffect(e2,0)
+	Duel.RegisterEffect(e2,0)
   local e3=Effect.GlobalEffect()
   e3:SetType(EFFECT_TYPE_FIELD)
   e3:SetCode(EFFECT_PUBLIC)
   e3:SetTargetRange(LOCATION_HAND,0)
-  --Duel.RegisterEffect(e3,player_ai)
+  Duel.RegisterEffect(e3,player_ai)
 end
 
 FluffalIdentifier = 03841833 -- Bear
@@ -86,6 +86,7 @@ FluffalActivateBlacklist={
 97567736, -- Edge Imp Tomahawk
 61173621, -- Edge Imp Chain
 30068120, -- Edge Imp Sabres
+--10802915, -- Tour Guide from the Underworld
 79109599, -- King of the Swamp
 67441435, -- Glow-Up Bulb
 
@@ -347,6 +348,7 @@ function FluffalInit(cards) -- FLUFFAL INIT
   end
   if HasIDNotNegated(Act,06077601,UseFFusion)
   and HasID(AIGrave(),79109599,true) -- KoS
+  and not SpSummonSVFD() -- Starve
   then 
     GlobalFFusion = 1
     return COMMAND_ACTIVATE,CurrentIndex
@@ -435,6 +437,9 @@ function FluffalInit(cards) -- FLUFFAL INIT
       return COMMAND_SET_MONSTER,CurrentIndex
     end
 	if HasIDNotNegated(SetMon,30068120,SetSabres) then
+      return COMMAND_SET_MONSTER,CurrentIndex
+    end
+	if HasIDNotNegated(SetMon,72413000,SetWings) then
       return COMMAND_SET_MONSTER,CurrentIndex
     end
   end

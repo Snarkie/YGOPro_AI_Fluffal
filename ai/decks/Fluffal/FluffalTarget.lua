@@ -256,7 +256,20 @@ function FTigerTarget(cards,c,max)
   if maxTargets > max then
     maxTargets = max
   end
-  return BestTargets(cards,maxTargets,TARGET_DESTROY,FTigerDestroyFilter)
+  
+  local FFactoryIndex = IndexByID(cards,43698897)
+  
+  local result = BestTargets(cards,maxTargets,TARGET_DESTROY,FTigerDestroyFilter)
+  
+  if #result < max then
+    if not OPTCheck(43698897) -- FFactory
+	and HasID(AIBanish(),06077601,true) -- FFusion
+	then
+      result[#result+1] = FFactoryIndex
+	end
+  end
+  
+  return result
 end
 
 --39246582, -- Fluffal Dog
@@ -274,9 +287,9 @@ end
 --79109599, -- King of the Swamp
 --67441435, -- Glow-Up Bulb
 
+--70245411, -- Toy Vendor
 --06077601, -- Frightfur Fusion
 --43698897, -- Frightfur Factory
---70245411, -- Toy Vendor
 --01845204, -- Instant Fusion
 --24094653, -- Polymerization
 --43898403, -- Twin Twister

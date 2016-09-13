@@ -144,11 +144,10 @@ function SheepCond(loc,c)
   if loc == PRIO_TOHAND then
     if OPTCheck(c.id) and not HasID(AIHand(),c.id,true)
 	and CountEgdeImp(AIGrave()) > 0 and CountFluffal(AIMon()) > 0
-	and CountEgdeImp(UseLists({AIHand(),AIMon()})) == 0 -- EdgeImp
 	and not HasID(UseLists({AIHand(),AIMon()}),79109599,true) -- KoS
 	and HasID(UseLists({AIHand(),AIST()}),24094653,true) -- Polymerization
 	then
-	  return 9
+	  return 8
 	end
     return 
 	  OPTCheck(c.id) and not HasID(AIHand(),c.id,true)
@@ -298,9 +297,11 @@ function MouseCond(loc,c)
     if GlobalSabres == 1 then
 	  return 10
 	end
+	if Get_Card_Count_ID(AIDeck(),c.id) == 1 then
+	  return 2
+	end
     return 
-	  not OPDCheck(c.cardid) 
-	  or Get_Card_Count_ID(AIDeck(),c.id) == 0
+	  Get_Card_Count_ID(AIDeck(),c.id) == 0
   end
   if loc == PRIO_BANISH then
     return true
@@ -334,6 +335,12 @@ function WingsCond(loc,c)
 	  and ( 
 	    Get_Card_Count_ID(AIHand(),70245411) > 0 -- Toy Vendor
 	    or CardsMatchingFilter(AIST(),ToyVendorCheckFilter,true) > 0 -- Toy Vendor
+		or HasID(AIST(),70245411,true) -- Toy Vendor
+		and HasID(UseLists({AIHand(),AIST()}),24094653,true) -- Polymerization
+		and (
+		  CountEgdeImp(UseLists({AIHand(),AIMon()})) > 0 -- EdgeImp
+		  or HasID(UseLists({AIHand(),AIMon()}),79109599,true) -- KoS
+		)
 	  )
   end
   if loc == PRIO_TOFIELD then
@@ -579,7 +586,7 @@ function FFusionCond(loc,c)
   end
   if loc == PRIO_DISCARD then
     return 
-	  Duel.GetTurnCount() > 1
+	  Duel.GetTurnCount() > 2
 	  and (
 	    not OPTCheck(c.id)
 	    or CountFluffalBanishTarget(AIGrave()) < 2
@@ -888,15 +895,15 @@ FluffalPriorityList={
 --PRIO_DISCARD = 7
 --PRIO_BANISH = 9
  
- [39246582] = {9,1,7,1,4,1,1,1,9,1,DogCond},		-- Fluffal Dog
+ [39246582] = {8,1,7,1,4,1,1,1,9,1,DogCond},		-- Fluffal Dog
  [03841833] = {10,1,1,1,4,1,4,1,8,1,BearCond},		-- Fluffal Bear
- [65331686] = {5,3,9,1,2,1,1,1,5,1,OwlCond},		-- Fluffal Owl
- [98280324] = {4,3,1,1,3,1,1,1,6,1,SheepCond},		-- Fluffal Sheep
+ [65331686] = {5,4,9,1,2,1,1,1,5,1,OwlCond},		-- Fluffal Owl
+ [98280324] = {6,2,1,1,3,1,1,1,6,1,SheepCond},		-- Fluffal Sheep
  [02729285] = {7,5,2,1,1,1,1,1,2,1,CatCond},		-- Fluffal Cat
- [38124994] = {6,4,2,1,1,1,1,1,7,1,RabitCond},		-- Fluffal Rabit
+ [38124994] = {5,3,2,1,1,1,1,1,7,1,RabitCond},		-- Fluffal Rabit
  [06142488] = {1,1,10,2,5,1,4,1,10,1,MouseCond},	-- Fluffal Mouse
- [72413000] = {8,1,1,1,8,1,10,1,1,1,WingsCond},		-- Fluffal Wings
- [00006131] = {1,1,5,1,5,1,1,1,2,1,PatchworkCond},	-- Fluffal Patchwork (BETA)
+ [72413000] = {9,1,1,1,8,1,10,1,1,1,WingsCond},		-- Fluffal Wings
+ [00006131] = {1,1,5,1,5,1,1,1,3,1,PatchworkCond},	-- Fluffal Patchwork (BETA)
  [97567736] = {1,1,6,3,8,1,7,1,6,1,TomahawkCond},	-- Edge Imp Tomahawk
  [61173621] = {8,3,4,4,6,1,6,1,4,1,ChainCond},		-- Edge Imp Chain
  [30068120] = {7,2,3,5,7,1,5,1,5,1,SabresCond},		-- Edge Imp Sabres

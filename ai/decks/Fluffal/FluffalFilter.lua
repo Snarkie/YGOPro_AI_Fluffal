@@ -125,7 +125,12 @@ end
 -- FluffalS Count
 function CountToyVendorDiscardTarget()
   local result = 0
-  local minPrio = 1
+  local minPrio = 2
+  if AI.GetPlayerLP(1) <= 4000
+  or OppGetStrongestAttack() >= AI.GetPlayerLP(1)
+  then
+    minPrio = 1
+  end
   if AI.GetPlayerLP(1) <= 2000
   or OppGetStrongestAttack() >= AI.GetPlayerLP(1)
   then

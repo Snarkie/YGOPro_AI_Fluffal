@@ -142,6 +142,12 @@ function UseKoS(c)
     CardsMatchingFilter(UseLists({AIHand(),AIMon()}),FilterID,c.id) > 1
 	or HasID(UseLists({AIHand(),AIST()}),01845204,true) -- Instant Fusion
 	or HasID(UseLists({AIHand(),AIMon()}),30068120,true) -- Sabres
+	or HasID(UseLists({AIHand(),AIMon()}),61173621,true) -- Chain
+	and not HasID(AIMon(),57477163,true) -- FSheep
+  )
+  and not (
+    HasID(AIHand(),65331686,true) -- Owl
+	and not NormalSummonCheck()
   )
   then
     return true
@@ -257,6 +263,7 @@ function UseFFactory(c)
       local countF = CountFusionTarget()
 	  GlobalFusionSummon = 1
       if countF > 0 then
+	    OPTSet(c.id)
         return true
       else
         return false
@@ -272,6 +279,7 @@ function UseFFusion(c)
   local countF = CountFusionTarget()
   GlobalFFusion = 0
   if countF > 0 then
+    OPTSet(c.id)
     return true
   else
     return false

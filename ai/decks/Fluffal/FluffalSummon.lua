@@ -112,6 +112,8 @@ function SummonTourGuide()
       return true
 	elseif HasID(AIExtra(),41209827,true) -- Starve
 	and CardsMatchingFilter(OppMon(),FilterSummon,SUMMON_TYPE_SPECIAL) > 0
+	and CardsMatchingFilter(OppMon(),FilterLevelMin,5) > 0
+	and HasID(UseLists({AIHand(),AIST()}),24094653,true) -- Polymerization
     then
 	  return true
 	else
@@ -339,12 +341,25 @@ end
 --------- SET ----------
 ------------------------
 -- FluffalM Set
+function SetWings(c)
+  if #AIMon() == 0 then
+    return true
+  else
+    return false
+  end
+  return false
+end
 -- EdgeImp Set
 function SetChain(c)
   return true
 end
 function SetSabres(c)
-  return true
+  if #AIMon() == 0 then
+    return true
+  else
+    return false
+  end
+  return false
 end
 -- Other Set
 -- FluffalS Set

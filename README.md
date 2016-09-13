@@ -26,8 +26,8 @@ Problemas conocidos:
 - La receta del deck probablemente no es la mejor, la haré como a mí me guste.
 - No he creado los scripts para algunas cartas del extra deck.
 - A veces, invoca a Patchwork sin necesidad.
+- Falta ser mas ofensivo.
 - Varios otros.
-- La versión 5.1 agregó muchas nuevas cartas y con ello, muchos nuevos bugs T-T
 
 
 Preguntas Frecuentes:
