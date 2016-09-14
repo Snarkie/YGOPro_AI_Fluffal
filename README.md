@@ -29,6 +29,15 @@ Problemas conocidos:
 - Falta ser mas ofensivo.
 - Varios otros.
 
+Método de instalación:
+
+1. Descomprime el paquete. Revisa que contiene las carpeta ai, deck, pics (opcional).
+2. Copia las carpetas en el directorio raiz de YGOPro 1.033.AI (dentro están las carpetas por defecto: ai, deck)
+3. Te preguntará si deseas combinar las carpetas y/o sobrescribir los archivos, elige que sí.
+
+Nota: comprueba que sobrescribes los archivos ai.lua y AIHelperFunctions2.lua y combinas las carpetas "ai" y "deck".
+de lo contrario no funcionará.
+
 
 Preguntas Frecuentes:
 - ¿Eres el único en el proyecto?
