@@ -205,22 +205,22 @@ function FusionSummonBanishTarget(cards,c,max)
     print("FusionTarget: "..GlobalFusionId)
     return Add(cards,PRIO_TOFIELD)
   end
-  if GlobalFusionSummon == 1 then
-    GlobalFusionSummon = 2
-    print("BanishFusionTarget - FirstMaterial: ")
+  if GlobalFFusion == 1 then
+    GlobalFFusion = 2
+    --print("BanishFusionTarget - FirstMaterial: ")
 	for i=1, #cards do
 	  local c = cards[i]
 	  result[i] = c
-	  --print("Poly1: "..c.id.." - PRIO: "..GetPriority(c,PRIO_BANISH))
+	  --print("FFusion: "..c.id.." - PRIO: "..GetPriority(c,PRIO_BANISH))
 	end
 	return Add(cards,PRIO_BANISH)
   end
-  if GlobalFusionSummon == 2 then
-    GlobalFusionSummon = 3
-    print("BanishFusionTarget - SecondMaterial: ")
+  if GlobalFFusion == 2 then
+    GlobalFFusion = 3
+    --print("BanishFusionTarget - SecondMaterial: ")
 	for i=1, #cards do
 	  local c = cards[i]
-	  --print("Poly2: "..c.id.." - PRIO: "..GetPriority(c,PRIO_BANISH))
+	  --print("FFusion2: "..c.id.." - PRIO: "..GetPriority(c,PRIO_BANISH))
 	end
 	return Add(cards,PRIO_BANISH,maxMaterials(GlobalFusionId,max))
   end

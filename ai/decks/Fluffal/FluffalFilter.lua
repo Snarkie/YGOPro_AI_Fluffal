@@ -155,14 +155,7 @@ function CountFusionTarget()
 end
 function CountMaterialFTarget(cards)
   local result = 0
-  local minPrio = 3
-  if(
-    AI.GetPlayerLP(1) <= 6000
-    or AI.GetPlayerLP(2) <= 5500
-	or #OppMon() == 0
-  ) then
-    minPrio = 2
-  end
+  local minPrio = 1
   if(
     AI.GetPlayerLP(1) <= 2500
 	or OppGetStrongestAttack() >= AI.GetPlayerLP(1)

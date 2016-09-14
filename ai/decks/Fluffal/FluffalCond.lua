@@ -513,7 +513,9 @@ function TourGuideCond(loc,c)
   return true
 end
 function KoSCond(loc,c)
-  if GlobalFusionSummon > 0 then
+  if GlobalFusionSummon > 0
+  or GlobalFFusion > 0
+  then
     return 10
   end
   if loc == PRIO_TOHAND then
@@ -708,7 +710,7 @@ function FReserveCond(loc,c)
 end
 
 -- Frightfur Cond
-function FSabreCond(loc,c)
+function FSabreToothCond(loc,c)
   if loc == PRIO_TOHAND then
     return OPTCheck(c.id) and not HasID(AIHand(),c.id,true)
   end
@@ -857,9 +859,13 @@ function FSheepCond(loc,c)
 	  return SpSummonFSheepBanish()
 	end
   end
-  if loc == PRIO_TOGRAVE and not OPTCheck(c.cardid) then -- Instant Fusion
-    OPTReset(c.cardid)
-    return 99999
+  if loc == PRIO_TOGRAVE then
+	if FilterAffected(c,EFFECT_CANNOT_ATTACK) then -- Instant Fusion
+	  OPTReset(c.cardid)
+	  return 9999
+	else 
+	  return true
+	end
   end
   if loc == PRIO_TOGRAVE then
     if GlobalFusionSummon > 1 then
@@ -921,7 +927,7 @@ FluffalPriorityList={
 
  [66127916] = {1,1,1,1,1,1,1,1,1,1,FReserveCond}, 	-- Fusion Reserve
  
- [80889750] = {1,1,6,1,1,1,1,1,4,1,FSabreCond},		-- Frightfur Sabre-Tooth
+ [80889750] = {1,1,6,1,1,1,1,1,4,1,FSabreToothCond},-- Frightfur Sabre-Tooth
  [10383554] = {1,1,7,1,2,1,1,1,10,1,FLeoCond},		-- Frightfur Leo
  [85545073] = {5,1,1,1,3,1,1,1,2,1,FBearCond},		-- Frightfur Bear
  [11039171] = {2,1,7,1,2,1,1,1,9,1,FWolfCond},		-- Frightfur Wolf

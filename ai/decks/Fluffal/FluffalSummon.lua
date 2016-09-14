@@ -140,8 +140,12 @@ function SpSummonFSabre()
   )
   then
     return 
-	  not HasID(AIMon(),80889750,true) -- Frightfur Sabre-Tooth
-	  and AI.GetCurrentPhase() == PHASE_MAIN1
+	  AI.GetCurrentPhase() == PHASE_MAIN1
+	  and (
+	    not HasID(AIMon(),80889750,true) -- Frightfur Sabre-Tooth
+		or OppGetStrongestAttack() >= 3200
+		or #AIMon() <= 2 and #AIST() <= 1
+	  )
   end
   return false
 end

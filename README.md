@@ -1,5 +1,5 @@
 # YGOPro_AI_Fluffal
-YGOPro - AI - Fluffal v0.0.0.5.1 by neftalimich
+YGOPro - AI - Fluffal v0.0.0.5.2 by neftalimich
 
 Español: 
 El desarrollo de la IA tendrá diferentes etapas etapas:
