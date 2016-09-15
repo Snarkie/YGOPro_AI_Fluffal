@@ -19,11 +19,11 @@ El desarrollo de la IA tendrá diferentes etapas etapas:
 5. Crear distintas maneras de jugar contra decks que le generen debilidades. Ejemplo: Monarcas. 0%
 
 Cada etapa irá mejorando conforme se encuentren errores, deficiencias en su algoritmo o mejoras en general.
-
+Se colocará junto a la versión si es estable o no.
 
 Problemas conocidos:
 - Siempre invoica monstruo con toy vendor. Faltan colocar las condiciones.
-- La receta del deck probablemente no es la mejor, la haré como a mí me guste.
+- La receta será a mi gusto, no insistan con cambios.
 - No he creado los scripts para algunas cartas del extra deck.
 - A veces, invoca a Patchwork sin necesidad.
 - Falta ser un poco más ofensivo.
@@ -54,7 +54,7 @@ R: Trabajo, tengo capacitación constante, tengo familia, amigos, pasatiempos, me
 R: Sí, pero con algunas condiciones: Saber programación estructurada, tener ganas y estudiar el tutorial de Snarky.
 - ¿Qué necesito saber para programar IA de YGOPro?
 R: Saber programación estructurada, aprender un poco de LUA, leer el tutorial de Snarky.
-- ¿Quien te conoce? 
+- ¿Quién te conoce? 
 R: Mi familia, mis amigos, mis compañeros y toda la gente de mi alrededor.
 - ¿Qué estudiate, en qué trabajas? 
 R: Ingeniería en sistemas, soy programador Senior (4.5 años de experiencia)

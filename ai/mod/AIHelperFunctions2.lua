@@ -10,7 +10,7 @@ function OnAIGoingFirstSecond(name)
   or name=="AI_Kozmo"
   or name=="AI_Lightsworn"
   or name=="AI_GladiatorBeast"
-  or name=="AI_Fluffal"
+  or name=="AI_Fluffal" -- This is the only change I made to the file.
   then
     player_ai = 1
     result = 0
