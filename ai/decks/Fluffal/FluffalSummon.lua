@@ -66,6 +66,7 @@ function SummonMouse()
 	and (
 	  HasID(UseLists({AIHand(),AIST()}),24094653,true) -- Polymerization
 	  or HasID(UseLists({AIHand(),AIST()}),43698897,true) -- FFactory
+	  or HasID(UseLists({AIHand(),AIST()}),06077601,true) -- FFusion
 	)
 	and AI.GetPlayerLP(1) > OppGetStrongestAttack()
 	and AI.GetPlayerLP(1) >= 2000
@@ -124,6 +125,17 @@ function SummonTourGuide()
   end
 end
 
+function SummonBulb()
+  if FieldCheck(4) > 0 
+  and OPTCheck(06142488) -- Mouse
+  and OppGetStrongestAttDef() <= 2100 
+  and AI.GetCurrentPhase() == PHASE_MAIN1
+  then 
+    return true
+  end
+  return false
+end
+
 -- Frightfur Fusion Summon
 function SpSummonFSabre()
   if GlobalIFusion == 1 then
@@ -143,8 +155,7 @@ function SpSummonFSabre()
 	  AI.GetCurrentPhase() == PHASE_MAIN1
 	  and (
 	    not HasID(AIMon(),80889750,true) -- Frightfur Sabre-Tooth
-		or OppGetStrongestAttack() >= 3200
-		or #AIMon() <= 2 and #AIST() <= 1
+		or #AIMon() <= 2 and #AIST() <= 2
 	  )
   end
   return false
@@ -250,11 +261,15 @@ function SpSummonFTiger()
     or HasID(UseLists({AIMon(),AIHand()}),79109599,true) -- Kos
 	or HasID(AIMon(),00006131,true) -- Patchwork
   )
-  and GlobalMaterialF > 0 -- Fluffal
+  and (
+    GlobalMaterialF > 1 -- Fluffal
+	or GlobalMaterialF > 0
+	and OppGetStrongestAttack() >= AIGetStrongestAttack()
+  )
   then
     return 
 	  not HasID(AIMon(),00464362,true) 
-	  and #OppField() > 0
+	  and #OppField() > 1
 	  and AI.GetCurrentPhase() == PHASE_MAIN1
   end
   return false
@@ -266,10 +281,11 @@ function SpSummonFTigerBanish()
 	or HasID(AIMon(),00006131,true) -- Patchwork
   )
   and CountFluffalBanishTarget(UseLists({AIMon(),AIGrave()})) > 0
+  and CardsMatchingFilter(OppST(),FilterPosition,POS_FACEDOWN) > 0
   then
     return 
 	  not HasID(AIMon(),00464362,true) 
-	  and #OppField() > 0
+	  and #OppField() > 1
 	  and AI.GetCurrentPhase() == PHASE_MAIN1
   end
   return false
@@ -331,15 +347,20 @@ function SpSummonNaturiaBeast()
 end
 function SpSummonDante()
   return 
-    CardsMatchingFilter(OppMon(),FilterAttackMax,2400) > 0
+    OppGetStrongestAttack() < AIGetStrongestAttack()
+    or CardsMatchingFilter(OppMon(),FilterAttackMax,2400) > 0
 	or #OppMon() == 0
 end
 function SpSummonChanbara()
   return 
-    (OppGetStrongestAttack() < AIGetStrongestAttack()
-	or OppGetStrongestAttack() < 2200)
-    and AI.GetCurrentPhase() == PHASE_MAIN1
+    AI.GetCurrentPhase() == PHASE_MAIN1
 	and GlobalBPAllowed
+	and (
+	  OppGetStrongestAttack() < AIGetStrongestAttack()
+	  or CardsMatchingFilter(OppMon(),FilterAttackMax,2200) > 0
+	  or #OppMon() == 0 
+	)
+    
 end
 ------------------------
 --------- SET ----------

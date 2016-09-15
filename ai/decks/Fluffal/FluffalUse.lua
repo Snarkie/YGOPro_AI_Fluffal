@@ -172,8 +172,11 @@ end
 function UseBulb(c)
   if FieldCheck(4) > 0 
   and OPTCheck(06142488) -- Mouse
-  and OppGetStrongestAttDef() <= 2100 
   and AI.GetCurrentPhase() == PHASE_MAIN1
+  and (
+	OppGetStrongestAttDef() <= 2100 
+    or OppGetStrongestAttack() < AIGetStrongestAttack()
+  )
   then 
     OPDSet(c.id)
     return true

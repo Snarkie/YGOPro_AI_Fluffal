@@ -7,26 +7,26 @@ require("ai.decks.Fluffal.FluffalChain")
 require("ai.decks.Fluffal.FluffalBattle")
 
 function FluffalStartup(deck)
-  print("AI_Fluffal v0.0.0.5 by neftalimich.")
+  print("AI_Fluffal v0.0.0.5.3 by neftalimich.")
   AI.Chat("¡Duelo!")
-  
+
   deck.Init                 = FluffalInit
   deck.Card                 = FluffalCard
   deck.Chain                = FluffalChain
-  deck.EffectYesNo          = FluffalEffectYesNo
+  deck.EffectYesNo			= FluffalEffectYesNo
   deck.YesNo				= FluffalYesNo
   deck.Position             = FluffalPosition
   deck.BattleCommand        = FluffalBattleCommand
   deck.AttackTarget         = FluffalAttackTarget
   deck.AttackBoost			= FluffalAttackBoost
-  
+
   deck.ActivateBlacklist    = FluffalActivateBlacklist
   deck.SummonBlacklist      = FluffalSummonBlacklist
   deck.SetBlacklist         = FluffalSetBlacklist
   deck.RepositionBlacklist  = FluffalRepoBlacklist
   deck.Unchainable          = FluffalUnchainable
-  deck.Number				= FluffalNumber
-  
+  --deck.Number				= FluffalNumber
+
   deck.PriorityList         = FluffalPriorityList
 
   --[[
@@ -44,7 +44,7 @@ function FluffalStartup(deck)
   deck.Attribute
   deck.MonsterType
   ]]
-  
+
   -- NOTA: Para hacer pruebas descomenta las 5 lineas que compiezan con Duel.
   local e0=Effect.GlobalEffect()
 	e0:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
@@ -53,22 +53,21 @@ function FluffalStartup(deck)
 		local g=Duel.GetFieldGroup(player_ai,LOCATION_HAND,0)
 		--Duel.ConfirmCards(1-player_ai,g)
 	end)
-	--Duel.RegisterEffect(e0,0)
+	Duel.RegisterEffect(e0,0)
 	local e1=e0:Clone()
 	e1:SetCode(EVENT_TO_HAND)
-	--Duel.RegisterEffect(e1,0)
+	Duel.RegisterEffect(e1,0)
 	local e2=e0:Clone()
 	e2:SetCode(EVENT_PHASE_START+PHASE_MAIN1)
-	--Duel.RegisterEffect(e2,0)
+	Duel.RegisterEffect(e2,0)
   local e3=Effect.GlobalEffect()
   e3:SetType(EFFECT_TYPE_FIELD)
   e3:SetCode(EFFECT_PUBLIC)
   e3:SetTargetRange(LOCATION_HAND,0)
-  --Duel.RegisterEffect(e3,player_ai)
+  Duel.RegisterEffect(e3,player_ai)
 end
 
-FluffalIdentifier = 03841833 -- Bear
-DECK_FLUFFAL = NewDeck("Fluffal",FluffalIdentifier,FluffalStartup)
+DECK_FLUFFAL = NewDeck("Fluffal",{03841833,72413000},FluffalStartup)
 
 FluffalActivateBlacklist={
 -- Blacklist of cards to never activate or chain their effects by the default AI logic
@@ -196,7 +195,7 @@ function FluffalInit(cards) -- FLUFFAL INIT
   local Rep = cards.repositionable_cards
   local SetMon = cards.monster_setable_cards
   local SetST = cards.st_setable_cards
-  
+
   --GLOBAL
   GlobalSheep = 0
   GlobalRabit = 0
@@ -208,69 +207,69 @@ function FluffalInit(cards) -- FLUFFAL INIT
   GlobalFusionId = 0
   GlobalMaterialF = 0
   GlobalMaterialE = 0
-  
+
   -- ACTIVE EFFECT 1
   if HasIDNotNegated(Act,10383554,UseFLeo) then
     return COMMAND_ACTIVATE,CurrentIndex
   end
-  
+
   if HasIDNotNegated(Act,41209827,UseStarve) then
     return COMMAND_ACTIVATE,CurrentIndex
   end
-  
+
   if HasIDNotNegated(SpSum,83531441,SpSummonDante)
   and not SpSummonSVFD() then
     return COMMAND_SPECIAL_SUMMON,CurrentIndex
   end
-  
+
   if HasIDNotNegated(Act,30068120,UseSabres) then
     GlobalSabres = 1
     return COMMAND_ACTIVATE,CurrentIndex
   end
-  
+
   if HasIDNotNegated(Act,06142488,UseMouse) then
     return COMMAND_ACTIVATE,CurrentIndex
   end
-  
+
   if HasIDNotNegated(Act,97567736,UseTomahawk1,1561083776) then
     return COMMAND_ACTIVATE,CurrentIndex
   end
   if HasIDNotNegated(Act,97567736,UseTomahawk2,1561083777) then
     return COMMAND_ACTIVATE,CurrentIndex
   end
-  
+
   if HasIDNotNegated(Act,98280324,UseSheep) then
     GlobalSheep = 1
     return COMMAND_ACTIVATE,CurrentIndex
   end
-  
+
   if HasIDNotNegated(Act,30068120,UseSabres2) then
     GlobalSabres = 1
     return COMMAND_ACTIVATE,CurrentIndex
   end
-  
+
   if HasIDNotNegated(Act,67441435,UseBulb) then
     return COMMAND_ACTIVATE,CurrentIndex
   end
-  
+
   if HasIDNotNegated(Act,66127916,UseFReserve) then
     return COMMAND_ACTIVATE,CurrentIndex
   end
-  
+
   if HasIDNotNegated(Act,05133471,UseGCyclone) then
     return COMMAND_ACTIVATE,CurrentIndex
   end
-  
+
   if HasIDNotNegated(Act,79109599,UseKoS) then
     return COMMAND_ACTIVATE,CurrentIndex
   end
-  
+
   if HasIDNotNegated(Act,03841833,UseBear) then
     return COMMAND_ACTIVATE,CurrentIndex
   end
-  
+
   -- NORMAL SUMMON OWL
-  if HasIDNotNegated(Sum,10802915,SummonTourGuide) 
+  if HasIDNotNegated(Sum,10802915,SummonTourGuide)
   and not HasID(AIHand(),39246582,true)
   then
     return COMMAND_SUMMON,CurrentIndex
@@ -281,7 +280,7 @@ function FluffalInit(cards) -- FLUFFAL INIT
   if HasIDNotNegated(Sum,65331686,SummonOwl2) then
     return COMMAND_SUMMON,CurrentIndex
   end
-  
+
   -- ACTIVE EFFECT 2
   if HasIDNotNegated(Act,70245411,ActiveToyVendor,nil,LOCATION_SZONE,POS_FACEDOWN) then
     return COMMAND_ACTIVATE,CurrentIndex
@@ -296,16 +295,16 @@ function FluffalInit(cards) -- FLUFFAL INIT
   if HasIDNotNegated(Act,70245411,ActiveToyVendor2,nil,LOCATION_HAND) then
     return COMMAND_ACTIVATE,CurrentIndex
   end
-  
+
   -- NORMAL SUMMON DOG
   if HasIDNotNegated(Sum,39246582,SummonDog) then
     return COMMAND_SUMMON,CurrentIndex
   end
-  
+
   if HasIDNotNegated(Sum,65331686,SummonOwl) then
     return COMMAND_SUMMON,CurrentIndex
   end
-  
+
   -- ACTIVE EFFECT 3
   if HasIDNotNegated(Act,83531441,UseDante) then
     return COMMAND_ACTIVATE,CurrentIndex
@@ -313,7 +312,7 @@ function FluffalInit(cards) -- FLUFFAL INIT
   if HasIDNotNegated(Act,79109599,UseKoS2) then
 	return COMMAND_ACTIVATE,CurrentIndex
   end
-  
+
   -- NORMAL SUMMON 3
   if HasIDNotNegated(Sum,10802915,SummonTourGuide) then
     return COMMAND_SUMMON,CurrentIndex
@@ -330,7 +329,7 @@ function FluffalInit(cards) -- FLUFFAL INIT
   if HasIDNotNegated(Sum,00006131,SummonPatchwork) then
     return COMMAND_SUMMON,CurrentIndex
   end
-  
+
   -- SPECIAL SUMMON 1
   if HasIDNotNegated(SpSum,33198837,SpSummonNaturiaBeast) then
     return COMMAND_SPECIAL_SUMMON,CurrentIndex
@@ -341,7 +340,7 @@ function FluffalInit(cards) -- FLUFFAL INIT
   if HasIDNotNegated(SpSum,98280324,SpecialSummonSheep) then
     return COMMAND_SPECIAL_SUMMON,CurrentIndex
   end
-  
+
   -- ACTIVE EFFECT FUSION
   if HasIDNotNegated(Act,72413000,UseOwl2) then
     return COMMAND_ACTIVATE,CurrentIndex
@@ -349,7 +348,7 @@ function FluffalInit(cards) -- FLUFFAL INIT
   if HasIDNotNegated(Act,06077601,UseFFusion)
   and HasID(AIGrave(),79109599,true) -- KoS
   and not SpSummonSVFD() -- Starve
-  then 
+  then
     GlobalFFusion = 1
     return COMMAND_ACTIVATE,CurrentIndex
   end
@@ -365,7 +364,7 @@ function FluffalInit(cards) -- FLUFFAL INIT
   end
   if HasIDNotNegated(Act,43698897,ActiveFFactory)
   and HasID(AIGrave(),06077601,true) -- FFusion
-  then 
+  then
     return COMMAND_ACTIVATE,CurrentIndex
   end
   if HasIDNotNegated(Act,24094653,UsePolymerization) then
@@ -377,13 +376,13 @@ function FluffalInit(cards) -- FLUFFAL INIT
     GlobalFusionSummon = 1
     return COMMAND_ACTIVATE,CurrentIndex
   end
-  if HasIDNotNegated(Act,43698897,ActiveFFactory) then 
+  if HasIDNotNegated(Act,43698897,ActiveFFactory) then
     return COMMAND_ACTIVATE,CurrentIndex
   end
   if HasIDNotNegated(Act,66127916,UseFReserve2) then
     return COMMAND_ACTIVATE,CurrentIndex
   end
-  
+
   -- ACTIVE EFFECT SHEEP 4
   if HasIDNotNegated(Act,98280324,UseSheep3) then
     GlobalSheep = 1
@@ -392,13 +391,13 @@ function FluffalInit(cards) -- FLUFFAL INIT
   if HasIDNotNegated(SpSum,98280324,SpecialSummonSheep3) then
     return COMMAND_SPECIAL_SUMMON,CurrentIndex
   end
-  
+
   -- ACTIVE EFFECT FUSION 2
-  if HasIDNotNegated(Act,06077601,UseFFusion) then 
+  if HasIDNotNegated(Act,06077601,UseFFusion) then
     GlobalFFusion = 1
     return COMMAND_ACTIVATE,CurrentIndex
   end
-  
+
   -- NORMAL SUMMON EDGE IMP
   if HasIDNotNegated(Sum,61173621,SummonChain) then
     return COMMAND_SUMMON,CurrentIndex
@@ -406,7 +405,7 @@ function FluffalInit(cards) -- FLUFFAL INIT
   if HasIDNotNegated(Sum,30068120,SummonSabres) then
     return COMMAND_SUMMON,CurrentIndex
   end
-  
+
   -- ACTIVE EFFECT SHEEP 4
   if HasIDNotNegated(UseLists({AIMon(),AIHand()}),98280324,SpecialSummonSheep4)
   then
@@ -416,7 +415,11 @@ function FluffalInit(cards) -- FLUFFAL INIT
 	  end
     end
   end
-  
+
+  if HasIDNotNegated(Sum,67441435,SummonBulb) then
+    return COMMAND_SUMMON,CurrentIndex
+  end
+
   -- TURN END CHECK
   if TurnEndCheck() then
     -- ACTIVE EFFECT
@@ -443,9 +446,9 @@ function FluffalInit(cards) -- FLUFFAL INIT
       return COMMAND_SET_MONSTER,CurrentIndex
     end
   end
-  
+
   GlobalIFusion = 0
-  
+
   return nil
 end
 

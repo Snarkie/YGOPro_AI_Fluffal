@@ -1,7 +1,6 @@
 FluffalAtt={
 39246582, -- Fluffal Dog
 97567736, -- Edge Imp Tomahawk
-
 80889750, -- Frightfur Sabre-Tooth
 10383554, -- Frightfur Leo
 85545073, -- Frightfur Bear
@@ -32,20 +31,7 @@ FluffalDef={
 
 function FluffalPosition(id,available) -- FLUFFAL POSITION
   print("FluffalPosition: "..id)
-  
   local result
-  if id == 57477163 and GlobalIFusion == 1 then -- FSheep by IFUsion
-    return POS_FACEUP_DEFENCE
-  end
-  if id == 61173621 and Duel.GetTurnCount() == 1 then
-    return POS_FACEUP_DEFENCE
-  end
-  if id == 30068120 and Duel.GetTurnCount() == 1 then
-    return POS_FACEUP_DEFENCE
-  end
-  if id == 83531441 and Duel.GetTurnCount() == 1 then
-    return POS_FACEUP_DEFENCE
-  end
   
   for i=1,#FluffalAtt do
     if FluffalAtt[i]==id
@@ -59,7 +45,42 @@ function FluffalPosition(id,available) -- FLUFFAL POSITION
       result=POS_FACEUP_DEFENSE
     end
   end
- return result
+  if id == 57477163 and GlobalIFusion > 0 then -- FSheep by IFUsion
+    result = POS_FACEUP_DEFENCE
+  end
+  if id == 57477163 then -- FSheep
+      local frightfurAtk = 2000 + FrightfurBoost(id)
+      if CanAttackAttackMin(OppMon(),false,(frightfurAtk + 1),nil,nil) > 0
+	  and CanAttackAttackMax(OppMon(),false,frightfurAtk,nil,nil) == 0
+	  then
+        result = POS_FACEUP_DEFENCE
+	  else 
+	    result = POS_FACEUP_ATTACK
+      end
+	  --print("FSheep - Atk: "..frightfurAtk)
+  end
+  if id == 80889750 then -- FSabreTooth
+      local frightfurAtk = 2400 + FrightfurBoost(id)
+      if CanAttackAttackMin(OppMon(),false,(frightfurAtk + 1),nil,nil) > 0
+	  and CanAttackAttackMax(OppMon(),false,frightfurAtk,nil,nil) == 0
+	  then
+        result = POS_FACEUP_DEFENCE
+	  else 
+	    result = POS_FACEUP_ATTACK
+      end
+	  --print("FSabreTooth - Atk: "..frightfurAtk)
+  end
+  if Duel.GetTurnCount() == 1 
+  and (
+    id == 61173621 -- Chain
+	or id == 30068120 -- Sabres
+	or id == 83531441 -- Dante
+  )
+  then
+    result = POS_FACEUP_DEFENSE
+  end
+  
+  return result
 end
 
 function FluffalAttackTarget(cards,attacker) -- FLUFFAL ATTACK TARGET
@@ -191,7 +212,6 @@ function FluffalBattleCommand(cards,activatable) --FLUFFAL BATTLE COMMAND
 	or #targets == 0
   )
   then 
-    print("FSheep - Attack")
     return Attack(IndexByID(cards,57477163))
   end
   if HasIDNotNegated(cards,10383554) -- Frightfur Leo
@@ -204,4 +224,64 @@ function FluffalBattleCommand(cards,activatable) --FLUFFAL BATTLE COMMAND
   --end
   
  return nil
+end
+
+function FrightfurBoost(frightfurId)
+  local boost = 0
+  local countFrighfurs = CountFrightfur(AIMon()) + 1 -- Own
+  
+  if frightfurId == 80889750 -- FSabreTooth
+  then  
+    if CountFrightfur(AIGrave()) > 0 then
+      countFrighfurs = countFrighfurs + 1 
+	  if not HasID(AIMon(),00464362,true) -- FTiger Field
+	  and HasID(AIGrave(),00464362,true) -- FTiger Grave
+	  then 
+	    boost = boost + (countFrighfurs * 300)
+	  end
+	end
+	boost = boost + 400
+  end
+  if frightfurId == 00464362 -- Tiger
+  then 
+    boost = boost + (countFrighfurs * 300)
+  end
+  if frightfurId == 57477163 -- FSheep
+  then 
+    boost = boost + 800
+  end
+  
+  if HasIDNotNegated(AIMon(),80889750,true) -- FSabreTooth
+  then
+    boost = boost + 400
+  end
+  if HasIDNotNegated(AIMon(),00464362,true) -- FTiger
+  then
+    boost = boost + (countFrighfurs * 300)
+  end
+  
+  return boost
+end
+
+function CanAttackAttackMin(cards,direct,attack,filter,opt)
+  local result = 0
+  for i=1, #cards do
+    if CanAttack(cards[i],direct,filter,opt)
+	and FilterAttackMin(cards[i],attack)
+	then
+	  result = result + 1
+	end
+  end
+  return result
+end
+function CanAttackAttackMax(cards,direct,attack,filter,opt)
+  local result = 0
+  for i=1, #cards do
+    if CanAttack(cards[i],direct,filter,opt)
+	and FilterAttackMax(cards[i],attack)
+	then
+	  result = result + 1
+	end
+  end
+  return result
 end

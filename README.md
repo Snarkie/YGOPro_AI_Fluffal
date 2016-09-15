@@ -1,5 +1,5 @@
 # YGOPro_AI_Fluffal
-YGOPro - AI - Fluffal v0.0.0.5.2 by neftalimich
+YGOPro - AI - Fluffal v0.0.0.5.3 (Estable) by neftalimich
 
 Español: 
 El desarrollo de la IA tendrá diferentes etapas etapas:
@@ -26,7 +26,7 @@ Problemas conocidos:
 - La receta del deck probablemente no es la mejor, la haré como a mí me guste.
 - No he creado los scripts para algunas cartas del extra deck.
 - A veces, invoca a Patchwork sin necesidad.
-- Falta ser mas ofensivo.
+- Falta ser un poco más ofensivo.
 - Varios otros.
 
 Método de instalación:

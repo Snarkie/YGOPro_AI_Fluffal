@@ -25,6 +25,9 @@ function DogCond(loc,c)
 	  and not NormalSummonCheck()
   end
   if loc == PRIO_TOFIELD then
+    if GlobalSabres > 0 then
+	  return 10
+	end
     return OPTCheck(c.id)
   end
   if loc == PRIO_TOGRAVE then
@@ -610,6 +613,7 @@ function FFactoryCond(loc,c)
         or HasID(UseLists({AIGrave(),AIHand()}),01845204,true) -- IFusion
 	    or Get_Card_Count_ID(AIGrave(),24094653) > 1 -- Polymerization
 	  )
+	  and CountFluffal(AIHand()) > 0
   end
   if loc == PRIO_TOFIELD then
     return OPTCheck(c.id)
@@ -917,9 +921,9 @@ FluffalPriorityList={
  [79109599] = {1,1,2,1,9,1,1,1,10,1,KoSCond},		-- King of the Swamp
  [67441435] = {1,1,8,1,9,1,9,1,1,1,BulbCond},		-- Glow-Up Bulb
 
- [06077601] = {1,1,1,1,1,1,2,1,10,1,FFusionCond},	-- Frightfur Fusion
- [43698897] = {3,1,1,1,1,1,1,1,1,1,FFactoryCond},	-- Frightfur Factory
- [70245411] = {3,1,1,1,2,1,1,1,1,1,ToyVendorCond},	-- Toy Vendor
+ [70245411] = {5,4,1,1,2,1,1,1,1,1,ToyVendorCond},	-- Toy Vendor
+ [06077601] = {3,1,1,1,1,1,2,1,10,1,FFusionCond},	-- Frightfur Fusion
+ [43698897] = {4,2,1,1,1,1,1,1,1,1,FFactoryCond},	-- Frightfur Factory
  [01845204] = {1,1,1,1,3,2,3,1,4,1,IFusionCond},	-- Instant Fusion
  [24094653] = {1,1,1,1,1,1,3,1,3,1,PolymCond},		-- Polymerization
  [05133471] = {1,1,1,1,7,6,8,6,1,1,GClycloneCond},	-- Galaxy Cyclone

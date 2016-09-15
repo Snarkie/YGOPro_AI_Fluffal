@@ -67,7 +67,12 @@ end
 function ChainTarget(cards)
   return Add(cards,PRIO_TOHAND)
 end
+GlobalSabres = 0
 function SabresTarget(cards)
+  if CardsMatchingFilter(UseLists({AIHand(),AIST()}),ToyVendorCheckFilter,true) > 0
+  then
+    return Add(cards,PRIO_TOFIELD,1,FluffalFilter)
+  end
   return Add(cards,PRIO_DISCARD)
 end
 -- Other Target
@@ -168,7 +173,7 @@ function FusionSummonTarget(cards,c,max)
   end
   if GlobalFusionSummon == 1 then
     GlobalFusionSummon = 2
-    print("FusionTarget - FirstMaterial: ")
+    --print("FusionTarget - FirstMaterial: ")
 	for i=1, #cards do
 	  local c = cards[i]
 	  result[i] = c
@@ -178,7 +183,7 @@ function FusionSummonTarget(cards,c,max)
   end
   if GlobalFusionSummon == 2 then
     GlobalFusionSummon = 3
-    print("FusionTarget - SecondMaterial: ")
+    --print("FusionTarget - SecondMaterial: ")
 	for i=1, #cards do
 	  local c = cards[i]
 	  --print("Poly2: "..c.id.." - PRIO: "..GetPriority(c,PRIO_TOGRAVE))
