@@ -32,7 +32,7 @@ function ChainNaturiaBeast(c)
 	  return false
 	end
   end
-  return false	
+  return false
 end
 -- FluffalS Chain
 -- Spell Chain
@@ -41,7 +41,7 @@ function ChainFReserve(c)
   if FilterLocation(c,LOCATION_SZONE) then
     if RemovalCheckCard(c) then
 	  if
-	  RemovalCheckCard(c,CATEGORY_TOGRAVE) 
+	  RemovalCheckCard(c,CATEGORY_TOGRAVE)
 	  or RemovalCheckCard(c,CATEGORY_DESTROY)
 	  or RemovalCheckCard(c,CATEGORY_REMOVE)
       then
@@ -76,6 +76,7 @@ end
 --43898403, -- Twin Twister
 
 --66127916, -- Fusion Reserve
+--51452091, -- Royal Decree
 
 --80889750, -- Frightfur Sabre-Tooth
 --10383554, -- Frightfur Leo
@@ -103,22 +104,50 @@ function FluffalChain(cards) -- FLUFFAL CHAINS
   if HasIDNotNegated(cards,38124994,ChainRabit) then -- Rabit
     return 1,CurrentIndex
   end
-  
+
   if HasIDNotNegated(cards,61173621,ChainChain) then -- Chain
     return 1,CurrentIndex
   end
-  
+
   if HasIDNotNegated(cards,00464362,ChainFTiger) then -- Frightfur Tiger
     return 1,CurrentIndex
   end
-  
+
   if HasIDNotNegated(cards,33198837,ChainNaturiaBeast,0) then -- Naturia Beast
     return {1,CurrentIndex}
   end
-  
-  if HasIDNotNegated(cards,66127916,ChainFReserve) then -- FusionReserve
+
+  if HasIDNotNegated(cards,66127916,ChainFReserve) then
     return 1,CurrentIndex
   end
-  
+  if HasIDNotNegated(cards,51452091,false) then -- RDecree
+    return 1,CurrentIndex
+  end
+
   return nil
+end
+
+function FluffalChainOrder(cards) -- FLUFFAL CHAIN ORDER
+  local result = {}
+  
+  for i=1,#cards do
+    local c=cards[i]
+    if c.level>5 then
+      result[#result+1]=i
+    end
+  end
+  for i=1,#cards do
+    local c=cards[i]
+    if c.id == 39246582 then -- To protect Dog
+      result[#result+1]=i
+    end
+  end
+  for i=1,#cards do
+    local c=cards[i]
+    if not (c.level>5) and not (c.id == 39246582) then
+      result[#result+1]=i
+    end
+  end
+  
+  return result
 end

@@ -21,11 +21,11 @@ end
 -- Spell Filter
 -- Trap Filter
 -- Frightfur Filter
-function FrighfurFilter(c)
+function FrightfurFilter(c)
   return IsSetCode(c.setcode,0xad)
 end
 function FLeoFinishFilter(c,source)
-  return 
+  return
     AI.GetPlayerLP(2)<= c.base_attack -- Origian Attack
 	and Targetable(c,TYPE_MONSTER)
 	and FluffalDestroyFilter(c)
@@ -72,7 +72,7 @@ end
 ------------------------
 -------- COUNT ---------
 ------------------------
--- General Count 
+-- General Count
 function CountPrioTarget(cards,loc,minPrio,Type,filter,opt,debugMode)
   local result = 0
   if minPrio == nil then
@@ -145,7 +145,7 @@ end
 -- Trap Count
 -- Frightfur Count
 function CountFrightfur(cards)
-  return CardsMatchingFilter(cards,FrighfurFilter)
+  return CardsMatchingFilter(cards,FrightfurFilter)
 end
 function CountFusionTarget()
   local result = 0
@@ -155,7 +155,7 @@ function CountFusionTarget()
 end
 function CountMaterialFTarget(cards)
   local result = 0
-  local minPrio = 1
+  local minPrio = 2
   if(
     AI.GetPlayerLP(1) <= 2500
 	or OppGetStrongestAttack() >= AI.GetPlayerLP(1)
@@ -191,9 +191,9 @@ end
 --79109599, -- King of the Swamp
 --67441435, -- Glow-Up Bulb
 
+--70245411, -- Toy Vendor
 --06077601, -- Frightfur Fusion
 --43698897, -- Frightfur Factory
---70245411, -- Toy Vendor
 --01845204, -- Instant Fusion
 --24094653, -- Polymerization
 --43898403, -- Twin Twister

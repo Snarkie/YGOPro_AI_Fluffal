@@ -22,7 +22,7 @@ function SheepTarget(cards)
 	local compare = function(a,b) return a.prio>b.prio end
 	table.sort(result,compare)
     print("SheepTarget - MZONE to HAND")
-    --return Add(cards,PRIO_TOHAND,1) -- c.prio -1 must 
+    --return Add(cards,PRIO_TOHAND,1) -- c.prio -1 must
 	return {result[1].index}
   end
   if LocCheck(cards,LOCATION_GRAVE) or LocCheck(cards,LOCATION_HAND) then
@@ -113,7 +113,7 @@ function ToyVendorTarget(cards,c)
   if GlobalToyVendor == 3 then
     GlobalToyVendor = 0
   end
-  
+
   return Add(cards)
 end
 -- Spell Target
@@ -127,7 +127,7 @@ function IFusionTarget(cards,c)
   end
   indexT = Add(cards,PRIO_TOFIELD)[1]
   OPTSet(result[indexT].cardid)
-  
+
   return Add(cards,PRIO_TOFIELD)
 end
 function maxMaterials(fusionId,max)
@@ -154,6 +154,10 @@ end
 GlobalFusionSummon = 0
 GlobalFusionId = 0
 function PolymerizationTarget(cards,c,max)
+  return FusionSummonTarget(cards,c,max)
+end
+GlobalDFusion = 0
+function DFusionTarget(cards,c,max)
   return FusionSummonTarget(cards,c,max)
 end
 
@@ -261,11 +265,11 @@ function FTigerTarget(cards,c,max)
   if maxTargets > max then
     maxTargets = max
   end
-  
+
   local FFactoryIndex = IndexByID(cards,43698897)
-  
+
   local result = BestTargets(cards,maxTargets,TARGET_DESTROY,FTigerDestroyFilter)
-  
+
   if #result < max then
     if not OPTCheck(43698897) -- FFactory
 	and HasID(AIBanish(),06077601,true) -- FFusion
@@ -273,7 +277,7 @@ function FTigerTarget(cards,c,max)
       result[#result+1] = FFactoryIndex
 	end
   end
-  
+
   return result
 end
 
@@ -297,6 +301,7 @@ end
 --43698897, -- Frightfur Factory
 --01845204, -- Instant Fusion
 --24094653, -- Polymerization
+--94820406, -- Dark Fusion
 --43898403, -- Twin Twister
 
 --66127916, -- Fusion Reserve
@@ -333,7 +338,7 @@ function FluffalCard(cards,min,max,id,c) -- FLUFFAL CARDS
   if id == 72413000 then -- Wings
     return WingsTarget(cards)
   end
-  
+
   if id == 97567736 then -- Tomahawk
     return TomahawkTarget(cards)
   end
@@ -343,11 +348,11 @@ function FluffalCard(cards,min,max,id,c) -- FLUFFAL CARDS
   if id == 30068120 then -- Sabres
     return SabresTarget(cards)
   end
-  
+
   if id == 79109599 then -- KoS
     return KoSTarget(cards)
   end
-  
+
   if id == 06077601 then -- Frightfur Fusion
 	return FFusionTarget(cards,c,max)
   end
@@ -357,18 +362,22 @@ function FluffalCard(cards,min,max,id,c) -- FLUFFAL CARDS
   if id == 70245411 then -- Toy Vendor
 	return ToyVendorTarget(cards,c)
   end
-  
+
   if id == 01845204 then -- Instant Fusion
 	return IFusionTarget(cards,c)
   end
   if id == 24094653 then -- Polymerization
 	return PolymerizationTarget(cards,c,max)
   end
+  
+  if id == 94820406 then -- DFusion
+	return DFusionTarget(cards,c,max)
+  end
 
-  if id == 66127916 then -- FusionReserve
+  if id == 66127916 then -- DFusion
 	return FReserveTarget(cards)
   end
-  
+
   if id == 80889750 then -- Frightfur Sabre-Tooth
 	return FSabreTarget(cards)
   end
@@ -378,12 +387,13 @@ function FluffalCard(cards,min,max,id,c) -- FLUFFAL CARDS
   if id == 00464362 then -- Frightfur Tiger
     return FTigerTarget(cards,c,max)
   end
-  
+
   if id == 05133471 then -- Galaxy Cyclone
     return GCycloneTarget(cards,c)
   end
   return nil
 end
+
 function FluffalNumber(choices) -- FLUFFAL NUMBER
   return nil
 end

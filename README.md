@@ -1,22 +1,22 @@
 # YGOPro_AI_Fluffal
-YGOPro - AI - Fluffal v0.0.0.5.3 (Estable) by neftalimich
+YGOPro - AI - Fluffal v0.0.0.5.4 (Estable) by neftalimich
 
 Español: 
 El desarrollo de la IA tendrá diferentes etapas etapas:
 
 1. Crear el script para que pueda realizar sus jugadas en condiciones normales.
 	1. Init: Secuencia de jugadas. 80%
-	2. Filter: Filtros y contadores para realizar las condiciones. 75%
+	2. Filter: Filtros y contadores para realizar las condiciones. 70%
 	3. Cond: Condiciones y prioridades a la mano, al campo, al cementerio, descartar y desterrar. 70%
-	4. Use: Condiciones para usar los efectos. 80%
+	4. Use: Condiciones para usar los efectos. 70%
 	5. Target: Objetivos para la selección de cartas. 75%
 	6. Chain: Cadenas (encadenar). 85%
-	7. Summon: Condiciones para realizar la invocación. 80%
-	8. Battle: Fase de batalla. 30%
+	7. Summon: Condiciones para realizar la invocación. 70%
+	8. Battle: Fase de batalla. 35%
 2. Mejorar la fase de batalla heredada. 0%
 3. Mejorar los scripts para que juegue contra las cartas Floodgate mas comunes. 0%
 4. Crear script para que al azar realice jugadas arriesgadas en caso de que tenga desventaja. 5%
-5. Crear distintas maneras de jugar contra decks que le generen debilidades. Ejemplo: Monarcas. 0%
+5. Crear distintas maneras de jugar contra decks que le generen debilidades. Ejemplo: Monarcas o Masked Hero. 0%
 
 Cada etapa irá mejorando conforme se encuentren errores, deficiencias en su algoritmo o mejoras en general.
 Se colocará junto a la versión si es estable o no.
@@ -24,7 +24,6 @@ Se colocará junto a la versión si es estable o no.
 Problemas conocidos:
 - Siempre invoica monstruo con toy vendor. Faltan colocar las condiciones.
 - La receta será a mi gusto, no insistan con cambios.
-- No he creado los scripts para algunas cartas del extra deck.
 - A veces, invoca a Patchwork sin necesidad.
 - Falta ser un poco más ofensivo.
 - Varios otros.

@@ -12,19 +12,20 @@ function SummonOwl()
   return OPTCheck(65331686)
 end
 function SummonOwl2()
-  return OPTCheck(65331686) 
+  return OPTCheck(65331686)
   and not HasID(AIHand(),39246582,true) -- Dog
 end
 function SummonOwl3()
-  return 
+  return
     OPTCheck(65331686)
 	and not HasID(UseLists({AIHand(),AIST()}),24094653,true) -- Polymerization
+	and not HasID(UseLists({AIHand(),AIST()}),94820406,true) -- DFusion
 	and not HasID(UseLists({AIHand(),AIST()}),43698897,true) -- FFactory
 	and not OPTCheck(72413000) -- Wings
 end
 function SpecialSummonSheep(c)
-  if OPTCheck(c.id) 
-  and CountEgdeImp(AIGrave()) > 0 
+  if OPTCheck(c.id)
+  and CountEgdeImp(AIGrave()) > 0
   then
     return true
   else
@@ -32,8 +33,8 @@ function SpecialSummonSheep(c)
   end
 end
 function SpecialSummonSheep2()
-  if OPTCheck(98280324) 
-  and CountEgdeImp(UseLists({AIGrave(),AIHand()})) > 0 
+  if OPTCheck(98280324)
+  and CountEgdeImp(UseLists({AIGrave(),AIHand()})) > 0
   then
     return true
   else
@@ -48,8 +49,8 @@ function SpecialSummonSheep3()
   end
 end
 function SpecialSummonSheep4()
-  if OPTCheck(98280324) 
-  and CountEgdeImp(UseLists({AIGrave(),AIHand()})) > 0 
+  if OPTCheck(98280324)
+  and CountEgdeImp(UseLists({AIGrave(),AIHand()})) > 0
   and (
     CountFluffal(AIHand()) - Get_Card_Count_ID(AIHand(),98280324)
   ) > 0
@@ -60,11 +61,12 @@ function SpecialSummonSheep4()
   end
 end
 function SummonMouse()
-  return OPTCheck(06142488) 
+  return OPTCheck(06142488)
     and Get_Card_Count_ID(AIDeck(),06142488) == 2
 	and #AIMon() < 3
 	and (
 	  HasID(UseLists({AIHand(),AIST()}),24094653,true) -- Polymerization
+	  or HasID(UseLists({AIHand(),AIST()}),94820406,true) -- DFusion
 	  or HasID(UseLists({AIHand(),AIST()}),43698897,true) -- FFactory
 	  or HasID(UseLists({AIHand(),AIST()}),06077601,true) -- FFusion
 	)
@@ -73,16 +75,19 @@ function SummonMouse()
 	and Duel.GetTurnCount() ~= 1
 end
 function SummonPatchwork()
-  return 
+  return
     CountEgdeImp(UseLists({AIMon(),AIHand()})) == 0
-    and HasID(UseLists({AIHand(),AIST()}),24094653,true) -- Polymerization
+    and (
+	  HasID(UseLists({AIHand(),AIST()}),24094653,true) -- Polymerization
+	  or HasID(UseLists({AIHand(),AIST()}),94820406,true) -- DFusion
+	)
 end
 -- EdgeImp Summon
 function SummonTomahawk()
   return OPTCheck(97567736)
 end
 function SummonChain()
-  return 
+  return
     Duel.GetTurnCount() ~= 1
 	and (
 	  OppGetStrongestAttack() < AIGetStrongestAttack()
@@ -90,7 +95,7 @@ function SummonChain()
 	)
 end
 function SummonSabres()
-  return 
+  return
     Duel.GetTurnCount() ~= 1
 	and (
 	  OppGetStrongestAttack() < AIGetStrongestAttack()
@@ -114,23 +119,26 @@ function SummonTourGuide()
 	elseif HasID(AIExtra(),41209827,true) -- Starve
 	and CardsMatchingFilter(OppMon(),FilterSummon,SUMMON_TYPE_SPECIAL) > 0
 	and CardsMatchingFilter(OppMon(),FilterLevelMin,5) > 0
-	and HasID(UseLists({AIHand(),AIST()}),24094653,true) -- Polymerization
+	and (
+	  HasID(UseLists({AIHand(),AIST()}),24094653,true) -- Polymerization
+	  or HasID(UseLists({AIHand(),AIST()}),94820406,true) -- DFusion
+	)
     then
 	  return true
 	else
 	  return false
 	end
-  else 
+  else
     return false
   end
 end
 
 function SummonBulb()
-  if FieldCheck(4) > 0 
+  if FieldCheck(4) > 0
   and OPTCheck(06142488) -- Mouse
-  and OppGetStrongestAttDef() <= 2100 
+  and OppGetStrongestAttDef() <= 2100
   and AI.GetCurrentPhase() == PHASE_MAIN1
-  then 
+  then
     return true
   end
   return false
@@ -151,7 +159,7 @@ function SpSummonFSabre()
 	or OppGetStrongestAttack() >= AIGetStrongestAttack() -- Strong Opp
   )
   then
-    return 
+    return
 	  AI.GetCurrentPhase() == PHASE_MAIN1
 	  and (
 	    not HasID(AIMon(),80889750,true) -- Frightfur Sabre-Tooth
@@ -168,7 +176,7 @@ function SpSummonFSabreBanish()
   )
   and Duel.GetTurnCount() ~= 1
   then
-    return 
+    return
 	  not HasID(AIMon(),80889750,true)
 	  and AI.GetCurrentPhase() == PHASE_MAIN1
   end
@@ -185,9 +193,9 @@ function SpSummonFLeo()
   )
   and GlobalMaterialF > 0 -- Fluffal
   then
-    return 
-	  not HasID(AIMon(),10383554,true) 
-	  and OPTCheck(10383554) 
+    return
+	  not HasID(AIMon(),10383554,true)
+	  and OPTCheck(10383554)
 	  and FLeoFinish()
   end
   return false
@@ -199,9 +207,9 @@ function SpSummonFLeoBanish()
   )
   and CountFluffalBanishTarget(UseLists({AIMon(),AIGrave()})) > 0
   then
-    return 
-	  not HasID(AIMon(),10383554,true) 
-	  and OPTCheck(10383554) 
+    return
+	  not HasID(AIMon(),10383554,true)
+	  and OPTCheck(10383554)
 	  and FLeoFinish()
   end
   return false
@@ -215,13 +223,13 @@ function SpSummonFBearBanish()
 end
 
 function FWolfFinish()
-  return 
-    HasID(AIMon(),00464362,true) 
+  return
+    HasID(AIMon(),00464362,true)
     and #OppMon() == 0
 	or
-	HasID(AIMon(),80889750,true) 
+	HasID(AIMon(),80889750,true)
 	and HasID(AIMon(),00464362,true)
-	or 
+	or
 	#OppMon() == 1
 	and CardsMatchingFilter(OppST(),FilterPosition,POS_FACEDOWN) == 0
 	and HasID(AIMon(),00464362,true)
@@ -232,8 +240,8 @@ function SpSummonFWolf()
   )
   and GlobalMaterialF > 0 -- Fluffal
   then
-    return 
-	  not HasID(AIMon(),11039171,true) 
+    return
+	  not HasID(AIMon(),11039171,true)
 	  and FWolfFinish()
 	  and AI.GetCurrentPhase() == PHASE_MAIN1
 	  and GlobalBPAllowed
@@ -246,8 +254,8 @@ function SpSummonFWolfBanish()
   )
   and CountFluffalBanishTarget(UseLists({AIMon(),AIGrave()})) > 0
   then
-    return 
-	  not HasID(AIMon(),11039171,true) 
+    return
+	  not HasID(AIMon(),11039171,true)
 	  and FWolfFinish()
 	  and AI.GetCurrentPhase() == PHASE_MAIN1
 	  and GlobalBPAllowed
@@ -265,10 +273,12 @@ function SpSummonFTiger()
     GlobalMaterialF > 1 -- Fluffal
 	or GlobalMaterialF > 0
 	and OppGetStrongestAttack() >= AIGetStrongestAttack()
+	or GlobalMaterialF > 0
+	and CountFrightfur(AIMon()) > 0
   )
   then
-    return 
-	  not HasID(AIMon(),00464362,true) 
+    return
+	  not HasID(AIMon(),00464362,true)
 	  and #OppField() > 1
 	  and AI.GetCurrentPhase() == PHASE_MAIN1
   end
@@ -281,10 +291,13 @@ function SpSummonFTigerBanish()
 	or HasID(AIMon(),00006131,true) -- Patchwork
   )
   and CountFluffalBanishTarget(UseLists({AIMon(),AIGrave()})) > 0
-  and CardsMatchingFilter(OppST(),FilterPosition,POS_FACEDOWN) > 0
+  and (
+    CardsMatchingFilter(OppST(),FilterPosition,POS_FACEDOWN) > 0
+	or #OppField() > 2
+  )
   then
-    return 
-	  not HasID(AIMon(),00464362,true) 
+    return
+	  not HasID(AIMon(),00464362,true)
 	  and #OppField() > 1
 	  and AI.GetCurrentPhase() == PHASE_MAIN1
   end
@@ -324,10 +337,9 @@ function SpSummonSVFD()
   if HasID(AIMon(),10802915,true) then -- TourGuide
     countMaterial = countMaterial + 1
   end
-  if HasID(AIMon(),00464362,true) then -- FTiger
-    countMaterial = countMaterial + 1
-  end
-  if HasID(AIMon(),57477163,true) then -- FSheep
+  if HasID(AIMon(),00464362,true) -- FTiger
+  or HasID(AIMon(),57477163,true) -- FSheep
+  then 
     countMaterial = countMaterial + 1
   end
   if CardsMatchingFilter(OppMon(),FilterSummon,SUMMON_TYPE_SPECIAL) > 0
@@ -335,32 +347,32 @@ function SpSummonSVFD()
 	and HasID(UseLists({AIHand(),AIST()}),24094653,true) -- Polymerization
 	and countMaterial >= 2
   then
-    return not HasID(AIMon(),41209827,true)
+    return not HasID(AIMon(),41209827,true) and GlobalDFusion == 0
   end
   return false
 end
 
 -- Other Synchro
 function SpSummonNaturiaBeast()
-  return 
+  return
     OppGetStrongestAttack() <= 2200
 end
 function SpSummonDante()
-  return 
+  return
     OppGetStrongestAttack() < AIGetStrongestAttack()
     or CardsMatchingFilter(OppMon(),FilterAttackMax,2400) > 0
 	or #OppMon() == 0
 end
 function SpSummonChanbara()
-  return 
+  return
     AI.GetCurrentPhase() == PHASE_MAIN1
 	and GlobalBPAllowed
 	and (
 	  OppGetStrongestAttack() < AIGetStrongestAttack()
 	  or CardsMatchingFilter(OppMon(),FilterAttackMax,2200) > 0
-	  or #OppMon() == 0 
+	  or #OppMon() == 0
 	)
-    
+
 end
 ------------------------
 --------- SET ----------
@@ -392,4 +404,7 @@ end
 -- Trap Set
 function SetFReserve(c)
   return true
+end
+function SetRDecree(c)
+  return not HasID(AIST(),51452091,true)
 end
