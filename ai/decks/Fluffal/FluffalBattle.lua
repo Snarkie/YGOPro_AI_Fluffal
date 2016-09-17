@@ -22,6 +22,7 @@ FluffalDef={
 06142488, -- Fluffal Mouse
 72413000, -- Fluffal Wings
 00006131, -- Fluffal Patchwork (BETA)
+00007614, -- Fluffal Octo (BETA)
 
 --61173621, -- Edge Imp Chain
 --30068120, -- Edge Imp Sabres
@@ -46,7 +47,8 @@ function FluffalPosition(id,available) -- FLUFFAL POSITION
     end
   end
   if id == 57477163 and GlobalIFusion > 0 then -- FSheep by IFUsion
-    result = POS_FACEUP_DEFENCE
+    --print("FSheep by IFusion")
+    return POS_FACEUP_DEFENCE
   end
   if id == 57477163 then -- FSheep
       local frightfurAtk = 2000 + FrightfurBoost(id)
@@ -79,7 +81,7 @@ function FluffalPosition(id,available) -- FLUFFAL POSITION
   then
     result = POS_FACEUP_DEFENSE
   end
-
+  
   return result
 end
 
@@ -173,7 +175,9 @@ function FluffalAttackBoost(cards)
 	  FSheepOwnBoost < 800
 	  and OPTCheck(c.cardid)
 	  then
-	    c.attack = c.attack + 800
+	    if CardsMatchingFilter(OppMon(),FilterPosition,POS_FACEUP_ATTACK) > 0 then
+	      c.attack = c.attack + 800
+		end
 	  end
 	end
   end

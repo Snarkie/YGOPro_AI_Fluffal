@@ -3,11 +3,11 @@
 -----------------------
 -- FluffalM Target
 function DogTarget(cards)
-  --CountPrioTarget(cards,PRIO_TOHAND,1,nil,nil,nil,"TEST")
+  --CountPrioTarget(cards,PRIO_TOHAND,1,nil,nil,nil,"DogTarget")
   return Add(cards,PRIO_TOHAND)
 end
-function OwlTarget(cards,c,max)
-  return FusionSummonTarget(cards,c,max)
+function OwlTarget(cards,c,min,max)
+  return FusionSummonTarget(cards,c,min,max)
 end
 GlobalSheep = 0
 function SheepTarget(cards)
@@ -52,6 +52,16 @@ function WingsTarget(cards)
     return Add(cards,PRIO_TOGRAVE)
   end
 end
+function OctoTarget(cards)
+  if LocCheck(cards,LOCATION_GRAVE) then
+    print("OctoTarget - GRAVE to HAND")
+    return Add(cards,PRIO_TOHAND)
+  end
+  if LocCheck(cards,LOCATION_REMOVED) then
+    print("OctoTarget - REMOVED to GRAVE")
+    return Add(cards,PRIO_TOGRAVE)
+  end
+end
 -- EdgeImp Target
 function TomahawkTarget(cards)
   if LocCheck(cards,LOCATION_DECK) then
@@ -81,16 +91,16 @@ function KoSTarget(cards)
 end
 -- FluffalS Target
 GlobalFFusion = 0
-function FFusionTarget(cards,c,max)
-  return FusionSummonBanishTarget(cards,c,max)
+function FFusionTarget(cards,c,min,max)
+  return FusionSummonBanishTarget(cards,c,min,max)
 end
 GlobalFFactory = 0
-function FFactoryTarget(cards,c,max)
+function FFactoryTarget(cards,c,min,max)
   if LocCheck(cards,LOCATION_GRAVE) then
     print("FFactoryTarget - GRAVE to BANISH")
     return Add(cards,PRIO_BANISH)
   end
-  return FusionSummonTarget(cards,c,max)
+  return FusionSummonTarget(cards,c,min,max)
 end
 GlobalToyVendor = 0
 function ToyVendorTarget(cards,c)
@@ -130,38 +140,64 @@ function IFusionTarget(cards,c)
 
   return Add(cards,PRIO_TOFIELD)
 end
-function maxMaterials(fusionId,max)
-  print("maxMaterials - fusionId "..fusionId.." max: "..max)
+function MaxMaterials(fusionId,min,max)
   local result = 1
-  if(fusionId == 80889750) then
-    result = 2
-  elseif fusionId == 00464362 and #AIMon() > 4 then -- Tiger
-    result = 2
-  elseif fusionId == 00464362 and GlobalFFusion == 1 -- Tiger source FFusion
-  and CountFluffalBanishTarget(UseLists({AIMon(),AIGrave()})) > 1
-  then
+  if(fusionId == 80889750) then -- FSabreTooth
     result = 2
   elseif fusionId == 11039171 and #AIMon() > 4 then -- Wolf
     result = 2
   else
     result = 1
   end
+  
+  if fusionId == 00464362 then -- Tiger 
+	if HasID(UseLists({AIHand(),AIST()}),24094653,true) -- Polymerization
+	or HasID(UseLists({AIHand(),AIST()}),94820406,true) -- DFusion
+	then
+	  result = max - 2
+	else
+	  result = max - 1
+	end
+	
+	if #AIMon() > 4 then
+	  result = result + 1
+	end
+	
+	if (result + 1) > CardsMatchingFilter(OppField(),FTigerDestroyFilter) then
+	  result = CardsMatchingFilter(OppField(),FTigerDestroyFilter) - 1
+	end
+
+	if CardsMatchingFilter(OppST(),FilterPosition,POS_FACEDOWN) > 1 then
+	  if result > 2 then
+	    result = 2
+	  end
+	end	
+	if CardsMatchingFilter(OppST(),FilterPosition,POS_FACEDOWN) > 2 then
+	  result = 1
+	end
+  end
+  
   if result > max then
     result = max
   end
+  if result < min then
+    result = min
+  end
+  
+  print("MaxMaterials - fusionId "..fusionId.." max: "..max.." - Result: "..result)
   return result
 end
 GlobalFusionSummon = 0
 GlobalFusionId = 0
-function PolymerizationTarget(cards,c,max)
-  return FusionSummonTarget(cards,c,max)
+function PolymerizationTarget(cards,c,min,max)
+  return FusionSummonTarget(cards,c,min,max)
 end
 GlobalDFusion = 0
-function DFusionTarget(cards,c,max)
-  return FusionSummonTarget(cards,c,max)
+function DFusionTarget(cards,c,min,max)
+  return FusionSummonTarget(cards,c,min,max)
 end
 
-function FusionSummonTarget(cards,c,max)
+function FusionSummonTarget(cards,c,min,max)
   local result = {}
   local indexT = 1
   if LocCheck(cards,LOCATION_EXTRA) then
@@ -192,15 +228,15 @@ function FusionSummonTarget(cards,c,max)
 	  local c = cards[i]
 	  --print("Poly2: "..c.id.." - PRIO: "..GetPriority(c,PRIO_TOGRAVE))
 	end
-	if GlobalFusionId == 80889750 then -- Global Instant Fusion
-	  GlobalIFusion = 0
-	end
-	return Add(cards,PRIO_TOGRAVE,maxMaterials(GlobalFusionId,max))
+	return Add(cards,PRIO_TOGRAVE,MaxMaterials(GlobalFusionId,min,max))
+  end
+  if GlobalFusionId == 80889750 then -- GlobalIFusion
+	GlobalIFusion = 0
   end
   return Add(cards,PRIO_TOGRAVE,1)
 end
 
-function FusionSummonBanishTarget(cards,c,max)
+function FusionSummonBanishTarget(cards,c,min,max)
   local result = {}
   local indexT = 1
   if LocCheck(cards,LOCATION_EXTRA) then
@@ -216,22 +252,22 @@ function FusionSummonBanishTarget(cards,c,max)
   end
   if GlobalFFusion == 1 then
     GlobalFFusion = 2
-    --print("BanishFusionTarget - FirstMaterial: ")
+    print("BanishFusionTarget - FirstMaterial: ")
 	for i=1, #cards do
 	  local c = cards[i]
 	  result[i] = c
-	  --print("FFusion: "..c.id.." - PRIO: "..GetPriority(c,PRIO_BANISH))
+	  print("FFusion: "..c.id.." - PRIO: "..GetPriority(c,PRIO_BANISH))
 	end
 	return Add(cards,PRIO_BANISH)
   end
   if GlobalFFusion == 2 then
     GlobalFFusion = 3
-    --print("BanishFusionTarget - SecondMaterial: ")
+    print("BanishFusionTarget - SecondMaterial: ")
 	for i=1, #cards do
 	  local c = cards[i]
-	  --print("FFusion2: "..c.id.." - PRIO: "..GetPriority(c,PRIO_BANISH))
+	  print("FFusion2: "..c.id.." - PRIO: "..GetPriority(c,PRIO_BANISH))
 	end
-	return Add(cards,PRIO_BANISH,maxMaterials(GlobalFusionId,max))
+	return Add(cards,PRIO_BANISH,MaxMaterials(GlobalFusionId,min,max))
   end
   return Add(cards,PRIO_BANISH,1)
 end
@@ -260,7 +296,7 @@ end
 function FLeoTarget(cards,c)
   return BestTargets(cards,1,TARGET_DESTROY,FLeoDestroyFilter,c)
 end
-function FTigerTarget(cards,c,max)
+function FTigerTarget(cards,c,min,max)
   local maxTargets = CardsMatchingFilter(OppField(),FTigerDestroyFilter)
   if maxTargets > max then
     maxTargets = max
@@ -324,7 +360,7 @@ function FluffalCard(cards,min,max,id,c) -- FLUFFAL CARDS
     return DogTarget(cards)
   end
   if id == 65331686 then -- Owl
-    return OwlTarget(cards,c,max)
+    return OwlTarget(cards,c,min,max)
   end
   if id == 98280324 then -- Sheep
     return SheepTarget(cards)
@@ -337,6 +373,10 @@ function FluffalCard(cards,min,max,id,c) -- FLUFFAL CARDS
   end
   if id == 72413000 then -- Wings
     return WingsTarget(cards)
+  end
+  
+  if id == 00007614 then -- Octo
+    return OctoTarget(cards)
   end
 
   if id == 97567736 then -- Tomahawk
@@ -354,10 +394,10 @@ function FluffalCard(cards,min,max,id,c) -- FLUFFAL CARDS
   end
 
   if id == 06077601 then -- Frightfur Fusion
-	return FFusionTarget(cards,c,max)
+	return FFusionTarget(cards,c,min,max)
   end
   if id == 43698897 then -- Frightfur Factory
-	return FFactoryTarget(cards,c,max)
+	return FFactoryTarget(cards,c,min,max)
   end
   if id == 70245411 then -- Toy Vendor
 	return ToyVendorTarget(cards,c)
@@ -367,11 +407,11 @@ function FluffalCard(cards,min,max,id,c) -- FLUFFAL CARDS
 	return IFusionTarget(cards,c)
   end
   if id == 24094653 then -- Polymerization
-	return PolymerizationTarget(cards,c,max)
+	return PolymerizationTarget(cards,c,min,max)
   end
   
   if id == 94820406 then -- DFusion
-	return DFusionTarget(cards,c,max)
+	return DFusionTarget(cards,c,min,max)
   end
 
   if id == 66127916 then -- DFusion
@@ -385,7 +425,7 @@ function FluffalCard(cards,min,max,id,c) -- FLUFFAL CARDS
 	return FLeoTarget(cards)
   end
   if id == 00464362 then -- Frightfur Tiger
-    return FTigerTarget(cards,c,max)
+    return FTigerTarget(cards,c,min,max)
   end
 
   if id == 05133471 then -- Galaxy Cyclone

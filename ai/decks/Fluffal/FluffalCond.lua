@@ -31,10 +31,11 @@ function DogCond(loc,c)
     return OPTCheck(c.id)
   end
   if loc == PRIO_TOGRAVE then
-    return not OPTCheck(c.id)
+    return not OPTCheck(c.id) or Get_Card_Count_ID(AIHand(),c.id) > 1
   end
   if loc == PRIO_DISCARD then
-    return not OPTCheck(c.id)
+    return 
+	  not OPTCheck(c.id) or Get_Card_Count_ID(AIHand(),c.id) > 1
   end
   if loc == PRIO_BANISH then
     return FilterLocation(c,LOCATION_GRAVE) or FilterLocation(c,LOCATION_MZONE)
@@ -62,18 +63,21 @@ function BearCond(loc,c)
 	end
   end
   if loc == PRIO_TOHAND then
-    return
-	  OPTCheck(c.id) and not HasID(AIHand(),c.id,true)
-	  and Get_Card_Count_ID(AIDeck(),70245411) > 0 -- Toy Vendor
-	  and OPTCheck(72413000) -- Wings
-	  and (
-	    not HasID(UseLists({AIHand(),AIST()}),70245411,true) -- ToyVendor
-		or HasID(AIGrave(),72413000,true) -- Wings
-      )
-	  and (
-	    CountToyVendorDiscardTarget() > 0
-		or HasID(AIGrave(),72413000,true) -- Wings
-	  )
+    if OPTCheck(c.id) and not HasID(AIHand(),c.id,true)
+	and Get_Card_Count_ID(AIDeck(),70245411) > 0 -- Toy Vendor
+	and OPTCheck(72413000) -- Wings
+	and (
+	  not HasID(UseLists({AIHand(),AIST()}),70245411,true) -- ToyVendor
+	  or HasID(AIGrave(),72413000,true) -- Wings
+    )
+	and (
+	  CountToyVendorDiscardTarget() > 0
+	  or HasID(AIGrave(),72413000,true) -- Wings
+	) then
+	  return true
+	else
+	  return false
+	end
   end
   if loc == PRIO_TOFIELD then
     return not OPTCheck(c.id)
@@ -101,7 +105,7 @@ function OwlCond(loc,c)
   end
   if GlobalFusionSummon > 0 then
 	if FilterLocation(c,LOCATION_MZONE) then
-	  return 2
+	  return 3
 	else
 	  return 1
 	end
@@ -165,10 +169,10 @@ function SheepCond(loc,c)
     return OPTCheck(c.id)
   end
   if loc == PRIO_TOGRAVE then
-    return not OPTCheck(c.id)
+    return not OPTCheck(c.id) or Get_Card_Count_ID(AIHand(),c.id) > 1
   end
   if loc == PRIO_DISCARD then
-    return not OPTCheck(c.id)
+    return not OPTCheck(c.id) or Get_Card_Count_ID(AIHand(),c.id) > 1
   end
   if loc == PRIO_BANISH then
     return FilterLocation(c,LOCATION_GRAVE)
@@ -297,6 +301,7 @@ function MouseCond(loc,c)
 	  and Get_Card_Count_ID(AIDeck(),c.id) == 2 -- Mouse Deck
 	  and OPTCheck(10802915) -- TourGuide
 	  and OPTCheck(67441435) -- Bulb
+	  and not (HasID(AIGrave(),67441435,true) and OPDCheck(67441435)) -- Bulb
   end
   if loc == PRIO_TOGRAVE then
     return not OPTCheck(c.id)
@@ -355,7 +360,7 @@ function WingsCond(loc,c)
 	  )
   end
   if loc == PRIO_TOFIELD then
-    return OPTCheck(c.id)
+    return true
   end
   if loc == PRIO_TOGRAVE then
     return true
@@ -393,6 +398,45 @@ function PatchworkCond(loc,c)
   end
   if loc == PRIO_BANISH then
     return FilterLocation(c,LOCATION_GRAVE)
+  end
+  return true
+end
+
+function OctoCond(loc,c)
+  if GlobalSheep == 1 then
+    return 4
+  end
+  if GlobalFusionSummon > 0 then
+    if CardsMatchingFilter(AIBanish(),FilterType,TYPE_MONSTER) > 1 then
+	  return 7
+	else
+	  return 1
+	end
+  end
+  if loc == PRIO_TOHAND then
+    if OPTCheck(c.id) and not HasID(AIHand(),c.id,true)
+	and (
+	  HasID(UseLists({AIHand(),AIST()}),24094653,true) -- Polymerization
+	  or HasID(UseLists({AIHand(),AIST()}),94820406,true) -- DFusion
+	  or HasID(AIHand(),79109599,true) -- King of the Swamp
+	)
+	then
+	  return true
+	else
+	  return false
+	end
+  end
+  if loc == PRIO_TOFIELD then
+    return OPTCheck(c.id)
+  end
+  if loc == PRIO_TOGRAVE then
+    return not OPTCheck(c.id)
+  end
+  if loc == PRIO_DISCARD then
+    return not OPTCheck(c.id)
+  end
+  if loc == PRIO_BANISH then
+    return Get_Card_Count_ID(AIGrave(),38124994) > 0
   end
   return true
 end
@@ -465,21 +509,25 @@ function SabresCond(loc,c)
     return 1
   end
   if loc == PRIO_TOHAND then
-    return
-	  not HasID(AIHand(),c.id,true) -- Sabres
-	  and not HasID(UseLists({AIHand(),AIMon()}),79109599,true) -- KoS
-	  and CountEgdeImp(UseLists({AIHand(),AIMon()})) == 0 -- EdgeImp
-	  and not (
-	    HasID(AIGrave(),c.id,true)
-		and HasID(UseLists({AIHand(),AIMon()}),98280324,true) -- Sheep
-		and OPTCheck(98280324)
-		and CountFluffal(AIMon()) > 0
-	  ) -- Sheep
-	  and (
-		HasID(UseLists({AIHand(),AIST()}),24094653,true) -- Polymerization
-		or HasID(UseLists({AIHand(),AIST()}),94820406,true) -- DFusion
-		or HasID(UseLists({AIHand(),AIST()}),43698897,true) -- FFactory
-	  )
+	if not HasID(AIHand(),c.id,true) -- Sabres
+	and not HasID(UseLists({AIHand(),AIMon()}),79109599,true) -- KoS
+	and CountEgdeImp(UseLists({AIHand(),AIMon()})) == 0 -- EdgeImp
+	and (
+	  HasID(UseLists({AIHand(),AIST()}),24094653,true) -- Polymerization
+	  or HasID(UseLists({AIHand(),AIST()}),94820406,true) -- DFusion
+	  or HasID(UseLists({AIHand(),AIST()}),43698897,true) -- FFactory
+	)
+	and not (
+	  HasID(AIGrave(),c.id,true)
+	  and HasID(UseLists({AIHand(),AIMon()}),98280324,true) -- Sheep
+	  and OPTCheck(98280324)
+	  and CountFluffal(AIMon()) > 0
+	)
+    then
+	  return true
+	else
+	  return false
+	end
   end
   if loc == PRIO_TOFIELD then
     return true
@@ -534,7 +582,9 @@ function KoSCond(loc,c)
     return OPTCheck(c.id) and not HasID(AIHand(),c.id,true)
   end
   if loc == PRIO_TOFIELD then
-    return not OPTCheck(c.id)
+    return 
+	  HasID(UseLists({AIHand(),AIST()}),24094653,true) -- Polymerization
+	  or HasID(UseLists({AIHand(),AIST()}),94820406,true) -- DFusion
   end
   if loc == PRIO_TOGRAVE then
     return not OPTCheck(c.id)
@@ -770,6 +820,32 @@ function FSabreToothCond(loc,c)
   end
   return true
 end
+function FKrakenCond(loc,c)
+  if loc == PRIO_TOHAND then
+    return OPTCheck(c.id) and not HasID(AIHand(),c.id,true)
+  end
+  if loc == PRIO_TOFIELD then
+    if GlobalFusionSummon > 0 then -- Polymerization or Frightfur Factory
+	  return SpSummonFKraken()
+	end
+	if GlobalFFusion > 0 then -- Frightfur Fusion
+	  return SpSummonFKrakenBanish()
+	end
+  end
+  if loc == PRIO_TOGRAVE then
+    if GlobalFusionSummon > 1 then
+	  return 6
+	end
+    return not OPTCheck(c.id)
+  end
+  if loc == PRIO_DISCARD then
+    return not OPTCheck(c.id)
+  end
+  if loc == PRIO_BANISH then
+    return not OPTCheck(c.id)
+  end
+  return true
+end
 function FLeoCond(loc,c)
   if loc == PRIO_TOHAND then
     return OPTCheck(c.id) and not HasID(AIHand(),c.id,true)
@@ -935,21 +1011,22 @@ FluffalPriorityList={
 --PRIO_DISCARD = 7
 --PRIO_BANISH = 9
 
- [39246582] = {8,1,7,1,4,1,1,1,9,1,DogCond},		-- Fluffal Dog
- [03841833] = {10,3,1,1,4,1,4,1,8,1,BearCond},		-- Fluffal Bear
+ [39246582] = {8,1,7,1,4,1,4,1,9,1,DogCond},		-- Fluffal Dog
+ [03841833] = {10,3,2,1,4,1,4,1,8,1,BearCond},		-- Fluffal Bear
  [65331686] = {5,4,9,1,2,1,1,1,5,1,OwlCond},		-- Fluffal Owl
- [98280324] = {6,2,1,1,3,1,1,1,6,1,SheepCond},		-- Fluffal Sheep
- [02729285] = {7,5,2,1,1,1,1,1,2,1,CatCond},		-- Fluffal Cat
+ [98280324] = {6,2,1,1,3,1,3,1,6,1,SheepCond},		-- Fluffal Sheep
+ [02729285] = {7,5,2,1,1,1,1,1,3,1,CatCond},		-- Fluffal Cat
  [38124994] = {5,3,2,1,1,1,1,1,7,1,RabitCond},		-- Fluffal Rabit
  [06142488] = {1,1,10,2,5,1,4,1,10,1,MouseCond},	-- Fluffal Mouse
- [72413000] = {9,1,1,1,8,1,10,1,1,1,WingsCond},		-- Fluffal Wings
- [00006131] = {1,1,5,1,5,1,1,1,3,1,PatchworkCond},	-- Fluffal Patchwork (BETA)
+ [72413000] = {9,1,3,2,8,1,10,1,1,1,WingsCond},		-- Fluffal Wings
+ [00006131] = {1,1,5,4,5,1,1,1,3,1,PatchworkCond},	-- Fluffal Patchwork (BETA)
+ [00007614] = {5,1,5,1,1,1,1,1,4,2,OctoCond},		-- Fluffal Octo (BETA)
  [97567736] = {1,1,6,3,8,1,7,1,6,1,TomahawkCond},	-- Edge Imp Tomahawk
  [61173621] = {8,3,4,4,6,1,6,1,4,1,ChainCond},		-- Edge Imp Chain
- [30068120] = {7,2,3,5,7,1,5,1,5,1,SabresCond},		-- Edge Imp Sabres
- [10802915] = {1,1,1,1,1,1,8,1,10,1,TourGuideCond},	-- Tour Guide
- [79109599] = {1,1,2,1,9,1,1,1,10,1,KoSCond},		-- King of the Swamp
- [67441435] = {1,1,8,1,9,1,9,1,1,1,BulbCond},		-- Glow-Up Bulb
+ [30068120] = {8,2,4,5,7,1,5,1,5,1,SabresCond},		-- Edge Imp Sabres
+ [10802915] = {1,1,1,1,1,1,8,4,10,1,TourGuideCond},	-- Tour Guide
+ [79109599] = {1,1,3,2,9,1,1,1,10,1,KoSCond},		-- King of the Swamp
+ [67441435] = {1,1,8,2,9,1,9,1,1,1,BulbCond},		-- Glow-Up Bulb
 
  [70245411] = {5,4,1,1,2,1,1,1,1,1,ToyVendorCond},	-- Toy Vendor
  [06077601] = {3,1,1,1,1,1,2,1,10,1,FFusionCond},	-- Frightfur Fusion
@@ -962,13 +1039,14 @@ FluffalPriorityList={
 
  [66127916] = {1,1,1,1,1,1,1,1,1,1,FReserveCond}, 	-- Fusion Reserve
 
- [80889750] = {1,1,6,1,1,1,1,1,4,1,FSabreToothCond},-- Frightfur Sabre-Tooth
- [10383554] = {1,1,7,1,2,1,1,1,10,1,FLeoCond},		-- Frightfur Leo
+ [80889750] = {1,1,6,1,1,4,1,1,4,1,FSabreToothCond},-- Frightfur Sabre-Tooth
+ [00007620] = {1,1,5,1,5,3,1,1,2,1,FKrakenCond},	-- Frightfur Kraken (BETA)
+ [10383554] = {1,1,8,1,2,1,1,1,10,1,FLeoCond},		-- Frightfur Leo
  [85545073] = {5,1,1,1,3,1,1,1,2,1,FBearCond},		-- Frightfur Bear
  [11039171] = {2,1,7,1,2,1,1,1,9,1,FWolfCond},		-- Frightfur Wolf
- [00464362] = {3,1,5,1,5,1,1,1,3,1,FTigerCond},		-- Frightfur Tiger
- [57477163] = {4,1,4,1,4,1,1,1,1,1,FSheepCond},		-- Frightfur Sheep
- [41209827] = {2,1,8,1,1,1,1,1,1,1,SVFDCond}, 		-- Starve Venom Fusion Dragon<
+ [00464362] = {3,1,5,1,5,4,1,1,3,1,FTigerCond},		-- Frightfur Tiger
+ [57477163] = {4,1,4,1,4,2,1,1,2,1,FSheepCond},		-- Frightfur Sheep
+ [41209827] = {2,1,9,1,1,1,1,1,1,1,SVFDCond}, 		-- Starve Venom Fusion Dragon<
  [33198837] = {1,1,1,1,1,1,1,1,1,1,nil}, 			-- Naturia Beast
  [42110604] = {1,1,1,1,1,1,1,1,1,1,nil}, 			-- Hi-Speedroid Chanbara
  [82633039] = {1,1,1,1,1,1,1,1,1,1,nil}, 			-- Castel

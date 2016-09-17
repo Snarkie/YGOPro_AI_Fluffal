@@ -14,6 +14,9 @@ end
 function ChainRabit(c)
   return true
 end
+function ChainOcto(c)
+  return true
+end
 -- EdgeImp Chain
 function ChainChain(c)
   return true
@@ -102,6 +105,9 @@ function FluffalChain(cards) -- FLUFFAL CHAINS
     return 1,CurrentIndex
   end
   if HasIDNotNegated(cards,38124994,ChainRabit) then -- Rabit
+    return 1,CurrentIndex
+  end
+  if HasIDNotNegated(cards,00007614,ChainOcto) then -- Octo
     return 1,CurrentIndex
   end
 

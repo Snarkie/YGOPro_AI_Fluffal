@@ -82,6 +82,11 @@ function SummonPatchwork()
 	  or HasID(UseLists({AIHand(),AIST()}),94820406,true) -- DFusion
 	)
 end
+function SummonOcto()
+  return 
+    OPTCheck(39246582) 
+	and (CountFluffal(AIGrave()) + CountEgdeImp(AIGrave())) > 0
+end
 -- EdgeImp Summon
 function SummonTomahawk()
   return OPTCheck(97567736)
@@ -155,7 +160,7 @@ function SpSummonFSabre()
 	or HasID(AIMon(),57477163,true) -- Frightfur Sheep
   )
   and (
-	GlobalMaterialF > 1 -- Fluffal
+	(GlobalMaterialF + GlobalMaterialE) > 1 -- Fluffal
 	or OppGetStrongestAttack() >= AIGetStrongestAttack() -- Strong Opp
   )
   then
@@ -171,7 +176,7 @@ end
 function SpSummonFSabreBanish()
   if CountFrightfur(AIGrave()) > 2 -- Frightfur Grave
   and (
-    CountFluffalBanishTarget(UseLists({AIMon(),AIGrave()})) > 0 -- Fluffal
+    CountFluffalBanishTarget(UseLists({AIMon(),AIGrave()})) > 1 -- Fluffal
 	or OppGetStrongestAttack() >= AIGetStrongestAttack() -- Strong Opp
   )
   and Duel.GetTurnCount() ~= 1

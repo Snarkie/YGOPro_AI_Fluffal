@@ -184,6 +184,7 @@ end
 --06142488, -- Fluffal Mouse
 --72413000, -- Fluffal Wings
 --00006131, -- Fluffal Patchwork (BETA)
+--00007614, -- Fluffal Octo (BETA)
 --97567736, -- Edge Imp Tomahawk
 --61173621, -- Edge Imp Chain
 --30068120, -- Edge Imp Sabres
@@ -196,11 +197,14 @@ end
 --43698897, -- Frightfur Factory
 --01845204, -- Instant Fusion
 --24094653, -- Polymerization
+--94820406, -- Dark Fusion
+--05133471, -- Galaxy Cyclone
 --43898403, -- Twin Twister
 
 --66127916, -- Fusion Reserve
 
 --80889750, -- Frightfur Sabre-Tooth
+--00007620, -- Frightfur Kraken (BETA)
 --10383554, -- Frightfur Leo
 --85545073, -- Frightfur Bear
 --11039171, -- Frightfur Wolf

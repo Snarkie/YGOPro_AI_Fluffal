@@ -121,9 +121,7 @@ function UseSabres2(c)
   and OPTCheck(06142488) -- Mouse
   and CountPrioTarget(AIHand(),PRIO_DISCARD,1) > 0
   and #AIHand() > 4
-  and CardsMatchingFilter(OppMon(),FilterSummon,SUMMON_TYPE_SPECIAL) > 0
-  and CardsMatchingFilter(OppMon(),FilterLevelMin,5) > 0
-  and CardsMatchingFilter(AIMon(),FilterAttribute,ATTRIBUTE_DARK) > 0
+  and SpSummonSVFD()
   and (
     HasID(UseLists({AIHand(),AIST()}),24094653,true) -- Polymerization
 	or HasID(UseLists({AIHand(),AIST()}),94820406,true) -- DFusion
@@ -183,6 +181,7 @@ function UseBulb(c)
   )
   then
     OPDSet(c.id)
+	OPTSet(c.id)
     return true
   else
     return false
@@ -376,6 +375,9 @@ function UseFReserve2(c)
   return AI.GetPlayerLP(1) <= 2000
 end
 -- Frightfur Use
+function UseFKraken(c)
+  return true
+end
 function UseFSabre(c)
   return true
 end
@@ -410,6 +412,7 @@ end
 --06142488, -- Fluffal Mouse
 --72413000, -- Fluffal Wings
 --00006131, -- Fluffal Patchwork (BETA)
+--00007614, -- Fluffal Octo (BETA)
 --97567736, -- Edge Imp Tomahawk
 --61173621, -- Edge Imp Chain
 --30068120, -- Edge Imp Sabres
@@ -450,6 +453,9 @@ function FluffalEffectYesNo(id,card) -- FLUFFAL EFFECT YES/NO
 	result = 1
   end
   if id == 38124994 then -- Rabit
+	result = 1
+  end
+  if id == 00007614 then -- Octo
 	result = 1
   end
 

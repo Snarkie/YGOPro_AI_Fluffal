@@ -54,18 +54,18 @@ function FluffalStartup(deck)
 		local g=Duel.GetFieldGroup(player_ai,LOCATION_HAND,0)
 		--Duel.ConfirmCards(1-player_ai,g)
 	end)
-	--Duel.RegisterEffect(e0,0)
+	Duel.RegisterEffect(e0,0)
 	local e1=e0:Clone()
 	e1:SetCode(EVENT_TO_HAND)
-	--Duel.RegisterEffect(e1,0)
+	Duel.RegisterEffect(e1,0)
 	local e2=e0:Clone()
 	e2:SetCode(EVENT_PHASE_START+PHASE_MAIN1)
-	--Duel.RegisterEffect(e2,0)
+	Duel.RegisterEffect(e2,0)
   local e3=Effect.GlobalEffect()
   e3:SetType(EFFECT_TYPE_FIELD)
   e3:SetCode(EFFECT_PUBLIC)
   e3:SetTargetRange(LOCATION_HAND,0)
-  --Duel.RegisterEffect(e3,player_ai)
+  Duel.RegisterEffect(e3,player_ai)
 end
 
 DECK_FLUFFAL = NewDeck("Fluffal",{03841833,72413000},FluffalStartup)
@@ -83,6 +83,7 @@ FluffalActivateBlacklist={
 06142488, -- Fluffal Mouse
 72413000, -- Fluffal Wings
 00006131, -- Fluffal Patchwork (BETA)
+00007614, -- Fluffal Octo (BETA)
 97567736, -- Edge Imp Tomahawk
 61173621, -- Edge Imp Chain
 30068120, -- Edge Imp Sabres
@@ -102,6 +103,7 @@ FluffalActivateBlacklist={
 51452091, -- Royal Decree
 
 80889750, -- Frightfur Sabre-Tooth
+00007620, -- Frightfur Kraken (BETA)
 10383554, -- Frightfur Leo
 85545073, -- Frightfur Bear
 11039171, -- Frightfur Wolf
@@ -124,6 +126,7 @@ FluffalSummonBlacklist={
 06142488, -- Fluffal Mouse
 72413000, -- Fluffal Wings
 00006131, -- Fluffal Patchwork (BETA)
+00007614, -- Fluffal Octo (BETA)
 97567736, -- Edge Imp Tomahawk
 61173621, -- Edge Imp Chain
 30068120, -- Edge Imp Sabres
@@ -132,6 +135,7 @@ FluffalSummonBlacklist={
 67441435, -- Glow-Up Bulb
 
 80889750, -- Frightfur Sabre-Tooth
+00007620, -- Frightfur Kraken (BETA)
 10383554, -- Frightfur Leo
 85545073, -- Frightfur Bear
 11039171, -- Frightfur Wolf
@@ -221,6 +225,10 @@ function FluffalInit(cards) -- FLUFFAL INIT
   end
 
   if HasIDNotNegated(Act,41209827,UseStarve) then
+    return COMMAND_ACTIVATE,CurrentIndex
+  end
+  
+  if HasIDNotNegated(Act,41209827,UseKraken) then
     return COMMAND_ACTIVATE,CurrentIndex
   end
 
@@ -333,8 +341,22 @@ function FluffalInit(cards) -- FLUFFAL INIT
   if HasIDNotNegated(Sum,06142488,SummonMouse) then
     return COMMAND_SUMMON,CurrentIndex
   end
+  if HasIDNotNegated(Sum,00007614,SummonOcto) then
+    return COMMAND_SUMMON,CurrentIndex
+  end
   if HasIDNotNegated(Sum,00006131,SummonPatchwork) then
     return COMMAND_SUMMON,CurrentIndex
+  end
+  
+  if HasIDNotNegated(UseLists({AIHand(),AIMon()}),98280324,true)
+  and #AIMon() <= 3
+  and SpecialSummonSheep4()
+  then
+    for i=1,#Sum do
+	  if not(Sum[i].id == 98280324) and FluffalFilter(Sum[i]) then
+	    return COMMAND_SUMMON,i
+	  end
+    end
   end
 
   -- SPECIAL SUMMON 1
@@ -350,14 +372,6 @@ function FluffalInit(cards) -- FLUFFAL INIT
 
   -- ACTIVE EFFECT FUSION
   if HasIDNotNegated(Act,72413000,UseOwl2) then
-    return COMMAND_ACTIVATE,CurrentIndex
-  end
-  if HasIDNotNegated(Act,06077601,UseFFusion)
-  and HasID(AIGrave(),79109599,true) -- KoS
-  and not SpSummonSVFD() -- Starve
-  and #OppField() > 1
-  then
-    GlobalFFusion = 1
     return COMMAND_ACTIVATE,CurrentIndex
   end
   if HasIDNotNegated(Act,01845204,UseIFusion) then
@@ -419,15 +433,7 @@ function FluffalInit(cards) -- FLUFFAL INIT
     return COMMAND_SUMMON,CurrentIndex
   end
 
-  -- ACTIVE EFFECT SHEEP 4
-  if HasIDNotNegated(UseLists({AIMon(),AIHand()}),98280324,SpecialSummonSheep4)
-  then
-    for i=1,#Sum do
-	  if not(Sum[i].id == 98280324) and FluffalFilter(Sum[i]) then
-	    return COMMAND_SUMMON,i
-	  end
-    end
-  end
+
 
   if HasIDNotNegated(Sum,67441435,SummonBulb) then
     return COMMAND_SUMMON,CurrentIndex
