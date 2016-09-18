@@ -173,7 +173,7 @@ function MaxMaterials(fusionId,min,max)
 	end
 	
 	if (result + 1) > CardsMatchingFilter(OppField(),FTigerDestroyFilter) then
-	  result = CardsMatchingFilter(OppField,FTigerDestroyFilter) - 1
+	  result = CardsMatchingFilter(OppField(),FTigerDestroyFilter) - 1
 	end
 
 	if CardsMatchingFilter(OppST(),FilterPosition,POS_FACEDOWN) > 1 then
