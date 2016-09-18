@@ -410,7 +410,7 @@ function UseFLeo(c)
   return true
 end
 function UseFTiger(c)
-  if CardsMatchingFilter(UseLists({AIMon(),AIST()}),FTigerDestroyFilter) > 0 then
+  if CardsMatchingFilter(OppField(),FTigerDestroyFilter) > 0 then
 	return true
   end
 end

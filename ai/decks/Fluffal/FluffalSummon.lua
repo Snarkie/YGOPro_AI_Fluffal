@@ -352,7 +352,7 @@ function SpSummonFTiger()
   then
     return
 	  not HasID(AIMon(),00464362,true)
-	  and CardsMatchingFilter(UseLists({AIMon(),AIST()}),FTigerDestroyFilter) > 1
+	  and CardsMatchingFilter(OppField(),FTigerDestroyFilter) > 1
 	  and AI.GetCurrentPhase() == PHASE_MAIN1
   end
   return false
@@ -366,12 +366,12 @@ function SpSummonFTigerBanish()
   and CountFluffalBanishTarget(UseLists({AIMon(),AIGrave()})) > 0
   and (
     CardsMatchingFilter(OppST(),FilterPosition,POS_FACEDOWN) > 0
-	or CardsMatchingFilter(UseLists({AIMon(),AIST()}),FTigerDestroyFilter) > 1
+	or CardsMatchingFilter(OppField(),FTigerDestroyFilter) > 1
   )
   then
     return
 	  not HasID(AIMon(),00464362,true)
-	  and CardsMatchingFilter(UseLists({AIMon(),AIST()}),FTigerDestroyFilter) > 1
+	  and CardsMatchingFilter(OppField(),FTigerDestroyFilter) > 1
 	  and AI.GetCurrentPhase() == PHASE_MAIN1
   end
   return false

@@ -172,8 +172,8 @@ function MaxMaterials(fusionId,min,max)
 	  result = result + 1
 	end
 	
-	if (result + 1) > CardsMatchingFilter(UseLists({AIMon(),AIST()}),FTigerDestroyFilter) then
-	  result = CardsMatchingFilter(UseLists({AIMon(),AIST()}),FTigerDestroyFilter) - 1
+	if (result + 1) > CardsMatchingFilter(OppField(),FTigerDestroyFilter) then
+	  result = CardsMatchingFilter(OppField,FTigerDestroyFilter) - 1
 	end
 
 	if CardsMatchingFilter(OppST(),FilterPosition,POS_FACEDOWN) > 1 then
@@ -314,7 +314,7 @@ function FLeoTarget(cards,c)
   return BestTargets(cards,1,TARGET_DESTROY,FLeoDestroyFilter,c)
 end
 function FTigerTarget(cards,c,min,max)
-  local maxTargets = CardsMatchingFilter(UseLists({AIMon(),AIST()}),FTigerDestroyFilter)
+  local maxTargets = CardsMatchingFilter(OppField(),FTigerDestroyFilter)
 
   if maxTargets > max then
     maxTargets = max
