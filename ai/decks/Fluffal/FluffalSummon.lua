@@ -352,7 +352,7 @@ function SpSummonFTiger()
   then
     return
 	  not HasID(AIMon(),00464362,true)
-	  and #OppField() > 1
+	  and CardsMatchingFilter(UseLists({AIMon(),AIST()}),FTigerDestroyFilter) > 1
 	  and AI.GetCurrentPhase() == PHASE_MAIN1
   end
   return false
@@ -366,12 +366,12 @@ function SpSummonFTigerBanish()
   and CountFluffalBanishTarget(UseLists({AIMon(),AIGrave()})) > 0
   and (
     CardsMatchingFilter(OppST(),FilterPosition,POS_FACEDOWN) > 0
-	or #OppField() > 1
+	or CardsMatchingFilter(UseLists({AIMon(),AIST()}),FTigerDestroyFilter) > 1
   )
   then
     return
 	  not HasID(AIMon(),00464362,true)
-	  and #OppField() > 1
+	  and CardsMatchingFilter(UseLists({AIMon(),AIST()}),FTigerDestroyFilter) > 1
 	  and AI.GetCurrentPhase() == PHASE_MAIN1
   end
   return false
@@ -420,7 +420,10 @@ function SpSummonSVFD()
 	and HasID(UseLists({AIHand(),AIST()}),24094653,true) -- Polymerization
 	and countMaterial >= 2
   then
-    return not HasID(AIMon(),41209827,true) and GlobalDFusion == 0
+    return 
+	  not HasID(AIMon(),41209827,true) 
+	  and GlobalDFusion == 0
+	  and AI.GetCurrentPhase() == PHASE_MAIN1
   end
   return false
 end

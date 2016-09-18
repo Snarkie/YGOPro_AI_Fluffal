@@ -36,6 +36,7 @@ function FTigerDestroyFilter(c)
     Targetable(c,TYPE_MONSTER)
     and Affected(c,TYPE_MONSTER)
 	and FluffalDestroyFilter(c)
+	and not IgnoreList(c)
   )
 end
 function FKrakenSendFilter(c)
@@ -164,8 +165,8 @@ function CountFrightfurMon(cards)
 end
 function CountFusionTarget()
   local result = 0
-  result = CountPrioTarget(AIExtra(),PRIO_TOFIELD,1,nil,nil,nil,"CountFusionTarget")
-  --result = CountPrioTarget(AIExtra(),PRIO_TOFIELD,1)
+  --result = CountPrioTarget(AIExtra(),PRIO_TOFIELD,1,nil,nil,nil,"CountFusionTarget")
+  result = CountPrioTarget(AIExtra(),PRIO_TOFIELD,1)
   return result
 end
 function CountMaterialFTarget(cards)

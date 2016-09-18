@@ -292,8 +292,8 @@ function RabitCond(loc,c)
   if GlobalFusionSummon > 0 then
     if OPTCheck(c.id)
 	and (
-	  HasID(AIHand(),02729285,true) -- Cat Hand
-	  or HasID(AIGrave(),02729285,true) -- Cat Grave
+	  HasID(UseLists({AIHand(),AIGrave()}),02729285,true) -- Cat
+	  or HasID(UseLists({AIHand(),AIGrave()}),00007614,true) -- Octo
 	)
 	then
 	  return 9
@@ -496,7 +496,7 @@ function OctoCond(loc,c)
   end
   if GlobalFusionSummon > 0 then
     if CardsMatchingFilter(AIBanish(),FilterType,TYPE_MONSTER) > 1 then
-	  return 7
+	  return 8
 	else
 	  return 1
 	end
@@ -518,7 +518,10 @@ function OctoCond(loc,c)
 	end
   end
   if loc == PRIO_TOFIELD then
-    return OPTCheck(c.id) and CountFluffal(AIGrave()) > 2
+    return OPTCheck(c.id) and (
+	  CountFluffal(AIGrave()) > 2
+	  or not OPTCheck(72413000)
+	)
   end
   if loc == PRIO_TOGRAVE then
     if GlobalOcto == 1 then
