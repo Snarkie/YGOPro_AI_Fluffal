@@ -1,5 +1,5 @@
 # YGOPro_AI_Fluffal
-YGOPro - AI - Fluffal v0.0.0.5.5 (Estable) by neftalimich
+YGOPro - AI - Fluffal v0.0.0.5.5 (Stable) by neftalimich
 
 Español: 
 El desarrollo de la IA tendrá diferentes etapas etapas:
@@ -70,6 +70,5 @@ R: No, soy consultor de TI, programador Full Stack de diversos tipos de sistemas
 - ¿Me enseñas a programar?
 R: No tengo tiempo, pero puedo decirte la lista de lo que debes a aprender,
 pero primero dime que te gusta más: Front End, Back End o ambos (Fullstack).
-
 
 Atte: Neftalí Michelet.
