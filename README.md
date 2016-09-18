@@ -40,7 +40,8 @@ Nota: comprueba que sobrescribes los archivos ai.lua y AIHelperFunctions2.lua y 
 de lo contrario no funcionará.
 
 Hitos:
-1. Iniciar este proyecto
+
+1. Iniciar este proyecto.
 2. La v0.0.0.4.5 fue cuando realemnte empecé a entender la arquitectura.
 3. La v0.0.0.5.5 fue la más grande y satisfactoria actualización.
 
