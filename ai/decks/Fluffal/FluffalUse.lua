@@ -2,7 +2,7 @@
 --------- USE ----------
 ------------------------
 -- FluffalM Use
-function UseBear(c)
+function UseFluffalBear(c)
   if CountToyVendorDiscardTarget() > 0 and #AIHand() > 2
   or HasID(AIHand(),72413000,true) -- Wings
   or HasID(AIHand(),67441435,true) -- Bulb
@@ -18,7 +18,7 @@ function UseBear(c)
     return false
   end
 end
-function UseBear2(c)
+function UseFluffalBear2(c)
   if FilterLocation(c,LOCATION_MZONE) then
     OPTSet(c.id)
     return true

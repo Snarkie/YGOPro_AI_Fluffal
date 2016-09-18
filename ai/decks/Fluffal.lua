@@ -283,7 +283,7 @@ function FluffalInit(cards) -- FLUFFAL INIT
     return COMMAND_ACTIVATE,CurrentIndex
   end
 
-  if HasIDNotNegated(Act,03841833,UseBear) then
+  if HasIDNotNegated(Act,03841833,UseFluffalBear) then
     return COMMAND_ACTIVATE,CurrentIndex
   end
 
@@ -464,7 +464,7 @@ function FluffalInit(cards) -- FLUFFAL INIT
       GlobalSheep = 1
       return COMMAND_ACTIVATE,CurrentIndex
     end
-	if HasIDNotNegated(Act,03841833,UseBear2) then -- Bear
+	if HasIDNotNegated(Act,03841833,UseFluffalBear2) then -- Bear
       return COMMAND_ACTIVATE,CurrentIndex
     end
 	if HasID(SetST,42110604,SetFReserve) then
