@@ -1,5 +1,5 @@
 # YGOPro_AI_Fluffal
-YGOPro - AI - Fluffal v0.0.0.5.4 (Estable) by neftalimich
+YGOPro - AI - Fluffal v0.0.0.5.5 (Estable) by neftalimich
 
 Español: 
 El desarrollo de la IA tendrá diferentes etapas etapas:
@@ -23,9 +23,10 @@ Se colocará junto a la versión si es estable o no.
 
 Problemas conocidos:
 - Siempre invoica monstruo con toy vendor. Faltan colocar las condiciones.
-- La receta será a mi gusto, no insistan con cambios.
+- Fluffal Sheep tiene varios problemas de realizar su juego en el tiempo correcto.
 - A veces, invoca a Patchwork sin necesidad.
-- Falta ser un poco más ofensivo.
+- Octo no elige los mejores objetivos para la mano, pero no está del todo mal.
+- Kraken suele ser invocado muy seguido.
 - Varios otros.
 
 Método de instalación:
@@ -36,6 +37,11 @@ Método de instalación:
 
 Nota: comprueba que sobrescribes los archivos ai.lua y AIHelperFunctions2.lua y combinas las carpetas "ai" y "deck".
 de lo contrario no funcionará.
+
+Hitos:
+0. Iniciar este proyecto
+1. La v0.0.0.4.5 fue cuando realemnte empecé a entender la arquitectura.
+1. La v0.0.0.5.5 fue la más grande y satisfactoria actualización.
 
 
 Preguntas Frecuentes:

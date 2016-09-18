@@ -2,6 +2,7 @@ FluffalAtt={
 39246582, -- Fluffal Dog
 97567736, -- Edge Imp Tomahawk
 80889750, -- Frightfur Sabre-Tooth
+00007620, -- Frightfur Kraken
 10383554, -- Frightfur Leo
 85545073, -- Frightfur Bear
 11039171, -- Frightfur Wolf
@@ -46,6 +47,7 @@ function FluffalPosition(id,available) -- FLUFFAL POSITION
       result=POS_FACEUP_DEFENSE
     end
   end
+  --print("ENTRÓ:")
   if id == 57477163 and GlobalIFusion > 0 then -- FSheep by IFUsion
     --print("FSheep by IFusion")
     return POS_FACEUP_DEFENCE
@@ -59,7 +61,7 @@ function FluffalPosition(id,available) -- FLUFFAL POSITION
 	  else
 	    result = POS_FACEUP_ATTACK
       end
-	  --print("FSheep - Atk: "..frightfurAtk)
+	  print("FSheep - Atk: "..frightfurAtk)
   end
   if id == 80889750 then -- FSabreTooth
       local frightfurAtk = 2400 + FrightfurBoost(id)
@@ -72,15 +74,28 @@ function FluffalPosition(id,available) -- FLUFFAL POSITION
       end
 	  --print("FSabreTooth - Atk: "..frightfurAtk)
   end
+  if id == 00007620 then
+	local frightfurAtk = 2200 + FrightfurBoost(id)
+	print("FKraken Atk: "..frightfurAtk)
+	if frightfurAtk < 3000
+	and #OppMon() == 1
+	then
+	  result = POS_FACEUP_DEFENSE
+	end
+  end
+  
   if Duel.GetTurnCount() == 1
   and (
     id == 61173621 -- Chain
 	or id == 30068120 -- Sabres
+	or id == 00007620 -- FKraken
 	or id == 83531441 -- Dante
   )
   then
     result = POS_FACEUP_DEFENSE
   end
+  
+  --if result then print("SALIÓ: "..result) else print("SALIÓ") end
   
   return result
 end
@@ -97,7 +112,87 @@ function FluffalAttackTarget(cards,attacker) -- FLUFFAL ATTACK TARGET
     if id == 57477163 and CanWinBattle(attacker,cards,true,false) then
       return FrightfurSheepAttackTarget(cards,attacker,false)
     end
+	-- Frightfur Kraken
+    if id == 00007620 and CanWinBattle(attacker,cards,true,false) then
+      return FrightfurSheepAttackTarget(cards,attacker,false)
+    end
   end
+ return nil
+end
+
+function FluffalAttackBoost(cards) -- FLUFFAL BOOST
+  for i=1,#cards do
+    local c=cards[i]
+    if c.id == 42110604 then -- Chanbara
+      c.attack = c.attack + 200
+    end
+	if c.id == 57477163 then -- Frightfur Sheep
+	  local FSheepOwnBoost = c.attack - c.base_attack
+	  FSheepOwnBoost = FSheepOwnBoost - (Get_Card_Count_ID(AIDeck(),80889750) * 400) -- Sabre-Tooth
+	  if HasID(AIMon(),00464362,true) then -- Frightfur Tiger
+	    FSheepOwnBoost = FSheepOwnBoost - (CountFrightfurMon(AIMon()) * 300)
+	  end
+	  --print("FSheepOwnBoost: "..FSheepOwnBoost)
+	  if
+	  FSheepOwnBoost < 800
+	  and OPTCheck(c.cardid)
+	  then
+	    if CardsMatchingFilter(OppMon(),FilterPosition,POS_FACEUP_ATTACK) > 0 then
+	      c.attack = c.attack + 800
+		end
+	  end
+	end
+  end
+end
+
+function FluffalBattleCommand(cards,activatable) --FLUFFAL BATTLE COMMAND
+  ApplyATKBoosts(cards)
+  for i=1,#cards do
+    cards[i].index = i
+  end
+  -- check for monsters, that cannot be attacked, or have to be attacked first.
+  local targets = OppMon()
+  local attackable = {}
+  local mustattack = {}
+  local FrightfurSheep = {}
+
+  for i=1,#targets do
+    if targets[i]:is_affected_by(EFFECT_CANNOT_BE_BATTLE_TARGET)==0 then
+      attackable[#attackable+1]=targets[i]
+    end
+    if targets[i]:is_affected_by(EFFECT_MUST_BE_ATTACKED)>0 then
+      mustattack[#mustattack+1]=targets[i]
+    end
+  end
+
+  if #mustattack>0 then
+    targets = mustattack
+  else
+    targets = attackable
+  end
+  ApplyATKBoosts(targets)
+
+  if HasIDNotNegated(cards,57477163) -- Frightfur Sheep
+  and (
+    CanWinBattle(cards[CurrentIndex],targets,false,false)
+	or #targets == 0
+  )
+  then
+    return Attack(IndexByID(cards,57477163))
+  end
+  if HasIDNotNegated(cards,10383554) -- Frightfur Leo
+  and CanWinBattle(cards[CurrentIndex],targets,false,false) then
+    return Attack(IndexByID(cards,10383554))
+  end
+  if HasIDNotNegated(cards,00007620) -- Frightfur Kraken
+  and CanWinBattle(cards[CurrentIndex],targets,false,false) then
+    return Attack(IndexByID(cards,00007620))
+  end
+  --if HasIDNotNegated(cards,80889750) -- Frightfur Sabre-Tooth
+  --and CanWinBattle(cards[CurrentIndex],targets,true,false) then
+    --return Attack(IndexByID(cards,80889750))
+  --end
+
  return nil
 end
 
@@ -157,113 +252,40 @@ function FrightfurSheepAttackTarget(cards,source,ignorebonus,filter,opt)
   return result
 end
 
-
-function FluffalAttackBoost(cards)
-  for i=1,#cards do
-    local c=cards[i]
-    if c.id == 42110604 then -- Chanbara
-      c.attack = c.attack + 200
-    end
-	if c.id == 57477163 then -- Frightfur Sheep
-	  local FSheepOwnBoost = c.attack - c.base_attack
-	  FSheepOwnBoost = FSheepOwnBoost - (Get_Card_Count_ID(AIDeck(),80889750) * 400) -- Sabre-Tooth
-	  if HasID(AIMon(),00464362,true) then -- Frightfur Tiger
-	    FSheepOwnBoost = FSheepOwnBoost - (CountFrightfur(AIMon()) * 300)
-	  end
-	  --print("FSheepOwnBoost: "..FSheepOwnBoost)
-	  if
-	  FSheepOwnBoost < 800
-	  and OPTCheck(c.cardid)
-	  then
-	    if CardsMatchingFilter(OppMon(),FilterPosition,POS_FACEUP_ATTACK) > 0 then
-	      c.attack = c.attack + 800
-		end
-	  end
-	end
-  end
-end
-
-function FluffalBattleCommand(cards,activatable) --FLUFFAL BATTLE COMMAND
-  ApplyATKBoosts(cards)
-  for i=1,#cards do
-    cards[i].index = i
-  end
-  -- check for monsters, that cannot be attacked, or have to be attacked first.
-  local targets = OppMon()
-  local attackable = {}
-  local mustattack = {}
-  local FrightfurSheep = {}
-
-  for i=1,#targets do
-    if targets[i]:is_affected_by(EFFECT_CANNOT_BE_BATTLE_TARGET)==0 then
-      attackable[#attackable+1]=targets[i]
-    end
-    if targets[i]:is_affected_by(EFFECT_MUST_BE_ATTACKED)>0 then
-      mustattack[#mustattack+1]=targets[i]
-    end
-  end
-
-  if #mustattack>0 then
-    targets = mustattack
-  else
-    targets = attackable
-  end
-  ApplyATKBoosts(targets)
-
-  if HasIDNotNegated(cards,57477163) -- Frightfur Sheep
-  and (
-    CanWinBattle(cards[CurrentIndex],targets,true,false)
-	or #targets == 0
-  )
-  then
-    return Attack(IndexByID(cards,57477163))
-  end
-  if HasIDNotNegated(cards,10383554) -- Frightfur Leo
-  and CanWinBattle(cards[CurrentIndex],targets,true,false) then
-    return Attack(IndexByID(cards,10383554))
-  end
-  --if HasIDNotNegated(cards,80889750) -- Frightfur Sabre-Tooth
-  --and CanWinBattle(cards[CurrentIndex],targets,true,false) then
-    --return Attack(IndexByID(cards,80889750))
-  --end
-
- return nil
-end
-
 function FrightfurBoost(frightfurId)
   local boost = 0
-  local countFrighfurs = CountFrightfur(AIMon()) + 1 -- Own
-
+  local frightufs = CountFrightfurMon(AIMon()) + 1 -- Own
+  
   if frightfurId == 80889750 -- FSabreTooth
   then
-    if CountFrightfur(AIGrave()) > 0 then
-      countFrighfurs = countFrighfurs + 1
+    if CountFrightfurMon(AIGrave()) > 0 then
+      frightufs = frightufs + 1
 	  if not HasID(AIMon(),00464362,true) -- FTiger Field
 	  and HasID(AIGrave(),00464362,true) -- FTiger Grave
 	  then
-	    boost = boost + (countFrighfurs * 300)
+	    boost = boost + (frightufs * 300)
 	  end
 	end
 	boost = boost + 400
   end
+
   if frightfurId == 00464362 -- Tiger
   then
-    boost = boost + (countFrighfurs * 300)
+    boost = boost + (frightufs * 300)
   end
+
   if frightfurId == 57477163 -- FSheep
   then
     boost = boost + 800
   end
 
-  if HasIDNotNegated(AIMon(),80889750,true) -- FSabreTooth
-  then
-    boost = boost + 400
-  end
+  boost = boost + (400 * Get_Card_Count_ID(AIMon(),80889750)) --FSabreTooth
+
   if HasIDNotNegated(AIMon(),00464362,true) -- FTiger
   then
-    boost = boost + (countFrighfurs * 300)
+    boost = boost + (frightufs * 300)
   end
-
+  
   return boost
 end
 

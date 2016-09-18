@@ -21,8 +21,8 @@ end
 -- Spell Filter
 -- Trap Filter
 -- Frightfur Filter
-function FrightfurFilter(c)
-  return IsSetCode(c.setcode,0xad)
+function FrightfurMonFilter(c)
+  return IsSetCode(c.setcode,0xad) and FilterType(c,TYPE_MONSTER)
 end
 function FLeoFinishFilter(c,source)
   return
@@ -38,6 +38,13 @@ function FTigerDestroyFilter(c)
 	and FluffalDestroyFilter(c)
   )
 end
+function FKrakenSendFilter(c)
+  return (
+    Targetable(c,TYPE_MONSTER)
+    and Affected(c,TYPE_MONSTER)
+	and FluffalSendFilter(c)
+  )
+end
 
 -- Other
 function FluffalDestroyFilter(c,nontarget)
@@ -47,6 +54,11 @@ function FluffalDestroyFilter(c,nontarget)
   and not (DestroyBlacklist(c) and FilterPublic(c))
   and not BypassDestroyFilter(c)
 end
+function FluffalSendFilter(c,nontarget)
+  return not FilterStatus(c,STATUS_LEAVE_CONFIRMED)
+  and (nontarget==true or not FilterAffected(c,EFFECT_CANNOT_BE_EFFECT_TARGET))
+end
+
 function BypassDestroyFilter(c) --Indexes cards that the AI fails to check with DestroyFilter normally. Sins, C-Lancer, ArchSeraph, eartH, Kagutsuchi, Sentry, Beetle, Yoke, SHARK, Full Lancer, Maestroke, Zenmaines, Gantetsu, U-Future, Angineer, Winda, Wickedwitch
   return (((c.id==62541668
   or c.id==99469936
@@ -68,6 +80,8 @@ function BypassDestroyFilter(c) --Indexes cards that the AI fails to check with 
   or c.id==93302695)
   and NotNegated(c)
 end
+
+
 
 ------------------------
 -------- COUNT ---------
@@ -100,6 +114,7 @@ end
 -- FluffalM Count
 function CountWingsTarget()
   local result = 0
+  --result = CountPrioTarget(AIGrave(),PRIO_BANISH,1,TYPE_MONSTER,FluffalFilter,nil,"CountWingsTarget")
   result = CountPrioTarget(AIGrave(),PRIO_BANISH,1,TYPE_MONSTER,FluffalFilter)
   return result
 end
@@ -144,13 +159,13 @@ end
 -- Spell Count
 -- Trap Count
 -- Frightfur Count
-function CountFrightfur(cards)
-  return CardsMatchingFilter(cards,FrightfurFilter)
+function CountFrightfurMon(cards)
+  return CardsMatchingFilter(cards,FrightfurMonFilter)
 end
 function CountFusionTarget()
   local result = 0
-  --result = CountPrioTarget(AIExtra(),PRIO_TOFIELD,1,nil,nil,nil,"CountFusionTarget")
-  result = CountPrioTarget(AIExtra(),PRIO_TOFIELD,1)
+  result = CountPrioTarget(AIExtra(),PRIO_TOFIELD,1,nil,nil,nil,"CountFusionTarget")
+  --result = CountPrioTarget(AIExtra(),PRIO_TOFIELD,1)
   return result
 end
 function CountMaterialFTarget(cards)

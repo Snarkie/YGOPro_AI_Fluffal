@@ -7,7 +7,7 @@ require("ai.decks.Fluffal.FluffalChain")
 require("ai.decks.Fluffal.FluffalBattle")
 
 function FluffalStartup(deck)
-  print("AI_Fluffal v0.0.0.5.4 by neftalimich.")
+  print("AI_Fluffal v0.0.0.5.5 by neftalimich.")
   AI.Chat("¡Duelo!")
 
   deck.Init                 = FluffalInit
@@ -209,7 +209,9 @@ function FluffalInit(cards) -- FLUFFAL INIT
   --GLOBAL
   GlobalSheep = 0
   GlobalRabit = 0
+  GlobalOcto = 0
   GlobalSabres = 0
+  GlogalFSabreTooth = 0
   GlobalFFusion = 0
   GlobalToyVendor = 0
   GlobalFusionSummon = 0
@@ -218,6 +220,8 @@ function FluffalInit(cards) -- FLUFFAL INIT
   GlobalFusionId = 0
   GlobalMaterialF = 0
   GlobalMaterialE = 0
+  
+  local allDeck = UseLists({AIHand(),AIDeck()})
 
   -- ACTIVE EFFECT 1
   if HasIDNotNegated(Act,10383554,UseFLeo) then
@@ -228,7 +232,7 @@ function FluffalInit(cards) -- FLUFFAL INIT
     return COMMAND_ACTIVATE,CurrentIndex
   end
   
-  if HasIDNotNegated(Act,41209827,UseKraken) then
+  if HasIDNotNegated(Act,00007620,UseFKraken) then
     return COMMAND_ACTIVATE,CurrentIndex
   end
 
@@ -297,10 +301,20 @@ function FluffalInit(cards) -- FLUFFAL INIT
   end
 
   -- ACTIVE EFFECT 2
-  if HasIDNotNegated(Act,70245411,ActiveToyVendor,nil,LOCATION_SZONE,POS_FACEDOWN) then
+  if HasIDNotNegated(Act,70245411,ActiveToyVendor,nil,LOCATION_SZONE,POS_FACEDOWN)
+  then
     return COMMAND_ACTIVATE,CurrentIndex
   end
-  if HasIDNotNegated(Act,70245411,UseToyVendor,nil,LOCATION_SZONE,POS_FACEUP) then
+  if HasIDNotNegated(Act,70245411,UseToyVendor,nil,LOCATION_SZONE,POS_FACEUP)
+  and not (
+    #AIMon() == 5 and (
+      HasID(UseLists({AIHand(),AIST()}),24094653,true) -- Polymerization
+	  or HasID(UseLists({AIHand(),AIST()}),94820406,true) -- DFusion
+	  or HasID(UseLists({AIHand(),AIST()}),43698897,true) -- FFactory
+	  or HasID(UseLists({AIGrave(),AIHand()}),06077601,true) -- FFusion
+	)
+  )
+  then
     GlobalToyVendor = 1
     return COMMAND_ACTIVATE,CurrentIndex
   end
@@ -351,6 +365,7 @@ function FluffalInit(cards) -- FLUFFAL INIT
   if HasIDNotNegated(UseLists({AIHand(),AIMon()}),98280324,true)
   and #AIMon() <= 3
   and SpecialSummonSheep4()
+  and CountFluffal(AIMon()) == 0
   then
     for i=1,#Sum do
 	  if not(Sum[i].id == 98280324) and FluffalFilter(Sum[i]) then

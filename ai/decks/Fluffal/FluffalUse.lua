@@ -189,24 +189,48 @@ function UseBulb(c)
 end
 -- FluffalS Use
 function ActiveToyVendor(c)
-  return
-    CountToyVendorDiscardTarget() > 0
-	and (
-	  #AIHand() > 2
-	  or HasID(AIHand(),72413000,true) and OPTCheck(72413000) -- Wings
+  if CountToyVendorDiscardTarget() > 0
+  and (
+	#AIHand() > 2
+	or HasID(AIHand(),72413000,true) and OPTCheck(72413000) -- Wings
+  )
+  and not (
+    #AIMon() == 5 and (
+      HasID(UseLists({AIHand(),AIST()}),24094653,true) -- Polymerization
+	  or HasID(UseLists({AIHand(),AIST()}),94820406,true) -- DFusion
+	  or HasID(UseLists({AIHand(),AIST()}),43698897,true) -- FFactory
+	  or HasID(UseLists({AIHand(),AIST()}),06077601,true) -- FFusion
 	)
+  )
+  then
+    return true
+  else
+    return false
+  end
 end
 function ActiveToyVendor2(c)
-  return
-    CardsMatchingFilter(AIST(),ToyVendorCheckFilter,true) == 0 -- Toy Vendor
-	and (
-      CountToyVendorDiscardTarget() > 0
-      and #AIHand() > 2
-	  or (
-		HasID(AIHand(),72413000,true) -- Wings
-		and OPTCheck(72413000)
-	  )
+  if CardsMatchingFilter(AIST(),ToyVendorCheckFilter,true) == 0 -- Toy Vendor
+  and (
+    CountToyVendorDiscardTarget() > 0
+    and #AIHand() > 2
+	or (
+	  HasID(AIHand(),72413000,true) -- Wings
+	  and OPTCheck(72413000)
 	)
+  )
+  and not (
+    #AIMon() == 5 and (
+      HasID(UseLists({AIHand(),AIST()}),24094653,true) -- Polymerization
+	  or HasID(UseLists({AIHand(),AIST()}),94820406,true) -- DFusion
+	  or HasID(UseLists({AIHand(),AIST()}),43698897,true) -- FFactory
+	  or HasID(UseLists({AIHand(),AIST()}),06077601,true) -- FFusion
+	)
+  )
+  then
+    return true
+  else
+    return false
+  end
 end
 function UseToyVendor(c)
   if HasID(AIHand(),72413000,true) then -- Wings
@@ -372,7 +396,7 @@ function UseFReserve(c)
   return HasID(AIGrave(),24094653,true)
 end
 function UseFReserve2(c)
-  return AI.GetPlayerLP(1) <= 2000
+  return AI.GetPlayerLP(1) <= 2000 or  AI.GetPlayerLP(1) <= 5000 and AIMon() == 0
 end
 -- Frightfur Use
 function UseFKraken(c)
@@ -475,6 +499,9 @@ function FluffalEffectYesNo(id,card) -- FLUFFAL EFFECT YES/NO
   end
 
   if id == 80889750 then -- Frightfur Sabre-Tooth
+	result = 1
+  end
+  if id == 00007620 then -- Frightfur Kraken
 	result = 1
   end
   if id == 10383554 then -- Frightfur Leo

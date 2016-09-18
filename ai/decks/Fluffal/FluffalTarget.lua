@@ -52,15 +52,24 @@ function WingsTarget(cards)
     return Add(cards,PRIO_TOGRAVE)
   end
 end
-function OctoTarget(cards)
+GlobalOcto = 0
+function OctoTarget(cards,min,max)
+  GlobalOcto = 1
+  local result
   if LocCheck(cards,LOCATION_GRAVE) then
     print("OctoTarget - GRAVE to HAND")
-    return Add(cards,PRIO_TOHAND)
+	--CountPrioTarget(cards,PRIO_TOHAND,max,nil,nil,nil,"OctoTarget")
+	result = Add(cards,PRIO_TOHAND,max)
+	GlobalOcto = 0
+    return result
   end
   if LocCheck(cards,LOCATION_REMOVED) then
     print("OctoTarget - REMOVED to GRAVE")
-    return Add(cards,PRIO_TOGRAVE)
+	result = Add(cards,PRIO_TOGRAVE,max)
+	GlobalOcto = 0
+    return result
   end
+  return Add(cards) -- 
 end
 -- EdgeImp Target
 function TomahawkTarget(cards)
@@ -243,7 +252,7 @@ function FusionSummonBanishTarget(cards,c,min,max)
     for i=1, #cards do
 	  local c = cards[i]
 	  result[i] = c
-	  --print("Poly0: "..c.id.." - PRIO: "..GetPriority(c,PRIO_TOFIELD))
+	  --print("FFusion0: "..c.id.." - PRIO: "..GetPriority(c,PRIO_TOFIELD))
 	end
 	indexT = Add(cards,PRIO_TOFIELD)[1]
     GlobalFusionId = result[indexT].id
@@ -252,20 +261,20 @@ function FusionSummonBanishTarget(cards,c,min,max)
   end
   if GlobalFFusion == 1 then
     GlobalFFusion = 2
-    print("BanishFusionTarget - FirstMaterial: ")
+    --print("BanishFusionTarget - FirstMaterial: ")
 	for i=1, #cards do
 	  local c = cards[i]
 	  result[i] = c
-	  print("FFusion: "..c.id.." - PRIO: "..GetPriority(c,PRIO_BANISH))
+	  --print("FFusion1: "..c.id.." - PRIO: "..GetPriority(c,PRIO_BANISH))
 	end
 	return Add(cards,PRIO_BANISH)
   end
   if GlobalFFusion == 2 then
     GlobalFFusion = 3
-    print("BanishFusionTarget - SecondMaterial: ")
+    --print("BanishFusionTarget - SecondMaterial: ")
 	for i=1, #cards do
 	  local c = cards[i]
-	  print("FFusion2: "..c.id.." - PRIO: "..GetPriority(c,PRIO_BANISH))
+	  --print("FFusion2: "..c.id.." - PRIO: "..GetPriority(c,PRIO_BANISH))
 	end
 	return Add(cards,PRIO_BANISH,MaxMaterials(GlobalFusionId,min,max))
   end
@@ -289,9 +298,17 @@ function FReserveTarget(cards,c)
   return Add(cards)
 end
 -- Frightfur Target
-
+GlogalFSabreTooth = 0
 function FSabreTarget(cards,c)
-  return Add(cards,PRIO_TOFIELD)
+  local result
+  GlogalFSabreTooth = 1
+  --CountPrioTarget(cards,PRIO_TOFIELD,1,nil,nil,nil,"FSabreTarget")
+  result = Add(cards,PRIO_TOFIELD)
+  GlogalFSabreTooth = 0
+  return result
+end
+function FKrakenTarget(cards,c)
+  return BestTargets(cards,1,TARGET_DESTROY,FKrakenSendFilter)
 end
 function FLeoTarget(cards,c)
   return BestTargets(cards,1,TARGET_DESTROY,FLeoDestroyFilter,c)
@@ -376,7 +393,7 @@ function FluffalCard(cards,min,max,id,c) -- FLUFFAL CARDS
   end
   
   if id == 00007614 then -- Octo
-    return OctoTarget(cards)
+    return OctoTarget(cards,min,max)
   end
 
   if id == 97567736 then -- Tomahawk
@@ -420,6 +437,9 @@ function FluffalCard(cards,min,max,id,c) -- FLUFFAL CARDS
 
   if id == 80889750 then -- Frightfur Sabre-Tooth
 	return FSabreTarget(cards)
+  end
+  if id == 00007620 then -- Frightfur Kraken
+	return FKrakenTarget(cards,c)
   end
   if id == 10383554 then -- Frightfur Leo
 	return FLeoTarget(cards)

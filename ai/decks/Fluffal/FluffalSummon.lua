@@ -26,6 +26,7 @@ end
 function SpecialSummonSheep(c)
   if OPTCheck(c.id)
   and CountEgdeImp(AIGrave()) > 0
+  and not HasID(AIMon(),98280324,true)
   then
     return true
   else
@@ -35,6 +36,7 @@ end
 function SpecialSummonSheep2()
   if OPTCheck(98280324)
   and CountEgdeImp(UseLists({AIGrave(),AIHand()})) > 0
+  and not HasID(AIMon(),98280324,true)
   then
     return true
   else
@@ -42,7 +44,9 @@ function SpecialSummonSheep2()
   end
 end
 function SpecialSummonSheep3()
-  if OPTCheck(98280324) and HasID(AIHand(),97567736,true) then -- Tomahawk
+  if OPTCheck(98280324) and HasID(AIHand(),97567736,true)-- Tomahawk
+  and not HasID(AIMon(),98280324,true)  
+  then
     return true
   else
     return false
@@ -54,6 +58,7 @@ function SpecialSummonSheep4()
   and (
     CountFluffal(AIHand()) - Get_Card_Count_ID(AIHand(),98280324)
   ) > 0
+  and not HasID(AIMon(),98280324,true) 
   then
     return true
   else
@@ -86,6 +91,7 @@ function SummonOcto()
   return 
     OPTCheck(39246582) 
 	and (CountFluffal(AIGrave()) + CountEgdeImp(AIGrave())) > 0
+	and CardsMatchingFilter(AIBanish(),FilterType,TYPE_MONSTER) > 0
 end
 -- EdgeImp Summon
 function SummonTomahawk()
@@ -155,7 +161,8 @@ function SpSummonFSabre()
     return true
   end
   if (
-    HasID(AIMon(),85545073,true) -- Frightfur Bear
+    HasID(AIMon(),00007620,true) -- Frightfur Kraken
+    or HasID(AIMon(),85545073,true) -- Frightfur Bear
 	or HasID(AIMon(),00464362,true) -- Frightfur Tiger
 	or HasID(AIMon(),57477163,true) -- Frightfur Sheep
   )
@@ -174,15 +181,72 @@ function SpSummonFSabre()
   return false
 end
 function SpSummonFSabreBanish()
-  if CountFrightfur(AIGrave()) > 2 -- Frightfur Grave
+  if CountFrightfurMon(AIGrave()) > 2 -- Frightfur Grave
   and (
     CountFluffalBanishTarget(UseLists({AIMon(),AIGrave()})) > 1 -- Fluffal
 	or OppGetStrongestAttack() >= AIGetStrongestAttack() -- Strong Opp
   )
   and Duel.GetTurnCount() ~= 1
   then
+    print("SpSummonFSabreBanish - ENTRA")
     return
 	  not HasID(AIMon(),80889750,true)
+	  and AI.GetCurrentPhase() == PHASE_MAIN1
+  end
+  return false
+end
+
+function SpSummonFKraken()
+  if (
+    GlobalMaterialE > 0 -- EdgeImp
+  )
+  and (
+    GlobalMaterialF > 0 -- Fluffal
+  )
+  then
+    return
+	  not HasID(AIMon(),00007620,true)
+	  and (
+	    CardsMatchingFilter(OppMon(),FilterAffected,EFFECT_INDESTRUCTABLE) > 0
+		or (
+	      CardsMatchingFilter(OppMon(),FKrakenSendFilter) > 0
+		  and CardsMatchingFilter(OppST(),FilterPosition,POS_FACEDOWN) < 2
+		  and (
+		    #OppMon() == 0 
+			or #OppMon() == 1 
+			and (
+			  CountFluffal(UseLists({AIHand(),AIMon()})) 
+			  + CountEgdeImp(UseLists({AIHand(),AIMon()}))
+			) >= 2
+			and (
+			  HasID(UseLists({AIHand(),AIST()}),24094653,true) -- Polymerization
+		      or HasID(UseLists({AIHand(),AIST()}),94820406,true) -- DFusion
+			)
+		  )
+		)
+	  )
+	  and Duel.GetTurnCount() > 1
+	  and AI.GetCurrentPhase() == PHASE_MAIN1
+  end
+  return false
+end
+function SpSummonFKrakenBanish()
+  if CountEgdeImp(UseLists({AIMon(),AIGrave()})) > 0
+  and CountFluffalBanishTarget(UseLists({AIMon(),AIGrave()})) > 0
+  then
+    return
+	  not HasID(AIMon(),00007620,true)
+	  and (
+	    CardsMatchingFilter(OppMon(),FilterAffected,EFFECT_INDESTRUCTABLE) > 0
+		or (
+	      CardsMatchingFilter(OppMon(),FKrakenSendFilter) > 0
+		  and CardsMatchingFilter(OppST(),FilterPosition,POS_FACEDOWN) < 2
+		  and (
+		    #OppMon() < 2
+		  )
+		)
+	  )
+	  and Duel.GetTurnCount() > 1
 	  and AI.GetCurrentPhase() == PHASE_MAIN1
   end
   return false
@@ -234,6 +298,7 @@ function FWolfFinish()
 	or
 	HasID(AIMon(),80889750,true)
 	and HasID(AIMon(),00464362,true)
+	and CardsMatchingFilter(OppST(),FilterPosition,POS_FACEDOWN) < 3
 	or
 	#OppMon() == 1
 	and CardsMatchingFilter(OppST(),FilterPosition,POS_FACEDOWN) == 0
@@ -243,11 +308,13 @@ function SpSummonFWolf()
   if (
     HasID(UseLists({AIMon(),AIHand()}),30068120,true) -- Sabres
   )
-  and GlobalMaterialF > 0 -- Fluffal
+  and (
+    CountFluffal(UseLists({AIHand(),AIMon()})) > 0 -- End Game
+  )	
+  and FWolfFinish()
   then
     return
 	  not HasID(AIMon(),11039171,true)
-	  and FWolfFinish()
 	  and AI.GetCurrentPhase() == PHASE_MAIN1
 	  and GlobalBPAllowed
   end
@@ -258,10 +325,11 @@ function SpSummonFWolfBanish()
     HasID(UseLists({AIMon(),AIGrave()}),30068120,true) -- Sabres
   )
   and CountFluffalBanishTarget(UseLists({AIMon(),AIGrave()})) > 0
+  and FWolfFinish()
   then
     return
 	  not HasID(AIMon(),11039171,true)
-	  and FWolfFinish()
+	  
 	  and AI.GetCurrentPhase() == PHASE_MAIN1
 	  and GlobalBPAllowed
   end
@@ -279,7 +347,7 @@ function SpSummonFTiger()
 	or GlobalMaterialF > 0
 	and OppGetStrongestAttack() >= AIGetStrongestAttack()
 	or GlobalMaterialF > 0
-	and CountFrightfur(AIMon()) > 0
+	and CountFrightfurMon(AIMon()) > 0
   )
   then
     return
@@ -298,7 +366,7 @@ function SpSummonFTigerBanish()
   and CountFluffalBanishTarget(UseLists({AIMon(),AIGrave()})) > 0
   and (
     CardsMatchingFilter(OppST(),FilterPosition,POS_FACEDOWN) > 0
-	or #OppField() > 2
+	or #OppField() > 1
   )
   then
     return
